@@ -6,5 +6,3 @@ class RoleController(BaseController):
 
     def __init__(self):
         super(RoleController, self).__init__(RoleCRUD)
-
-
