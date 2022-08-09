@@ -9,14 +9,14 @@ services:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
 
-  api:
-    build: .
-    container_name: api-delivery
-    environment:
-      - .env
-    ports:
-      - "8080:8080"
-    links:
-      - postgres
+#  api:
+#    build: .
+#    container_name: api-delivery
+#    environment:
+#      - .env
+#    ports:
+#      - "8080:8080"
+#    links:
+#      - postgres
 
 
