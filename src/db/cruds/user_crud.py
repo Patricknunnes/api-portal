@@ -9,6 +9,5 @@ class UserCRUD(BaseCRUD):
         super(UserCRUD, self).__init__(UserModel)
 
     def get_user_document_or_email(self, db: Session, document: int = None, email: str = None):
-        sql = db.query(self.model).filter(or_(self.model.document == document, self.model.email == email))
-
-        return sql
+        user = db.query(self.model).where(or_(self.model.document == document, self.model.email == email)).first()
+        return user
