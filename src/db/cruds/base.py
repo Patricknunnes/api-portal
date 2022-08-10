@@ -37,9 +37,7 @@ class BaseCRUD(BaseInterfaceCRUD):
         return
 
     def delete(self, db: Session, object_id: Any, commit=True):
-        object_instance = db.query(self.model).filter(
-            self.model.id == object_id
-        ).first()
+        object_instance = db.query(self.model).where(self.model.id == object_id).first()
         db.delete(object_instance)
         if commit:
             db.commit()
