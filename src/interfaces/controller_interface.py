@@ -13,7 +13,7 @@ class BaseInterfaceController(ABC):
 
     @staticmethod
     @abstractmethod
-    def handle_get(db: Session, object_id: Any):
+    def handle_get(db: Session, exception_message: str, object_id: Any):
         pass
 
     @staticmethod
@@ -23,7 +23,7 @@ class BaseInterfaceController(ABC):
 
     @staticmethod
     @abstractmethod
-    def handle_delete(db: Session, object_id: Any):
+    def handle_delete(db: Session, exception_message: str, object_id: Any):
         pass
 
     @staticmethod
