@@ -58,7 +58,8 @@ class UtilService:
     @staticmethod
     def remove_none_in_form(form):
         return {key: value for key, value in form.__dict__.items()
-                if not (value in [None, '', 'string', date.today()]) and not key.startswith('_')}
+                if not (value in [None, '', 'string', date.today()])
+                and not key.startswith('_')}
 
     @staticmethod
     def validate_schema(schema_base, form):

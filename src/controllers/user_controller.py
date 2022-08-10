@@ -27,7 +27,9 @@ class UserController(BaseController):
         new_form = UtilService.remove_none_in_form(data)
 
         if data.role_id:
-            RoleController().handle_get(db=session, object_id=data.role_id, exception_message='Role não encontrada.')
+            RoleController().handle_get(db=session,
+                                        object_id=data.role_id,
+                                        exception_message='Role não encontrada.')
 
         if data.document:
             UtilService.validate_doc(ValidateDocs(type_doc='cpf', number=data.document))
@@ -52,9 +54,18 @@ class UserController(BaseController):
 
         return self.crud_class().create(db=db, data=new_data, commit=commit)
 
-    def handle_patch(self, db: Session, object_id: UUID, data: UserUpdate, commit=True) -> None:
+    def handle_patch(self,
+                     db: Session,
+                     object_id: UUID,
+                     data: UserUpdate,
+                     commit=True) -> None:
         new_data = self.__clean_form(data=data, session=db)
 
-        self.handle_get(db=db, object_id=object_id, exception_message='Usuário não encontrado.')
+        self.handle_get(db=db,
+                        object_id=object_id,
+                        exception_message='Usuário não encontrado.')
 
-        return self.crud_class().patch(db=db, object_id=object_id, data=new_data, commit=True)
+        return self.crud_class().patch(db=db,
+                                       object_id=object_id,
+                                       data=new_data,
+                                       commit=True)

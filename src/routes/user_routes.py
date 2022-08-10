@@ -21,12 +21,16 @@ def handle_get_all_users(db: Session = Depends(get_db)):
     return UserController().handle_list(db=db)
 
 
-@user_router.get('/{user_id}', response_model=UserResponse, status_code=status.HTTP_200_OK)
+@user_router.get('/{user_id}',
+                 response_model=UserResponse,
+                 status_code=status.HTTP_200_OK)
 def handle_get_user(user_id: UUID, db: Session = Depends(get_db)):
     """
     This route return the user data by UUID.
     """
-    return UserController().handle_get(db=db, object_id=user_id, exception_message='Usuário não encontrado')
+    return UserController().handle_get(db=db,
+                                       object_id=user_id,
+                                       exception_message='Usuário não encontrado')
 
 
 @user_router.post('', response_model=UserResponse, status_code=status.HTTP_201_CREATED)

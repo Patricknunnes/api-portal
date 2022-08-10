@@ -23,7 +23,11 @@ class BaseController(BaseInterfaceController):
     def handle_list(self, db: Session):
         return self.crud_class().list(db)
 
-    def handle_delete(self, db: Session, exception_message: str, object_id: Any, commit=True):
+    def handle_delete(self,
+                      db: Session,
+                      exception_message: str,
+                      object_id: Any,
+                      commit=True):
         db_customer = self.crud_class().get(db, id=object_id)
 
         if db_customer is None:

@@ -18,7 +18,7 @@ class UserModel(Base):
     phone = Column(String(12), nullable=True)
     password = Column(String(255), nullable=False)
     created_at = Column(TIMESTAMP,
-                        server_default=func.now(),
-                        onupdate=func.current_timestamp())
+                        server_default=func.now())
+    updated_at = Column(TIMESTAMP, nullable=True, onupdate=func.current_timestamp())
 
     role = relationship("RoleModel")

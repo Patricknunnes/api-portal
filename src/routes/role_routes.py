@@ -23,4 +23,6 @@ def handle_get_role(role_id: UUID, session: Session = Depends(get_db)):
     """
     This route return the role data by UUID.
     """
-    return RoleController().handle_get(db=session, object_id=role_id, exception_message='Role não encontrada.')
+    return RoleController().handle_get(db=session,
+                                       object_id=role_id,
+                                       exception_message='Role não encontrada.')
