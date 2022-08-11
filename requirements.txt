@@ -1,5 +1,6 @@
 alembic==1.8.0
 anyio==3.6.1
+attrs==22.1.0
 backports.cached-property==1.0.2
 backports.entry-points-selectable==1.1.0
 bcrypt==3.2.2
@@ -26,6 +27,7 @@ httptools==0.4.0
 idna==3.3
 importlib-metadata==4.12.0
 importlib-resources==5.8.0
+iniconfig==1.1.1
 jeepney==0.7.1
 keyring==21.8.0
 lockfile==0.12.2
@@ -40,10 +42,12 @@ pexpect==4.8.0
 pipenv==2021.5.29
 pkginfo==1.7.1
 platformdirs==2.3.0
+pluggy==1.0.0
 poetry==1.1.8
 poetry-core==1.0.4
 psycopg2-binary==2.9.3
 ptyprocess==0.7.0
+py==1.11.0
 pyasn1==0.4.8
 pycodestyle==2.8.0
 pycparser==2.20
@@ -54,6 +58,7 @@ Pygments==2.12.0
 pylama==8.3.8
 pylev==1.4.0
 pyparsing==2.4.7
+pytest==7.1.2
 python-dateutil==2.8.2
 python-dotenv==0.20.0
 python-jose==3.3.0
@@ -69,8 +74,9 @@ sniffio==1.2.0
 snowballstemmer==2.2.0
 SQLAlchemy==1.4.39
 starlette==0.19.1
+tomli==2.0.1
 tomlkit==0.7.2
-typing_extensions==4.3.0
+typing-extensions==4.3.0
 urllib3==1.26.6
 uvicorn==0.18.2
 uvloop==0.16.0
