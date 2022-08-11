@@ -25,7 +25,7 @@ class UtilService:
     @staticmethod
     def validate_cep(cep_number: int = None):
         if len(str(cep_number)) != 8:
-            raise NameError('O códigos Postal no Brasil consistem em 8 números')
+            raise BadRequestException('O códigos Postal no Brasil consistem em 8 números')
 
         result = get(f'https://viacep.com.br/ws/{cep_number}/json/').json()
 
@@ -38,7 +38,7 @@ class UtilService:
         regex = '^[\\w.\\-#_$%*]{2,50}@\\w+[.\\-_]?\\w+.\\w{2,3}[.\\w{2}]?$'
 
         if email is None:
-            raise NameError('Por favor informe o e-mail a ser validado.')
+            raise BadRequestException('Por favor informe o e-mail a ser validado.')
         elif search(regex, email):
             return True
         else:
@@ -49,7 +49,7 @@ class UtilService:
         regex = '^\\(?\\d{2}\\)?[ ]?\\d{1}[. ]?\\d{4}[- ]?\\d{4}$'
 
         if phone is None:
-            raise NameError('Por favor informe o telefone a ser validado.')
+            raise BadRequestException('Por favor informe o telefone a ser validado.')
         elif search(regex, phone):
             return True
         else:

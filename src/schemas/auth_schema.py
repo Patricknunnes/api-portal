@@ -4,11 +4,7 @@ from src.schemas.user_schema import UserResponse
 
 
 class TokenResponse(BaseModel):
-    user: UserResponse
     access_token: str
-
-    class Config:
-        orm_mode = True
 
 
 class ProfileResponse(BaseModel):

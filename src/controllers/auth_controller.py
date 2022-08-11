@@ -21,8 +21,7 @@ class AuthController:
         if not user or not verify_password(data_login.password, user.password):
             raise BadRequestException(detail='Email ou senha invalidos.')
 
-        return TokenResponse(user=user,
-                             access_token=create_access_token(data={'sub': str(user.id)}))
+        return TokenResponse(access_token=create_access_token(data={'sub': str(user.id)}))
 
     def handle_current_user(self, token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
         exception = UnAuthorizedException(detail="Token invalido.")
