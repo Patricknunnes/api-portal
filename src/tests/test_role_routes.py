@@ -32,4 +32,4 @@ class RoleRouteTestClass(ApiBaseTestCase):
         '''
         response = self.client.get(f'/role/{invalid_role_id}')
         self.assertEqual(404, response.status_code)
-        self.assertEqual({'detail': {'message': 'Role não encontrada.'}}, response.json())
+        self.assertEqual({'detail': 'Role não encontrada.'}, response.json())
