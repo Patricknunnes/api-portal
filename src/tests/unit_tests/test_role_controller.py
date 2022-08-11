@@ -38,3 +38,12 @@ class RoleControllerTestClass(TestCase):
             RoleController().handle_get(db=session, exception_message='Error', object_id=invalid_role_id)
         exception = error.exception
         self.assertEqual('Error', exception.detail)
+
+
+    @patch.object(RoleCRUD, 'create', return_value=roles[0])
+    def test_handle_create(self, mock, session: Session = Depends(get_db)):
+        '''
+          Test return of created role
+        '''
+        result = RoleController().handle_create(db=session, data=roles[0]['name'])
+        self.assertEqual(roles[0], result)
