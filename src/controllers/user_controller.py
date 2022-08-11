@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from src.controllers.base import BaseController
 from src.controllers.role_controller import RoleController
-from src.exceptions.excepetions import BadRequestException
+from src.exceptions.exceptions import BadRequestException
 from src.schemas.utils_schema import ValidateDocs
 from src.shared.utils import UtilService
 from src.settings.providers.hash_provider import get_password_hash
