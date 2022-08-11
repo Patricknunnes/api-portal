@@ -1,5 +1,6 @@
 from unittest.mock import patch
-from src.tests.settings import ApiBaseTestCase
+
+from src.tests.integration_tests.settings import ApiBaseTestCase
 from src.db.cruds.role_crud import RoleCRUD
 from src.tests.mocks.role_mocks import roles, invalid_role_id, valid_role_id
 
