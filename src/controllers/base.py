@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from typing import Any
 
-from src.exceptions.excepetions import NotFoundException
+from src.exceptions.exceptions import NotFoundException
 from src.interfaces.controller_interface import BaseInterfaceController
 
 

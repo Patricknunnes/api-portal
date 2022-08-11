@@ -3,7 +3,7 @@ from datetime import date
 from requests import get
 from validate_docbr import CNPJ, CPF, CNH, RENAVAM
 
-from src.exceptions.excepetions import BadRequestException
+from src.exceptions.exceptions import BadRequestException
 from src.schemas.utils_schema import ValidateDocs
 
 
