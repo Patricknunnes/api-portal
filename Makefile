@@ -11,4 +11,4 @@ db_rollback:
 	alembic downgrade -1
 
 tests:
-	pytest ./src/
+	clear && python3 -m pytest ./src/tests
