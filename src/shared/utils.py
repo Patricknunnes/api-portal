@@ -1,9 +1,10 @@
 from re import search
+from typing import Union
 from datetime import date
 from requests import get
 from validate_docbr import CNPJ, CPF, CNH, RENAVAM
 
-from src.exceptions.exceptions import BadRequestException
+from src.exceptions.exceptions import BadRequestException, NotFoundException
 from src.schemas.utils_schema import ValidateDocs
 
 
@@ -30,7 +31,7 @@ class UtilService:
         result = get(f'https://viacep.com.br/ws/{cep_number}/json/').json()
 
         if result.get('erro'):
-            raise ValueError('Cep não encontrado.')
+            raise NotFoundException('Cep não encontrado.')
         return result
 
     @staticmethod
@@ -42,18 +43,18 @@ class UtilService:
         elif search(regex, email):
             return True
         else:
-            return False
+            raise BadRequestException('Email invalido.')
 
     @staticmethod
-    def validate_phone(phone: str = None):
+    def validate_phone(phone: Union[str, int] = None):
         regex = '^\\(?\\d{2}\\)?[ ]?\\d{1}[. ]?\\d{4}[- ]?\\d{4}$'
 
-        if phone is None:
+        if not phone:
             raise BadRequestException('Por favor informe o telefone a ser validado.')
-        elif search(regex, phone):
+        elif search(regex, str(phone)):
             return True
         else:
-            return False
+            raise BadRequestException('Telefone invalido.')
 
     @staticmethod
     def remove_none_in_form(form):
