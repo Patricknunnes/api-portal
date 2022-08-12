@@ -2,16 +2,15 @@ from uuid import uuid4
 from sqlalchemy import Column, String, TIMESTAMP, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from sqlalchemy.dialects.postgresql import UUID
 
-from src.db.settings.config import Base
+from src.db.settings.config import Base, GUID
 
 
 class UserModel(Base):
     __tablename__ = "users"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    role_id = Column(UUID(as_uuid=True), ForeignKey("roles.id"))
+    id = Column(GUID(), primary_key=True, default=uuid4)
+    role_id = Column(GUID(), ForeignKey("roles.id"))
     name = Column(String(150), nullable=False)
     email = Column(String(150), nullable=False)
     document = Column(String(11), nullable=False)
