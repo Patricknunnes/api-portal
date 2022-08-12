@@ -14,7 +14,6 @@ class RoleRouteTestClass(ApiBaseTestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual([], response.json())
 
-
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
     def test_get_role_by_id_when_id_found(self, mock):
         '''
@@ -23,7 +22,6 @@ class RoleRouteTestClass(ApiBaseTestCase):
         response = self.client.get(f'/role/{valid_role_id}')
         self.assertEqual(200, response.status_code)
         self.assertEqual(roles[0], response.json())
-
 
     def test_get_role_by_id_when_id_not_found(self):
         '''

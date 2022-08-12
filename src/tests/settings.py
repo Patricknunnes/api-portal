@@ -25,7 +25,7 @@ def override_get_db():
     db = TestingSessionLocal(bind=connection)
 
     yield db
-    
+
     db.rollback()
     connection.close()
 
@@ -43,4 +43,4 @@ class ApiBaseTestCase(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.client = TestClient(app)        
+        cls.client = TestClient(app)
