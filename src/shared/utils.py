@@ -63,9 +63,9 @@ class UtilService:
 
     @staticmethod
     def validate_schema(schema_base, form):
-        not_optional = ''
+        not_optional = []
         for key, value in schema_base.__annotations__.items():
             if key not in form:
-                not_optional += f'{key}, '
-        if not_optional != '':
-            raise BadRequestException(detail=f'Campos obrigatorios: ( {not_optional}) .')
+                not_optional.append(key)
+        if len(not_optional):
+            raise BadRequestException(detail=f'Campos obrigatorios: ({", ".join(not_optional)}) .')

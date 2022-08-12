@@ -17,12 +17,20 @@ class UserBase(BaseModel):
         orm_mode = True
 
 
+class UserSchemaValidate(BaseModel):
+    role_id: UUID
+    name: str
+    email: EmailStr
+    document: str
+    password: str
+
+
 class UserResponse(BaseModel):
     id: UUID
     name: str
     email: EmailStr
     document: str
-    phone: int
+    phone: Optional[int]
     role: RoleResponse
 
     class Config:
