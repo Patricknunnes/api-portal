@@ -1,4 +1,4 @@
-from src.tests.integration_tests.settings import ApiBaseTestCase
+from src.tests.settings import ApiBaseTestCase
 
 
 class RootRouteTestClass(ApiBaseTestCase):
