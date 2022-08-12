@@ -14,7 +14,7 @@ from src.db.cruds.user_crud import UserCRUD
 from src.schemas.user_schema import (
     UserBase,
     UserResponse,
-    UserUpdate
+    UserUpdate, UserSchemaValidate
 )
 
 
@@ -51,7 +51,7 @@ class UserController(BaseController):
         if user:
             raise BadRequestException(detail='Documento ou Email já cadastrado.')
 
-        UtilService.validate_schema(schema_base=UserBase, form=new_data)
+        UtilService.validate_schema(schema_base=UserSchemaValidate, form=new_data)
         new_data['password'] = get_password_hash(new_data['password'])
 
         return self.crud_class().create(db=db, data=new_data, commit=commit)
