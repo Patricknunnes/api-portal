@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm import Session
 from typing import List
 from uuid import UUID
 from src.db.settings.config import get_db
+from src.shared.auth.auth_utils import current_user
 from src.schemas.user_schema import (
     UserBase,
     UserResponse,
@@ -14,7 +15,9 @@ user_router = APIRouter(prefix='/user', tags=['Users'])
 
 
 @user_router.get('', response_model=List[UserResponse])
-def handle_get_all_users(db: Session = Depends(get_db)):
+def handle_get_all_users(db: Session = Depends(get_db),
+                         profile: UserResponse = Depends(current_user)
+                         ):
     """
     Return all users from database
     """
@@ -24,7 +27,9 @@ def handle_get_all_users(db: Session = Depends(get_db)):
 @user_router.get('/{user_id}',
                  response_model=UserResponse,
                  status_code=status.HTTP_200_OK)
-def handle_get_user(user_id: UUID, db: Session = Depends(get_db)):
+def handle_get_user(user_id: UUID,
+                    db: Session = Depends(get_db),
+                    profile: UserResponse = Depends(current_user)):
     """
     This route return the user data by UUID.
     """
@@ -34,18 +39,23 @@ def handle_get_user(user_id: UUID, db: Session = Depends(get_db)):
 
 
 @user_router.post('', response_model=UserResponse, status_code=status.HTTP_201_CREATED)
-def handle_create_user(user_data: UserBase, db: Session = Depends(get_db)):
+def handle_create_user(user_data: UserBase,
+                       db: Session = Depends(get_db),
+                       profile: UserResponse = Depends(current_user)):
     """
     This route is used do create a new user.
     """
     return UserController().handle_create(db=db, data=user_data)
 
 
-@user_router.patch('/{user_id}', status_code=status.HTTP_204_NO_CONTENT)
+@user_router.patch('/{user_id}',
+                   status_code=status.HTTP_204_NO_CONTENT,
+                   response_class=Response)
 def handle_patch_user(user_data: UserUpdate,
                       user_id: UUID,
-                      db: Session = Depends(get_db)):
+                      db: Session = Depends(get_db),
+                      profile: UserResponse = Depends(current_user)):
     """
     Update values from a user
     """
-    return UserController().handle_patch(db=db, object_id=user_id, data=user_data)
+    UserController().handle_patch(db=db, object_id=user_id, data=user_data)

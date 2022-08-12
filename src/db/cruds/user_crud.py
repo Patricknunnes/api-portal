@@ -1,5 +1,8 @@
+from typing import Union
+
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
+
 from src.db.cruds.base import BaseCRUD
 from src.db.models.user_model import UserModel
 
@@ -11,7 +14,7 @@ class UserCRUD(BaseCRUD):
     def get_user_document_or_email(self,
                                    db: Session,
                                    document: str = None,
-                                   email: str = None):
+                                   email: str = None) -> Union[UserModel, None]:
         user = db.query(self.model) \
             .where(or_(self.model.document == document, self.model.email == email)) \
             .first()

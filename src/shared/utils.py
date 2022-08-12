@@ -1,9 +1,10 @@
 from re import search
+from typing import Union
 from datetime import date
 from requests import get
 from validate_docbr import CNPJ, CPF, CNH, RENAVAM
 
-from src.exceptions.excepetions import BadRequestException
+from src.exceptions.exceptions import BadRequestException, NotFoundException
 from src.schemas.utils_schema import ValidateDocs
 
 
@@ -25,12 +26,12 @@ class UtilService:
     @staticmethod
     def validate_cep(cep_number: int = None):
         if len(str(cep_number)) != 8:
-            raise NameError('O códigos Postal no Brasil consistem em 8 números')
+            raise BadRequestException('O códigos Postal no Brasil consistem em 8 números')
 
         result = get(f'https://viacep.com.br/ws/{cep_number}/json/').json()
 
         if result.get('erro'):
-            raise ValueError('Cep não encontrado.')
+            raise NotFoundException('Cep não encontrado.')
         return result
 
     @staticmethod
@@ -38,22 +39,22 @@ class UtilService:
         regex = '^[\\w.\\-#_$%*]{2,50}@\\w+[.\\-_]?\\w+.\\w{2,3}[.\\w{2}]?$'
 
         if email is None:
-            raise NameError('Por favor informe o e-mail a ser validado.')
+            raise BadRequestException('Por favor informe o e-mail a ser validado.')
         elif search(regex, email):
             return True
         else:
-            return False
+            raise BadRequestException('Email invalido.')
 
     @staticmethod
-    def validate_phone(phone: str = None):
+    def validate_phone(phone: Union[str, int] = None):
         regex = '^\\(?\\d{2}\\)?[ ]?\\d{1}[. ]?\\d{4}[- ]?\\d{4}$'
 
-        if phone is None:
-            raise NameError('Por favor informe o telefone a ser validado.')
-        elif search(regex, phone):
+        if not phone:
+            raise BadRequestException('Por favor informe o telefone a ser validado.')
+        elif search(regex, str(phone)):
             return True
         else:
-            return False
+            raise BadRequestException('Telefone invalido.')
 
     @staticmethod
     def remove_none_in_form(form):
