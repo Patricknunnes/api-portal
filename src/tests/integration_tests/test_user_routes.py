@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from src.tests.settings import ApiBaseTestCase
 from src.tests.mocks.user_mocks import (
@@ -105,3 +105,18 @@ class UserRouteTestClass(ApiBaseTestCase):
                 self.assertTrue(key not in body)
 
         self.assertEqual(user_create_data['role_id'], body['role']['id'])
+
+    @patch.multiple(
+        UserCRUD,
+        get=MagicMock(return_value=user_db_response), patch=MagicMock(return_value=None)
+    )
+    @patch.object(RoleCRUD, 'get', return_value=roles[0])
+    def test_patch_user(self, RoleCRUDMock, **UserCRUDMock):
+        '''
+        Test return of updated user with status 204
+        '''
+        response = self.client.patch(
+            f'/user/{valid_user_id}',
+            json={'name': 'changed_name'}
+        )
+        self.assertEqual(204, response.status_code)
