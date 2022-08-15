@@ -2,6 +2,7 @@ version: "3.4"
 services:
   postgres:
     image: postgres:latest
+    container_name: db-idor
     ports:
       - "5432:5432"
     environment:
