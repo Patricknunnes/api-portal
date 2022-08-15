@@ -1,6 +1,6 @@
 from unittest.mock import patch
 
-from src.exceptions.excepetions import NotFoundException
+from src.exceptions.exceptions import NotFoundException
 from src.db.cruds.role_crud import RoleCRUD
 from src.controllers.role_controller import RoleController
 from src.tests.settings import BaseTestCase
