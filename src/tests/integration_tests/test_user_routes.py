@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock, patch
 
-from src.tests.settings import ApiBaseTestCase
+from src.tests.settings import ApiWithAuthTestCase, ApiBaseTestCase
 from src.tests.mocks.user_mocks import (
     invalid_user_id,
     user_create_data,
@@ -12,7 +12,45 @@ from src.db.cruds.role_crud import RoleCRUD
 from src.db.cruds.user_crud import UserCRUD
 
 
-class UserRouteTestClass(ApiBaseTestCase):
+class UserRouteNoAuthTestClass(ApiBaseTestCase):
+    def test_get_users_with_invalid_token(self):
+        '''
+        Test return of error message with status 401 when invalid token
+        '''
+        response = self.client.get('/user', headers={'Authorization': 'Bearer invalid_token'})
+        self.assertEqual(401, response.status_code)
+        self.assertEqual(self.invalid_token_msg, response.json())
+
+    def test_get_user_by_id_with_invalid_token(self):
+        '''
+        Test return of error message with status 401 when invalid token
+        '''
+        response = self.client.get(f'/user/{invalid_user_id}', headers={'Authorization': 'Bearer invalid_token'})
+        self.assertEqual(401, response.status_code)
+        self.assertEqual(self.invalid_token_msg, response.json())
+    
+    def test_create_user_with_invalid_token(self):
+        '''
+        Test return of error message with status 401 when invalid token
+        '''
+        response = self.client.post('/user',
+                                    json={**user_create_data, 'role_id': invalid_role_id},
+                                    headers={'Authorization': 'Bearer invalid_token'})
+        self.assertEqual(401, response.status_code)
+        self.assertEqual(self.invalid_token_msg, response.json())
+
+    def test_patch_user_with_invalid_token(self):
+        '''
+        Test return of error message with status 401 when invalid token
+        '''
+        response = self.client.patch(f'/user/{valid_user_id}',
+                                    json={'name': 'changed_name'},
+                                    headers={'Authorization': 'Bearer invalid_token'})
+        self.assertEqual(401, response.status_code)
+        self.assertEqual(self.invalid_token_msg, response.json())
+
+
+class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
     def test_get_users(self):
         '''
         Test return of all users with status 200
@@ -84,7 +122,7 @@ class UserRouteTestClass(ApiBaseTestCase):
         response = self.client.post('/user',
                                     json={**user_create_data, 'name': 'string'})
         self.assertEqual(400, response.status_code)
-        self.assertEqual({'detail': 'Campos obrigatorios: ( name, ) .'}, response.json())
+        self.assertEqual({'detail': 'Campos obrigatorios: (name) .'}, response.json())
 
     @patch.object(UserCRUD, 'create', return_value=user_db_response)
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
