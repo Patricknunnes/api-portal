@@ -54,7 +54,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         '''
         response = self.client.get('/auth/me', headers={'Authorization': 'Bearer invalid_token'})
         self.assertEqual(401, response.status_code)
-        self.assertEqual({'detail': 'Token invalido.'}, response.json())
+        self.assertEqual(self.invalid_token_msg, response.json())
 
     @patch.object(jwt, 'decode', return_value={'sub':valid_user_id})
     def test_handle_me_data_with_valid_token_but_no_user_match(self, mock):
@@ -63,7 +63,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         '''
         response = self.client.get('/auth/me', headers={'Authorization': 'Bearer valid_token'})
         self.assertEqual(401, response.status_code)
-        self.assertEqual({'detail': 'Token invalido.'}, response.json())
+        self.assertEqual(self.invalid_token_msg, response.json())
 
     @patch.object(UserCRUD, 'get', return_value=user_db_response)
     @patch.object(jwt, 'decode', return_value={'sub':valid_user_id})
