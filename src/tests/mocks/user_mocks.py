@@ -7,6 +7,22 @@ user_create_data = {
     'password': 'user_password'
 }
 
+user_create_data_no_phone = {
+    'name': 'new_user',
+    'role_id': '34930736-8424-4254-84f5-92dd68e771ef',
+    'email': 'new_user@email.com',
+    'document': '54709936803',
+    'password': 'user_password'
+}
+
+invalid_user_create_data = {
+    'name': '',
+    'role_id': '34930736-8424-4254-84f5-92dd68e771ef',
+    'email': 'new_user@email.com',
+    'document': '54709936803',
+    'password': ''
+}
+
 user_db_response = {
     'id': '071aac88-f263-4c07-b215-7170d180da6a',
     'name': 'new_user',
@@ -19,6 +35,22 @@ user_db_response = {
         'name': 'role_1'
     }
 }
+
+user_db_response_no_phone = {
+    'id': '071aac88-f263-4c07-b215-7170d180da6a',
+    'name': 'new_user',
+    'email': 'new_user@email.com',
+    'document': '54709936803',
+    'password': 'user_password',
+    'role': {
+        'id': '34930736-8424-4254-84f5-92dd68e771ef',
+        'name': 'role_1'
+    }
+}
+
+invalid_document = '11111111111'
+
+invalid_phone = 123
 
 valid_user_id = '071aac88-f263-4c07-b215-7170d180da6a'
 
