@@ -6,7 +6,7 @@ from src.tests.mocks.role_mocks import roles, invalid_role_id, valid_role_id
 class RoleCrudTestClass(BaseTestCase):
     def test_list(self):
         '''
-          Test return of list from crud
+          Should return list
         '''
         result = RoleCRUD().list(db=self.session)
         self.assertEqual(type(result), list)
@@ -14,14 +14,14 @@ class RoleCrudTestClass(BaseTestCase):
 
     def test_get_when_id_not_found(self):
         '''
-          Test return of None from crud when id not found
+          Should return None when id not found
         '''
         result = RoleCRUD().get(db=self.session, id=invalid_role_id)
         self.assertIsNone(result)
 
     def test_get_when_id_found(self):
         '''
-          Test return of role from crud when id found
+          Should return role when id found
         '''
         RoleCRUD().create(db=self.session, data=roles[0])
         result = RoleCRUD().get(db=self.session, id=valid_role_id)

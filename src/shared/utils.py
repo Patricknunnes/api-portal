@@ -69,4 +69,6 @@ class UtilService:
             if key not in form:
                 not_optional.append(key)
         if len(not_optional):
-            raise BadRequestException(detail=f'Campos obrigatorios: ({", ".join(not_optional)}) .')
+            raise BadRequestException(
+                detail=f'Campos obrigatorios: ({", ".join(not_optional)}) .'
+            )
