@@ -4,7 +4,7 @@ user_create_data = {
     'email': 'new_user@email.com',
     'document': '54709936803',
     'phone': 11111111111,
-    'password': 'new_user_password'
+    'password': 'user_password'
 }
 
 user_db_response = {
@@ -13,7 +13,7 @@ user_db_response = {
     'email': 'new_user@email.com',
     'document': '54709936803',
     'phone': 11111111111,
-    'password': 'jvbdsjvbdskhvb',
+    'password': 'user_password',
     'role': {
         'id': '34930736-8424-4254-84f5-92dd68e771ef',
         'name': 'role_1'

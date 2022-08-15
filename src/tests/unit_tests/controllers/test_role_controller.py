@@ -21,9 +21,11 @@ class RoleControllerTestClass(BaseTestCase):
         '''
           Should return single role when id found
         '''
-        result = RoleController().handle_get(db=self.session,
-                                             exception_message='',
-                                             object_id=valid_role_id)
+        result = RoleController().handle_get(
+            db=self.session,
+            exception_message='',
+            object_id=valid_role_id
+        )
         self.assertEqual(roles[0], result)
 
     @patch.object(RoleCRUD, 'get', return_value=None)
