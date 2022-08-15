@@ -4,7 +4,11 @@ from jose import jwt
 from src.db.cruds.user_crud import UserCRUD
 from src.db.models.user_model import UserModel
 from src.shared.auth.hash_provider import pwd_context
-from src.tests.mocks.auth_mocks import valid_login, login_incorrect_email, login_incorrect_password
+from src.tests.mocks.auth_mocks import (
+    valid_login,
+    login_incorrect_email,
+    login_incorrect_password
+)
 from src.tests.mocks.user_mocks import valid_user_id
 from src.tests.mocks.user_mocks import user_db_response
 from src.tests.settings import ApiBaseTestCase
@@ -45,33 +49,50 @@ class AuthRouteTestClass(ApiBaseTestCase):
         '''
         response = self.client.post('/auth/token', json=login_incorrect_password)
         self.assertEqual(400, response.status_code)
-        self.assertEqual({'detail': 'Email ou senha invalidos.'}, response.json())
-
+        self.assertEqual(
+            {'detail': 'Email ou senha invalidos.'},
+            response.json()
+        )
 
     def test_handle_me_data_with_invalid_token(self):
         '''
         Should return error message and status 401 when invalid token
         '''
-        response = self.client.get('/auth/me', headers={'Authorization': 'Bearer invalid_token'})
+        response = self.client.get(
+            '/auth/me',
+            headers={'Authorization': 'Bearer invalid_token'}
+        )
         self.assertEqual(401, response.status_code)
         self.assertEqual(self.invalid_token_msg, response.json())
 
-    @patch.object(jwt, 'decode', return_value={'sub':valid_user_id})
+    @patch.object(jwt, 'decode', return_value={'sub': valid_user_id})
     def test_handle_me_data_with_valid_token_but_no_user_match(self, mock):
         '''
-        Should return error message and status 401 when valid token but no user match
+        Should return error message and status 401
+        when valid token but no user match
         '''
-        response = self.client.get('/auth/me', headers={'Authorization': 'Bearer valid_token'})
+        response = self.client.get(
+            '/auth/me',
+            headers={'Authorization': 'Bearer valid_token'}
+        )
         self.assertEqual(401, response.status_code)
         self.assertEqual(self.invalid_token_msg, response.json())
 
     @patch.object(UserCRUD, 'get', return_value=user_db_response)
-    @patch.object(jwt, 'decode', return_value={'sub':valid_user_id})
-    def test_handle_me_data_with_valid_token_but_no_user_match(self, jwt_verify_mock, UserCRUD_mock):
+    @patch.object(jwt, 'decode', return_value={'sub': valid_user_id})
+    def test_handle_me_data_with_valid_token_and_user_match(
+        self,
+        jwt_verify_mock,
+        UserCRUD_mock
+    ):
         '''
-        Should return user data and status 200 when valid token and matching user_id
+        Should return user data and status 200
+        when valid token and matching user_id
         '''
-        response = self.client.get('/auth/me', headers={'Authorization': 'Bearer valid_token'})
+        response = self.client.get(
+            '/auth/me',
+            headers={'Authorization': 'Bearer valid_token'}
+        )
         self.assertEqual(200, response.status_code)
 
         body = response.json()

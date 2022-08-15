@@ -16,23 +16,32 @@ from src.db.cruds.user_crud import UserCRUD
 class UserRouteNoAuthTestClass(ApiBaseTestCase):
     def test_get_users_with_invalid_token(self):
         '''
-        Should return error message and status 401 when requesting GET /user with invalid token
+        Should return error message and status 401
+        when requesting GET /user with invalid token
         '''
-        response = self.client.get('/user', headers={'Authorization': 'Bearer invalid_token'})
+        response = self.client.get(
+            '/user',
+            headers={'Authorization': 'Bearer invalid_token'}
+        )
         self.assertEqual(401, response.status_code)
         self.assertEqual(self.invalid_token_msg, response.json())
 
     def test_get_user_by_id_with_invalid_token(self):
         '''
-        Should return error message and status 401 when requesting GET /user/role_id with invalid token
+        Should return error message and status 401
+        when requesting GET /user/role_id with invalid token
         '''
-        response = self.client.get(f'/user/{invalid_user_id}', headers={'Authorization': 'Bearer invalid_token'})
+        response = self.client.get(
+            f'/user/{invalid_user_id}',
+            headers={'Authorization': 'Bearer invalid_token'}
+        )
         self.assertEqual(401, response.status_code)
         self.assertEqual(self.invalid_token_msg, response.json())
-    
+
     def test_create_user_with_invalid_token(self):
         '''
-        Should return error message and status 401 when requesting POST /user with invalid token
+        Should return error message and status 401
+        when requesting POST /user with invalid token
         '''
         response = self.client.post('/user',
                                     json={**user_create_data, 'role_id': invalid_role_id},
@@ -42,11 +51,13 @@ class UserRouteNoAuthTestClass(ApiBaseTestCase):
 
     def test_patch_user_with_invalid_token(self):
         '''
-        Should return error message and status 401 when requesting PATCH /user/user_id with invalid token
+        Should return error message and status 401
+        when requesting PATCH /user/user_id with invalid token
         '''
-        response = self.client.patch(f'/user/{valid_user_id}',
-                                    json={'name': 'changed_name'},
-                                    headers={'Authorization': 'Bearer invalid_token'})
+        response = self.client.patch(
+            f'/user/{valid_user_id}',
+            json={'name': 'changed_name'},
+            headers={'Authorization': 'Bearer invalid_token'})
         self.assertEqual(401, response.status_code)
         self.assertEqual(self.invalid_token_msg, response.json())
 

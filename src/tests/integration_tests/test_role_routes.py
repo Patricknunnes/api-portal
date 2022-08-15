@@ -8,18 +8,26 @@ from src.tests.mocks.role_mocks import roles, invalid_role_id, valid_role_id
 class RoleRouteNoAuthTestClass(ApiBaseTestCase):
     def test_get_roles_with_invalid_token(self):
         '''
-        Should return error message and status 401 when requesting GET /role with invalid token
+        Should return error message and status 401
+        when requesting GET /role with invalid token
         '''
-        
-        response = self.client.get('/role', headers={'Authorization': 'Bearer invalid_token'})
+
+        response = self.client.get(
+            '/role',
+            headers={'Authorization': 'Bearer invalid_token'}
+        )
         self.assertEqual(401, response.status_code)
         self.assertEqual(self.invalid_token_msg, response.json())
 
     def test_get_role_by_id_with_invalid_token(self):
         '''
-        Should return error message and status 401 when requesting GET /role/role_id with invalid token
+        Should return error message and status 401
+        when requesting GET /role/role_id with invalid token
         '''
-        response = self.client.get(f'/role/{valid_role_id}', headers={'Authorization': 'Bearer valid_token'})
+        response = self.client.get(
+            f'/role/{valid_role_id}',
+            headers={'Authorization': 'Bearer valid_token'}
+        )
         self.assertEqual(401, response.status_code)
         self.assertEqual(self.invalid_token_msg, response.json())
 

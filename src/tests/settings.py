@@ -56,7 +56,7 @@ class ApiBaseTestCase(TestCase):
 
 
 def override_current_user():
-        return user_db_response
+    return user_db_response
 
 
 class ApiWithAuthTestCase(ApiBaseTestCase):
