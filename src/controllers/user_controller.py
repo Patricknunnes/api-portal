@@ -6,15 +6,15 @@ from sqlalchemy.orm import Session
 
 from src.controllers.base import BaseController
 from src.controllers.role_controller import RoleController
-from src.exceptions.excepetions import BadRequestException
+from src.exceptions.exceptions import BadRequestException
 from src.schemas.utils_schema import ValidateDocs
 from src.shared.utils import UtilService
-from src.settings.providers.hash_provider import get_password_hash
+from src.shared.auth.hash_provider import get_password_hash
 from src.db.cruds.user_crud import UserCRUD
 from src.schemas.user_schema import (
     UserBase,
     UserResponse,
-    UserUpdate
+    UserUpdate, UserSchemaValidate
 )
 
 
@@ -30,6 +30,8 @@ class UserController(BaseController):
             RoleController().handle_get(db=session,
                                         object_id=data.role_id,
                                         exception_message='Role não encontrada.')
+        if data.phone:
+            UtilService.validate_phone(phone=data.phone)
 
         if data.document:
             UtilService.validate_doc(ValidateDocs(type_doc='cpf', number=data.document))
@@ -49,7 +51,7 @@ class UserController(BaseController):
         if user:
             raise BadRequestException(detail='Documento ou Email já cadastrado.')
 
-        UtilService.validate_schema(schema_base=UserBase, form=new_data)
+        UtilService.validate_schema(schema_base=UserSchemaValidate, form=new_data)
         new_data['password'] = get_password_hash(new_data['password'])
 
         return self.crud_class().create(db=db, data=new_data, commit=commit)
