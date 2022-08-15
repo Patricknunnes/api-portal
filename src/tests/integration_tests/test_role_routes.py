@@ -8,7 +8,7 @@ from src.tests.mocks.role_mocks import roles, invalid_role_id, valid_role_id
 class RoleRouteNoAuthTestClass(ApiBaseTestCase):
     def test_get_roles_with_invalid_token(self):
         '''
-        Test return of error message with status 401 when invalid token
+        Should return error message and status 401 when requesting GET /role with invalid token
         '''
         
         response = self.client.get('/role', headers={'Authorization': 'Bearer invalid_token'})
@@ -17,7 +17,7 @@ class RoleRouteNoAuthTestClass(ApiBaseTestCase):
 
     def test_get_role_by_id_with_invalid_token(self):
         '''
-        Test return of error message with status 401 when invalid token
+        Should return error message and status 401 when requesting GET /role/role_id with invalid token
         '''
         response = self.client.get(f'/role/{valid_role_id}', headers={'Authorization': 'Bearer valid_token'})
         self.assertEqual(401, response.status_code)
@@ -27,7 +27,7 @@ class RoleRouteNoAuthTestClass(ApiBaseTestCase):
 class RoleRouteWithAuthTestClass(ApiWithAuthTestCase):
     def test_get_roles(self):
         '''
-          Test return of all roles with status 200
+          Should return list with status 200
         '''
         response = self.client.get('/role')
         self.assertEqual(200, response.status_code)
@@ -36,7 +36,7 @@ class RoleRouteWithAuthTestClass(ApiWithAuthTestCase):
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
     def test_get_role_by_id_when_id_found(self, mock):
         '''
-          Test return of single role with status 200 when id found
+          Should return single role and status 200 when id found
         '''
         response = self.client.get(f'/role/{valid_role_id}')
         self.assertEqual(200, response.status_code)
@@ -44,7 +44,7 @@ class RoleRouteWithAuthTestClass(ApiWithAuthTestCase):
 
     def test_get_role_by_id_when_id_not_found(self):
         '''
-          Test return of error message with status 404 when id not found
+          Should return error message and status 404 when id not found
         '''
         response = self.client.get(f'/role/{invalid_role_id}')
         self.assertEqual(404, response.status_code)
