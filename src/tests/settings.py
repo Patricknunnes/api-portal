@@ -34,10 +34,12 @@ def override_get_db():
 
 app.dependency_overrides[get_db] = override_get_db
 
+test_session = next(override_get_db())
+
 
 class BaseTestCase(TestCase):
     def setUp(self) -> None:
-        self.session = next(override_get_db())
+        self.session = test_session
 
 
 class ApiBaseTestCase(TestCase):
