@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from src.exceptions.exceptions import NotFoundException
 from src.exceptions.exceptions import BadRequestException
@@ -6,7 +6,7 @@ from src.controllers.user_controller import UserController
 from src.controllers.role_controller import RoleController
 from src.db.cruds.role_crud import RoleCRUD
 from src.db.cruds.user_crud import UserCRUD
-from src.schemas.user_schema import UserBase
+from src.schemas.user_schema import UserBase, UserUpdate
 from src.tests.mocks.user_mocks import (
     user_create_data,
     invalid_phone,
@@ -14,7 +14,10 @@ from src.tests.mocks.user_mocks import (
     user_db_response,
     invalid_user_create_data,
     user_create_data_no_phone,
-    user_db_response_no_phone
+    user_db_response_no_phone,
+    invalid_user_id,
+    valid_user_id,
+    user_update_data
 )
 from src.tests.mocks.role_mocks import invalid_role_id
 from src.tests.settings import BaseTestCase
@@ -132,3 +135,59 @@ class UserControllerTestClass(BaseTestCase):
             data=UserBase(**user_create_data_no_phone)
         )
         self.assertEqual(user_db_response_no_phone, result)
+
+    def test_handle_patch_when_user_id_not_found(self):
+        '''
+          Should raise exception when user id not found
+        '''
+        with self.assertRaises(NotFoundException) as error:
+            UserController().handle_patch(
+                db=self.session,
+                object_id=invalid_user_id,
+                data=UserUpdate(),
+            )
+
+        exception = error.exception
+        self.assertEqual('Usuário não encontrado.', exception.detail)
+
+    @patch.multiple(
+        UserCRUD,
+        get=MagicMock(return_value=user_db_response),
+        patch=MagicMock(return_value=None)
+    )
+    @patch.object(RoleController, 'handle_get', return_value=None)
+    def test_handle_patch_when_all_possible_fields_change(
+        self,
+        RoleController_mock,
+        **UserCRUD_mocks
+    ):
+        '''
+          Should return None when valid user id and change all fields
+        '''
+        result = UserController().handle_patch(
+            db=self.session,
+            object_id=valid_user_id,
+            data=UserUpdate(**user_update_data),
+        )
+
+        self.assertIsNone(result)
+
+    @patch.multiple(
+        UserCRUD,
+        get=MagicMock(return_value=user_db_response),
+        patch=MagicMock(return_value=None)
+    )
+    def test_handle_patch_when_no_data_change(
+        self,
+        **mocks
+    ):
+        '''
+          Should return None when valid user id and no data to patch
+        '''
+        result = UserController().handle_patch(
+            db=self.session,
+            object_id=valid_user_id,
+            data=UserUpdate(),
+        )
+
+        self.assertIsNone(result)
