@@ -6,7 +6,8 @@ from src.tests.mocks.user_mocks import (
     invalid_user_id,
     user_create_data,
     user_db_response,
-    valid_user_id
+    valid_user_id,
+    user_update_data
 )
 from src.tests.mocks.role_mocks import roles, invalid_role_id
 from src.db.cruds.role_crud import RoleCRUD
@@ -158,7 +159,8 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
 
     @patch.multiple(
         UserCRUD,
-        get=MagicMock(return_value=user_db_response), patch=MagicMock(return_value=None)
+        get=MagicMock(return_value=user_db_response),
+        patch=MagicMock(return_value=None)
     )
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
     def test_patch_user(self, RoleCRUDMock, **UserCRUDMock):
@@ -167,7 +169,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         '''
         response = self.client.patch(
             f'/user/{valid_user_id}',
-            json={'name': 'changed_name'}
+            json=user_update_data
         )
         self.assertEqual(204, response.status_code)
         self.assertRaises(JSONDecodeError, response.json)
