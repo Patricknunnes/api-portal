@@ -1,5 +1,6 @@
 from src.db.cruds.role_crud import RoleCRUD
 from src.tests.settings import BaseTestCase
+from src.db.models.role_model import RoleModel
 from src.tests.mocks.role_mocks import roles, invalid_role_id, valid_role_id
 
 
@@ -10,7 +11,6 @@ class RoleCrudTestClass(BaseTestCase):
         '''
         result = RoleCRUD().list(db=self.session)
         self.assertEqual(type(result), list)
-        self.assertEqual([], result)
 
     def test_get_when_id_not_found(self):
         '''
@@ -25,4 +25,4 @@ class RoleCrudTestClass(BaseTestCase):
         '''
         RoleCRUD().create(db=self.session, data=roles[0])
         result = RoleCRUD().get(db=self.session, id=valid_role_id)
-        self.assertIsNotNone(result)
+        self.assertTrue(isinstance(result, RoleModel))
