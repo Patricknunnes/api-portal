@@ -1,14 +1,14 @@
 valid_login = {
-    'email': 'valid@email.com',
+    'document': '84646873036',
     'password': 'valid_password'
 }
 
-login_incorrect_email = {
-    'email': 'unregistered@email.com',
+login_incorrect_document = {
+    'document': '84646873031',
     'password': 'valid_password'
 }
 
 login_incorrect_password = {
-    'email': 'valid@email.com',
+    'document': '84646873036',
     'password': 'incorrect_password'
 }

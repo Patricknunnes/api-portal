@@ -6,7 +6,7 @@ from src.db.models.user_model import UserModel
 from src.shared.auth.hash_provider import pwd_context
 from src.tests.mocks.auth_mocks import (
     valid_login,
-    login_incorrect_email,
+    login_incorrect_document,
     login_incorrect_password
 )
 from src.tests.mocks.user_mocks import valid_user_id
@@ -33,7 +33,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         '''
         Should return error message and status 400 when incorrect email
         '''
-        response = self.client.post('/auth/token', json=login_incorrect_email)
+        response = self.client.post('/auth/token', json=login_incorrect_document)
         self.assertEqual(400, response.status_code)
         self.assertEqual({'detail': 'Email ou senha invalidos.'}, response.json())
 
