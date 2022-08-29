@@ -1,4 +1,4 @@
-"""inset_users_default
+"""insert_users_default
 
 Revision ID: caa985fd62a9
 Revises: 7457f2edc565
