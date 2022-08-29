@@ -13,7 +13,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 class AuthController:
 
     def handle_login(self, db: Session, data_login: LoginBase) -> TokenResponse:
-        user = UserCRUD().get_user_document_or_email(db=db, email=data_login.email)
+        user = UserCRUD().get_user_document_or_email(db=db, document=data_login.document)
 
         if not user or not verify_password(data_login.password, user.password):
             raise BadRequestException(detail='Email ou senha invalidos.')

@@ -13,5 +13,5 @@ class ProfileResponse(BaseModel):
 
 
 class LoginBase(BaseModel):
-    email: str
+    document: str
     password: str

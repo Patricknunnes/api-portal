@@ -8,7 +8,7 @@ from src.schemas.auth_schema import LoginBase, TokenResponse
 from src.controllers.auth_controller import AuthController
 from src.tests.settings import BaseTestCase
 from src.tests.mocks.auth_mocks import (
-    login_incorrect_email,
+    login_incorrect_document,
     login_incorrect_password
 )
 from src.tests.mocks.user_mocks import user_db_response
@@ -22,7 +22,7 @@ class AuthControllerTestClass(BaseTestCase):
         with self.assertRaises(BadRequestException) as error:
             AuthController().handle_login(
                 db=self.session,
-                data_login=LoginBase(**login_incorrect_email)
+                data_login=LoginBase(**login_incorrect_document)
             )
         exception = error.exception
         self.assertEqual(
