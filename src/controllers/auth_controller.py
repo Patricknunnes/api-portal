@@ -16,6 +16,6 @@ class AuthController:
         user = UserCRUD().get_user_document_or_email(db=db, document=data_login.document)
 
         if not user or not verify_password(data_login.password, user.password):
-            raise BadRequestException(detail='Email ou senha invalidos.')
+            raise BadRequestException(detail='Documento ou senha invalidos.')
 
         return TokenResponse(access_token=create_access_token(data={'sub': str(user.id)}))
