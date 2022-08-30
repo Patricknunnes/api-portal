@@ -1,4 +1,5 @@
-from re import search
+from re import search, sub
+from starlette.requests import Request
 from typing import Union
 from datetime import date
 from requests import get
@@ -72,3 +73,14 @@ class UtilService:
             raise BadRequestException(
                 detail=f'Campos obrigatorios: ({", ".join(not_optional)}) .'
             )
+
+
+class GetPathAndMethod:
+    def __call__(self, request: Request) -> dict:
+        url = request.scope['path']
+        url = sub(r'/\w{8}-(\w{4}-){3}\w+', '/{id}', url)
+
+        return {
+            'method': request.method.lower(),
+            'path': url
+        }

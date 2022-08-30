@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+from src.schemas.role_schema import RoleResponse
+
 
 class TokenResponse(BaseModel):
     access_token: str
@@ -15,3 +17,9 @@ class ProfileResponse(BaseModel):
 class LoginBase(BaseModel):
     document: str
     password: str
+
+
+class PermissionParams(BaseModel):
+    user_role: RoleResponse
+    path: str
+    method: str
