@@ -29,42 +29,40 @@ def upgrade() -> None:
                      sa.column('password', sa.String),
                      )
 
-    op.bulk_insert(users,
-                   [
-                       {'id': uuid4(),
-                        'role_id': '5a1a0a10-4973-4ced-94e6-119ce277630d',
-                        'name': 'root',
-                        'email': 'root@email.com',
-                        'document': '98270825077',
-                        'phone': '11999991616',
-                        'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
-                        },
-                       {'id': uuid4(),
-                        'role_id': '953dc20c-dcbc-4166-9441-8d94716346b3',
-                        'name': 'admin',
-                        'email': 'admin@email.com',
-                        'document': '24194850092',
-                        'phone': '11999991616',
-                        'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
-                        },
-                       {'id': uuid4(),
-                        'role_id': '69fe9d12-36d2-4454-b820-551b6e9058f0',
-                        'name': 'professor',
-                        'email': 'professor@email.com',
-                        'document': '85809118003',
-                        'phone': '11999991616',
-                        'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
-                        },
-                       {'id': uuid4(),
-                        'role_id': '41354ecb-2b9a-446c-b26a-15e193592206',
-                        'name': 'student',
-                        'email': 'student@email.com',
-                        'document': '18430349057',
-                        'phone': '11999991616',
-                        'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
-                        },
-                   ]
-                   )
+    op.bulk_insert(users, [
+        {'id': uuid4(),
+         'role_id': '5a1a0a10-4973-4ced-94e6-119ce277630d',
+         'name': 'root',
+         'email': 'root@email.com',
+         'document': '98270825077',
+         'phone': '11999991616',
+         'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
+         },
+        {'id': uuid4(),
+         'role_id': '953dc20c-dcbc-4166-9441-8d94716346b3',
+         'name': 'admin',
+         'email': 'admin@email.com',
+         'document': '24194850092',
+         'phone': '11999991616',
+         'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
+         },
+        {'id': uuid4(),
+         'role_id': '69fe9d12-36d2-4454-b820-551b6e9058f0',
+         'name': 'professor',
+         'email': 'professor@email.com',
+         'document': '85809118003',
+         'phone': '11999991616',
+         'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
+         },
+        {'id': uuid4(),
+         'role_id': '41354ecb-2b9a-446c-b26a-15e193592206',
+         'name': 'student',
+         'email': 'student@email.com',
+         'document': '18430349057',
+         'phone': '11999991616',
+         'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
+         },
+    ])
     # ### end Alembic commands ###
 
 
