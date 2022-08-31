@@ -15,9 +15,9 @@ from src.tests.mocks.user_mocks import user_db_response
 
 
 class AuthControllerTestClass(BaseTestCase):
-    def test_handle_login_with_invalid_email(self):
+    def test_handle_login_with_invalid_document(self):
         '''
-          Should raise exception when user not found by email
+          Should raise exception when user not found by document
         '''
         with self.assertRaises(BadRequestException) as error:
             AuthController().handle_login(
@@ -26,7 +26,7 @@ class AuthControllerTestClass(BaseTestCase):
             )
         exception = error.exception
         self.assertEqual(
-            'Email ou senha invalidos.',
+            'Documento ou senha invalidos.',
             exception.detail
         )
 
@@ -51,7 +51,7 @@ class AuthControllerTestClass(BaseTestCase):
             )
         exception = error.exception
         self.assertEqual(
-            'Email ou senha invalidos.',
+            'Documento ou senha invalidos.',
             exception.detail
         )
 

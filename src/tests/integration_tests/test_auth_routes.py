@@ -3,6 +3,7 @@ from jose import jwt
 
 from src.db.cruds.user_crud import UserCRUD
 from src.db.models.user_model import UserModel
+from src.schemas.user_schema import UserResponse
 from src.shared.auth.hash_provider import pwd_context
 from src.tests.mocks.auth_mocks import (
     valid_login,
@@ -35,7 +36,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         '''
         response = self.client.post('/auth/token', json=login_incorrect_document)
         self.assertEqual(400, response.status_code)
-        self.assertEqual({'detail': 'Email ou senha invalidos.'}, response.json())
+        self.assertEqual({'detail': 'Documento ou senha invalidos.'}, response.json())
 
     @patch.object(pwd_context, 'verify', return_value=False)
     @patch.object(
@@ -50,7 +51,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         response = self.client.post('/auth/token', json=login_incorrect_password)
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            {'detail': 'Email ou senha invalidos.'},
+            {'detail': 'Documento ou senha invalidos.'},
             response.json()
         )
 
@@ -78,7 +79,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         self.assertEqual(401, response.status_code)
         self.assertEqual(self.invalid_token_msg, response.json())
 
-    @patch.object(UserCRUD, 'get', return_value=user_db_response)
+    @patch.object(UserCRUD, 'get', return_value=UserResponse(**user_db_response))
     @patch.object(jwt, 'decode', return_value={'sub': valid_user_id})
     def test_handle_me_data_with_valid_token_and_user_match(
         self,
