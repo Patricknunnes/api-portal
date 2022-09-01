@@ -1,5 +1,5 @@
 from uuid import uuid4
-from sqlalchemy import Column, String, TIMESTAMP, ForeignKey,Boolean
+from sqlalchemy import Column, String, TIMESTAMP, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 

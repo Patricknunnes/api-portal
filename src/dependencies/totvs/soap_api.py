@@ -10,13 +10,15 @@ from src.exceptions.exceptions import BadRequestException
 load_dotenv(os.path.join(BASE_DIR, '../.env'))
 
 
-def get_auth_totvs(username: str, password: str) -> bool:
-    HEADERS = {
-        'Content-Type': 'text/xml;charset=UTF-8',
-        'SOAPAction': 'http://www.totvs.com/IwsBase/AutenticaAcesso',
-    }
+class TotvsWebServer:
 
-    BODY = '''
+    def get_auth_totvs(self, username: str, password: str) -> bool:
+        HEADERS = {
+            'Content-Type': 'text/xml;charset=UTF-8',
+            'SOAPAction': 'http://www.totvs.com/IwsBase/AutenticaAcesso',
+        }
+
+        BODY = '''
             <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
              xmlns:tot="http://www.totvs.com/">
                <soapenv:Header/>
@@ -24,19 +26,21 @@ def get_auth_totvs(username: str, password: str) -> bool:
                   <tot:AutenticaAcesso/>
                </soapenv:Body>
             </soapenv:Envelope>
-            '''
+                '''
 
-    response = post(url=os.getenv('URL_AUTH_TOTVS'),
-                    headers=HEADERS,
-                    data=BODY,
-                    auth=HTTPBasicAuth(username=username, password=password))
+        response = post(url=os.getenv('URL_AUTH_TOTVS'),
+                        headers=HEADERS,
+                        data=BODY,
+                        auth=HTTPBasicAuth(username=username, password=password))
 
-    if response.status_code != 200 or int(clean_response(text=str(response.content))) != 1:
-        raise BadRequestException('Usuário ou senha inválido.')
+        if response.status_code != 200 or self.clean_response(
+            text=str(response.content)
+        ) != 1:
+            raise BadRequestException('Documento ou senha inválidos.')
 
-    return True
+        return True
 
-
-def clean_response(text: str):
-    return re.findall(r'<AutenticaAcessoResult>\d', text)[0] \
-        .replace('<AutenticaAcessoResult>', '')
+    def clean_response(self, text: str):
+        result = re.findall(r'<AutenticaAcessoResult>\d', text)[0] \
+            .replace('<AutenticaAcessoResult>', '')
+        return int(result)
