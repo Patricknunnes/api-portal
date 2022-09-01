@@ -11,8 +11,6 @@ load_dotenv(os.path.join(BASE_DIR, '../.env'))
 
 
 def get_auth_totvs(username: str, password: str) -> bool:
-    URL_TOTVS = os.getenv('URL_AUTH_TOTVS')
-
     HEADERS = {
         'Content-Type': 'text/xml;charset=UTF-8',
         'SOAPAction': 'http://www.totvs.com/IwsBase/AutenticaAcesso',
@@ -28,15 +26,17 @@ def get_auth_totvs(username: str, password: str) -> bool:
             </soapenv:Envelope>
             '''
 
-    response = post(url=URL_TOTVS,
+    response = post(url=os.getenv('URL_AUTH_TOTVS'),
                     headers=HEADERS,
                     data=BODY,
                     auth=HTTPBasicAuth(username=username, password=password))
 
-    if response.status_code != 200:
+    if response.status_code != 200 or int(clean_response(text=str(response.content))) != 1:
         raise BadRequestException('Usuário ou senha inválido.')
 
-    result = re.findall(r'<AutenticaAcessoResult>\d', str(response.content))[0] \
-        .replace('<AutenticaAcessoResult>', '')
+    return True
 
-    return result
+
+def clean_response(text: str):
+    return re.findall(r'<AutenticaAcessoResult>\d', text)[0] \
+        .replace('<AutenticaAcessoResult>', '')
