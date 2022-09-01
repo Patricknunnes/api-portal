@@ -26,7 +26,7 @@ class AuthControllerTestClass(BaseTestCase):
             )
         exception = error.exception
         self.assertEqual(
-            'Documento ou senha invalidos.',
+            'Documento ou senha inválidos.',
             exception.detail
         )
 
@@ -51,7 +51,7 @@ class AuthControllerTestClass(BaseTestCase):
             )
         exception = error.exception
         self.assertEqual(
-            'Documento ou senha invalidos.',
+            'Documento ou senha inválidos.',
             exception.detail
         )
 
