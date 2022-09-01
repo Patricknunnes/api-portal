@@ -7,10 +7,6 @@ from src.dependencies.totvs.soap_api import TotvsWebServer
 from src.tests.mocks.user_mocks import user_create_data
 
 
-def mocked_requests_get():
-    return RESPONSE_AUTH
-
-
 class TotvsWebServerTestClass(BaseTestCase):
 
     @patch('src.dependencies.totvs.soap_api.post')
@@ -33,13 +29,15 @@ class TotvsWebServerTestClass(BaseTestCase):
         '''
            Should return 1
         '''
+
         mock_response = MagicMock()
         mock_response.status_code = 200
         mock_response.content = RESPONSE_AUTH
 
         mock_post.return_value = mock_response
 
-        result_auth = TotvsWebServer().get_auth_totvs(username='Teste', password='password')
+        result_auth = TotvsWebServer().get_auth_totvs(username='Teste',
+                                                      password='password')
         self.assertTrue(result_auth)
 
         self.assertEqual(int(TotvsWebServer().clean_response(text=RESPONSE_AUTH)), 1)
