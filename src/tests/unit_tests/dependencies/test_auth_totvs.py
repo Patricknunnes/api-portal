@@ -1,10 +1,14 @@
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 from src.exceptions.exceptions import BadRequestException
 from src.tests.mocks.totvs_mocks import RESPONSE_AUTH
 from src.tests.settings import BaseTestCase
 from src.dependencies.totvs.soap_api import TotvsWebServer
 from src.tests.mocks.user_mocks import user_create_data
+
+
+def mocked_requests_get():
+    return RESPONSE_AUTH
 
 
 class TotvsWebServerTestClass(BaseTestCase):
@@ -24,11 +28,18 @@ class TotvsWebServerTestClass(BaseTestCase):
             exception.detail
         )
 
-    @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=RESPONSE_AUTH)
-    def test_handle_response_totvs(self, TotvsWebServer_mock):
+    @patch('src.dependencies.totvs.soap_api.post')
+    def test_handle_response_totvs(self, mock_post):
         '''
-            Should return 1
+           Should return 1
         '''
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.content = RESPONSE_AUTH
 
-        result = TotvsWebServer().clean_response(text=RESPONSE_AUTH)
-        self.assertEqual(int(result), 1)
+        mock_post.return_value = mock_response
+
+        result_auth = TotvsWebServer().get_auth_totvs(username='Teste', password='password')
+        self.assertTrue(result_auth)
+
+        self.assertEqual(int(TotvsWebServer().clean_response(text=RESPONSE_AUTH)), 1)
