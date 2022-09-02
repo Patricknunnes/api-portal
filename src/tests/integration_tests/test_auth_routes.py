@@ -36,7 +36,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         '''
         response = self.client.post('/auth/token', json=login_incorrect_document)
         self.assertEqual(400, response.status_code)
-        self.assertEqual({'detail': 'Documento ou senha invalidos.'}, response.json())
+        self.assertEqual({'detail': 'Documento ou senha inválidos.'}, response.json())
 
     @patch.object(pwd_context, 'verify', return_value=False)
     @patch.object(
@@ -51,7 +51,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         response = self.client.post('/auth/token', json=login_incorrect_password)
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            {'detail': 'Documento ou senha invalidos.'},
+            {'detail': 'Documento ou senha inválidos.'},
             response.json()
         )
 
