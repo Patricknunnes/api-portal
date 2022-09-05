@@ -28,4 +28,6 @@ class AuthController:
         elif not verify_password(data_login.password, user.password):
             raise BadRequestException(detail='Documento ou senha inválidos.')
 
-        return TokenResponse(access_token=create_access_token(data={'sub': str(user.id)}))
+        response = TokenResponse(access_token=create_access_token(data={'sub': str(user.id)}),
+                                 user=user)
+        return response
