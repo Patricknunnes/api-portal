@@ -14,7 +14,7 @@ from src.db.cruds.user_crud import UserCRUD
 from src.schemas.user_schema import (
     UserBase,
     UserResponse,
-    UserUpdate, UserSchemaValidate
+    UserUpdate, UserSchemaValidate, UserResponsePaginate
 )
 
 
@@ -55,6 +55,17 @@ class UserController(BaseController):
         new_data['password'] = get_password_hash(new_data['password'])
 
         return self.crud_class().create(db=db, data=new_data, commit=commit)
+
+    def handle_list(self, db: Session,
+                    filters: str = None,
+                    page: int = None,
+                    limit: int = None):
+
+        search_result = self.crud_class().handle_list(db=db, filters=filters,
+                                                      page=page,
+                                                      limit=limit)
+
+        return search_result
 
     def handle_patch(self,
                      db: Session,

@@ -1,5 +1,5 @@
 from uuid import UUID
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 
 from src.schemas.role_schema import RoleResponse
@@ -31,7 +31,17 @@ class UserResponse(BaseModel):
     email: EmailStr
     document: str
     phone: Optional[int]
+    is_totvs: bool
     role: RoleResponse
+
+    class Config:
+        orm_mode = True
+
+
+class UserResponsePaginate(BaseModel):
+    page: int = 1
+    total: int
+    user_response: List[UserResponse]
 
     class Config:
         orm_mode = True
