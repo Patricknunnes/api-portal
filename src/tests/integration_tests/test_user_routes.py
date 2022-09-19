@@ -70,7 +70,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         '''
         response = self.client.get('/user')
         self.assertEqual(200, response.status_code)
-        self.assertEqual([], response.json())
+        self.assertEqual({'page': 1, 'total': 0, 'user_response': []}, response.json())
 
     def test_get_user_by_id_when_id_not_found(self):
         '''
