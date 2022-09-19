@@ -1,7 +1,7 @@
 from typing import Union
 
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, func
+from sqlalchemy import or_
 
 from src.db.cruds.base import BaseCRUD
 from src.db.models.user_model import UserModel
@@ -20,7 +20,10 @@ class UserCRUD(BaseCRUD):
             .first()
         return user
 
-    def handle_list(self, db: Session, filters: str = None, page: int = None, limit: int = None):
+    def handle_list(self, db: Session,
+                    filters: str = None,
+                    page: int = None,
+                    limit: int = None):
         page = page if page else 1
         limit = limit if limit else 20
 
@@ -29,7 +32,8 @@ class UserCRUD(BaseCRUD):
                 .filter(or_(self.model.name.ilike(f'%{filters}%'),
                             self.model.email.ilike(f'%{filters}%'),
                             self.model.document.ilike(f'%{filters}%'),
-                            self.model.phone.ilike(f'%{filters}%'))).limit(limit).offset((page - 1) * limit).all()
+                            self.model.phone.ilike(f'%{filters}%'))) \
+                .limit(limit).offset((page - 1) * limit).all()
 
             count = self.count_registers(db=db, filters=filters)
         else:
@@ -40,8 +44,9 @@ class UserCRUD(BaseCRUD):
 
     def count_registers(self, db: Session, filters: str = None):
         if filters:
-            return db.query(self.model).filter(or_(self.model.name.ilike(f'%{filters}%'),
-                                                   self.model.email.ilike(f'%{filters}%'),
-                                                   self.model.document.ilike(f'%{filters}%'),
-                                                   self.model.phone.ilike(f'%{filters}%'))).count()
+            return db.query(self.model) \
+                .filter(or_(self.model.name.ilike(f'%{filters}%'),
+                            self.model.email.ilike(f'%{filters}%'),
+                            self.model.document.ilike(f'%{filters}%'),
+                            self.model.phone.ilike(f'%{filters}%'))).count()
         return db.query(self.model).count()

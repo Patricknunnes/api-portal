@@ -14,7 +14,7 @@ from src.db.cruds.user_crud import UserCRUD
 from src.schemas.user_schema import (
     UserBase,
     UserResponse,
-    UserUpdate, UserSchemaValidate, UserResponsePaginate
+    UserUpdate, UserSchemaValidate
 )
 
 
