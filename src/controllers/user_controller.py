@@ -56,6 +56,17 @@ class UserController(BaseController):
 
         return self.crud_class().create(db=db, data=new_data, commit=commit)
 
+    def handle_list(self, db: Session,
+                    filters: str = None,
+                    page: int = None,
+                    limit: int = None):
+
+        search_result = self.crud_class().handle_list(db=db, filters=filters,
+                                                      page=page,
+                                                      limit=limit)
+
+        return search_result
+
     def handle_patch(self,
                      db: Session,
                      object_id: UUID,
@@ -63,9 +74,11 @@ class UserController(BaseController):
                      commit=True) -> None:
         new_data = self.__clean_form(data=data, session=db)
 
-        self.handle_get(db=db,
-                        object_id=object_id,
-                        exception_message='Usuário não encontrado.')
+        user = self.handle_get(db=db,
+                               object_id=object_id,
+                               exception_message='Usuário não encontrado.')
+        if user.is_totvs:
+            raise BadRequestException(detail='Usuário só pode ser editado na TOTVS.')
 
         return self.crud_class().patch(db=db,
                                        object_id=object_id,

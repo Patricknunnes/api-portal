@@ -37,6 +37,7 @@ user_db_response = {
     'email': 'new_user@email.com',
     'document': '54709936803',
     'phone': 11111111111,
+    'is_totvs': False,
     'password': 'user_password',
     'role': {
         'id': '34930736-8424-4254-84f5-92dd68e771ef',

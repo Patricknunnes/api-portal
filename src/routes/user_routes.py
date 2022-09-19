@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm import Session
-from typing import List
 from uuid import UUID
 from src.db.settings.config import get_db
 from src.shared.auth.auth_utils import current_user
 from src.schemas.user_schema import (
     UserBase,
     UserResponse,
+    UserResponsePaginate,
     UserUpdate
 )
 from src.controllers.user_controller import UserController
@@ -14,14 +14,18 @@ from src.controllers.user_controller import UserController
 user_router = APIRouter(prefix='/user', tags=['Users'])
 
 
-@user_router.get('', response_model=List[UserResponse])
-def handle_get_all_users(db: Session = Depends(get_db),
-                         profile: UserResponse = Depends(current_user)
-                         ):
+@user_router.get('', response_model=UserResponsePaginate)
+def handle_get_all_users(
+    filters: str = None,
+    page: int = None,
+    limit: int = None,
+    db: Session = Depends(get_db),
+    profile: UserResponse = Depends(current_user)
+):
     """
     Return all users from database
     """
-    return UserController().handle_list(db=db)
+    return UserController().handle_list(db=db, filters=filters, page=page, limit=limit)
 
 
 @user_router.get('/{user_id}',
