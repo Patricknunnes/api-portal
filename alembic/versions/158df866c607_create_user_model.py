@@ -1,8 +1,8 @@
 """create_user_model
 
-Revision ID: 7457f2edc565
-Revises: c1ace52c8633
-Create Date: 2022-08-11 16:38:29.894091
+Revision ID: 158df866c607
+Revises: 42b251ef1bbc
+Create Date: 2022-09-21 10:02:54.777026
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 from src.db.settings.config import GUID
 
 # revision identifiers, used by Alembic.
-revision = '7457f2edc565'
-down_revision = 'c1ace52c8633'
+revision = '158df866c607'
+down_revision = '42b251ef1bbc'
 branch_labels = None
 depends_on = None
 
@@ -25,13 +25,15 @@ def upgrade() -> None:
                     sa.Column('email', sa.String(length=150), nullable=False),
                     sa.Column('document', sa.String(length=11), nullable=False),
                     sa.Column('phone', sa.String(length=12), nullable=True),
+                    sa.Column('username', sa.String(length=50), nullable=True),
                     sa.Column('password', sa.String(length=255), nullable=False),
-                    sa.Column('created_at', sa.TIMESTAMP(),
-                              server_default=sa.text('now()'),
-                              nullable=True),
-                    sa.Column('updated_at', sa.TIMESTAMP(), nullable=True),
+                    sa.Column('is_totvs', sa.Boolean(), nullable=False),
+                    sa.Column('last_sync', sa.TIMESTAMP(), nullable=True),
+                    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=True),
                     sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
-                    sa.PrimaryKeyConstraint('id')
+                    sa.PrimaryKeyConstraint('id'),
+                    sa.UniqueConstraint('document'),
+                    sa.UniqueConstraint('username')
                     )
     # ### end Alembic commands ###
 

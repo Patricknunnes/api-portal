@@ -1,8 +1,8 @@
 """create_permission_model
 
-Revision ID: 019b4b167ea1
-Revises: d7aacc5beb30
-Create Date: 2022-08-30 09:11:08.855537
+Revision ID: f168ea70d887
+Revises: b3eab7dc7acd
+Create Date: 2022-09-21 10:09:11.483073
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 from src.db.settings.config import GUID
 
 # revision identifiers, used by Alembic.
-revision = '019b4b167ea1'
-down_revision = 'd7aacc5beb30'
+revision = 'f168ea70d887'
+down_revision = 'b3eab7dc7acd'
 branch_labels = None
 depends_on = None
 
@@ -22,9 +22,7 @@ def upgrade() -> None:
                     sa.Column('id', GUID(), nullable=False),
                     sa.Column('role_id', GUID(), nullable=True),
                     sa.Column('route_id', GUID(), nullable=True),
-                    sa.Column('created_at', sa.TIMESTAMP(),
-                              server_default=sa.text('now()'),
-                              nullable=True),
+                    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=True),
                     sa.Column('updated_at', sa.TIMESTAMP(), nullable=True),
                     sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
                     sa.ForeignKeyConstraint(['route_id'], ['routes.id'], ),

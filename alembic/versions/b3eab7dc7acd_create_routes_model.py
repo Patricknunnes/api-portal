@@ -1,8 +1,8 @@
-"""create_route_models_and_insert_routes
+"""create_routes_model
 
-Revision ID: d7aacc5beb30
-Revises: caa985fd62a9
-Create Date: 2022-08-30 09:10:13.864536
+Revision ID: b3eab7dc7acd
+Revises: 03f8af2314be
+Create Date: 2022-09-21 10:07:24.797831
 
 """
 from uuid import uuid4
@@ -11,8 +11,8 @@ import sqlalchemy as sa
 from src.db.settings.config import GUID
 
 # revision identifiers, used by Alembic.
-revision = 'd7aacc5beb30'
-down_revision = 'caa985fd62a9'
+revision = 'b3eab7dc7acd'
+down_revision = '03f8af2314be'
 branch_labels = None
 depends_on = None
 
@@ -23,15 +23,11 @@ def upgrade() -> None:
                     sa.Column('id', GUID(), nullable=True),
                     sa.Column('method', sa.String(length=30), nullable=False),
                     sa.Column('path', sa.String(length=100), nullable=False),
-                    sa.Column('created_at', sa.TIMESTAMP(),
-                              server_default=sa.text('now()'),
-                              nullable=True),
+                    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=True),
                     sa.PrimaryKeyConstraint('method', 'path')
                     )
     with op.batch_alter_table('routes', schema=None) as batch_op:
         batch_op.create_index(batch_op.f('ix_routes_id'), ['id'], unique=True)
-
-    # ### end Alembic commands ###
 
     routes = sa.table('routes',
                       sa.column('id', GUID()),
@@ -71,6 +67,8 @@ def upgrade() -> None:
             'path': '/user/{id}',
         },
     ])
+
+    # ### end Alembic commands ###
 
 
 def downgrade() -> None:

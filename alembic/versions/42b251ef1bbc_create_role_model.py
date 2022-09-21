@@ -1,17 +1,16 @@
 """create_role_model
 
-Revision ID: c1ace52c8633
-Revises:
-Create Date: 2022-08-11 16:36:05.766436
+Revision ID: 42b251ef1bbc
+Revises: 
+Create Date: 2022-09-21 10:02:08.057334
 
 """
 from alembic import op
 import sqlalchemy as sa
 from src.db.settings.config import GUID
-from sqlalchemy import column, table, String
 
 # revision identifiers, used by Alembic.
-revision = 'c1ace52c8633'
+revision = '42b251ef1bbc'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,16 +21,14 @@ def upgrade() -> None:
     op.create_table('roles',
                     sa.Column('id', GUID(), nullable=False),
                     sa.Column('name', sa.String(length=30), nullable=False),
-                    sa.Column('created_at', sa.TIMESTAMP(),
-                              server_default=sa.text('now()'),
-                              nullable=True),
+                    sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=True),
                     sa.PrimaryKeyConstraint('id')
                     )
-    # ### end Alembic commands ###
-    role = table('roles',
-                 column('id', GUID()),
-                 column('name', String),
-                 )
+
+    role = sa.table('roles',
+                    sa.column('id', GUID()),
+                    sa.column('name', sa.String),
+                    )
 
     op.bulk_insert(role, [
         {
@@ -51,6 +48,9 @@ def upgrade() -> None:
             'name': 'student'
         },
     ])
+
+
+# ### end Alembic commands ###
 
 
 def downgrade() -> None:
