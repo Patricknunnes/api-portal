@@ -17,9 +17,9 @@ class UserModel(Base):
     phone = Column(String(12), nullable=True)
     username = Column(String(50), nullable=True, unique=True)
     password = Column(String(255), nullable=False)
-    is_totvs = Column(Boolean, default=False)
+    is_totvs = Column(Boolean, nullable=False, default=False)
+    last_sync = Column(TIMESTAMP, nullable=True)
     created_at = Column(TIMESTAMP,
                         server_default=func.now())
-    updated_at = Column(TIMESTAMP, nullable=True, onupdate=func.current_timestamp())
 
     role = relationship("RoleModel")

@@ -1,8 +1,8 @@
 """insert_users_default
 
-Revision ID: caa985fd62a9
-Revises: 7457f2edc565
-Create Date: 2022-08-29 09:56:10.655550
+Revision ID: 03f8af2314be
+Revises: 158df866c607
+Create Date: 2022-09-21 10:05:48.634237
 
 """
 from uuid import uuid4
@@ -11,8 +11,8 @@ import sqlalchemy as sa
 from src.db.settings.config import GUID
 
 # revision identifiers, used by Alembic.
-revision = 'caa985fd62a9'
-down_revision = '7457f2edc565'
+revision = '03f8af2314be'
+down_revision = '158df866c607'
 branch_labels = None
 depends_on = None
 
@@ -26,6 +26,7 @@ def upgrade() -> None:
                      sa.column('email', sa.String),
                      sa.column('document', sa.String),
                      sa.column('phone', sa.String),
+                     sa.column('is_totvs', sa.Boolean),
                      sa.column('password', sa.String),
                      )
 
@@ -36,6 +37,7 @@ def upgrade() -> None:
          'email': 'root@email.com',
          'document': '98270825077',
          'phone': '11999991616',
+         'is_totvs': False,
          'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
          },
         {'id': uuid4(),
@@ -44,6 +46,7 @@ def upgrade() -> None:
          'email': 'admin@email.com',
          'document': '24194850092',
          'phone': '11999991616',
+         'is_totvs': False,
          'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
          },
         {'id': uuid4(),
@@ -52,6 +55,7 @@ def upgrade() -> None:
          'email': 'professor@email.com',
          'document': '85809118003',
          'phone': '11999991616',
+         'is_totvs': False,
          'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
          },
         {'id': uuid4(),
@@ -60,6 +64,7 @@ def upgrade() -> None:
          'email': 'student@email.com',
          'document': '18430349057',
          'phone': '11999991616',
+         'is_totvs': False,
          'password': '$2b$12$SxIOOBeGBJdrr7IEW7cfQOAgRURBw37rS28nxrltTTRJQDIYp6nkC'
          },
     ])
