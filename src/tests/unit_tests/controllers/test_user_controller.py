@@ -6,7 +6,7 @@ from src.controllers.user_controller import UserController
 from src.controllers.role_controller import RoleController
 from src.db.cruds.role_crud import RoleCRUD
 from src.db.cruds.user_crud import UserCRUD
-from src.schemas.user_schema import UserBase, UserUpdate
+from src.schemas.user_schema import UserBase, UserUpdate, UserResponse
 from src.tests.mocks.user_mocks import (
     user_create_data,
     invalid_phone,
@@ -152,7 +152,7 @@ class UserControllerTestClass(BaseTestCase):
 
     @patch.multiple(
         UserCRUD,
-        get=MagicMock(return_value=user_db_response),
+        get=MagicMock(return_value=UserResponse(**user_db_response)),
         patch=MagicMock(return_value=None)
     )
     @patch.object(RoleController, 'handle_get', return_value=None)
@@ -174,7 +174,7 @@ class UserControllerTestClass(BaseTestCase):
 
     @patch.multiple(
         UserCRUD,
-        get=MagicMock(return_value=user_db_response),
+        get=MagicMock(return_value=UserResponse(**user_db_response)),
         patch=MagicMock(return_value=None)
     )
     def test_handle_patch_when_no_data_change(

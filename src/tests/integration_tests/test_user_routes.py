@@ -1,5 +1,6 @@
 from json import JSONDecodeError
 from unittest.mock import MagicMock, patch
+from src.schemas.user_schema import UserResponse
 
 from src.tests.settings import ApiWithAuthTestCase, ApiBaseTestCase
 from src.tests.mocks.user_mocks import (
@@ -159,7 +160,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
 
     @patch.multiple(
         UserCRUD,
-        get=MagicMock(return_value=user_db_response),
+        get=MagicMock(return_value=UserResponse(**user_db_response)),
         patch=MagicMock(return_value=None)
     )
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
