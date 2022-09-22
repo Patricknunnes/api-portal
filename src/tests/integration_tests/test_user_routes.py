@@ -7,6 +7,7 @@ from src.tests.mocks.user_mocks import (
     invalid_user_id,
     user_create_data,
     user_db_response,
+    totvs_user_db_response,
     valid_user_id,
     user_update_data
 )
@@ -174,3 +175,21 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         )
         self.assertEqual(204, response.status_code)
         self.assertRaises(JSONDecodeError, response.json)
+
+    
+    @patch.multiple(
+        UserCRUD,
+        get=MagicMock(return_value=UserResponse(**totvs_user_db_response)),
+        patch=MagicMock(return_value=None)
+    )
+    @patch.object(RoleCRUD, 'get', return_value=roles[0])
+    def test_patch_user_from_totvs(self, RoleCRUDMock, **UserCRUDMock):
+        '''
+        Should return status 400 and expected message
+        '''
+        response = self.client.patch(
+            f'/user/{valid_user_id}',
+            json=user_update_data
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual({'detail': 'Usuário só pode ser editado na TOTVS.'}, response.json())
