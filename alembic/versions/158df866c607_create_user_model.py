@@ -33,7 +33,8 @@ def upgrade() -> None:
                     sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
                     sa.PrimaryKeyConstraint('id'),
                     sa.UniqueConstraint('document'),
-                    sa.UniqueConstraint('username')
+                    sa.UniqueConstraint('username'),
+                    sa.UniqueConstraint('email')
                     )
     # ### end Alembic commands ###
 

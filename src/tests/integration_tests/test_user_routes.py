@@ -1,11 +1,13 @@
 from json import JSONDecodeError
 from unittest.mock import MagicMock, patch
+from src.schemas.user_schema import UserResponse
 
 from src.tests.settings import ApiWithAuthTestCase, ApiBaseTestCase
 from src.tests.mocks.user_mocks import (
     invalid_user_id,
     user_create_data,
     user_db_response,
+    totvs_user_db_response,
     valid_user_id,
     user_update_data
 )
@@ -159,7 +161,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
 
     @patch.multiple(
         UserCRUD,
-        get=MagicMock(return_value=user_db_response),
+        get=MagicMock(return_value=UserResponse(**user_db_response)),
         patch=MagicMock(return_value=None)
     )
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
@@ -173,3 +175,59 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         )
         self.assertEqual(204, response.status_code)
         self.assertRaises(JSONDecodeError, response.json)
+
+    @patch.object(UserCRUD, 'get', return_value=UserResponse(**totvs_user_db_response))
+    @patch.object(RoleCRUD, 'get', return_value=roles[0])
+    def test_patch_user_from_totvs(self, RoleCRUDMock, UserCRUDMock):
+        '''
+        Should return status 400 and expected message when user is_totvs value is True
+        '''
+        response = self.client.patch(
+            f'/user/{valid_user_id}',
+            json=user_update_data
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            {'detail': 'Usuário só pode ser editado na TOTVS.'},
+            response.json()
+        )
+
+    @patch.multiple(
+        UserCRUD,
+        get=MagicMock(return_value=UserResponse(**user_db_response)),
+        get_user_document_or_email=MagicMock(
+            return_value=UserResponse(**totvs_user_db_response)
+        )
+    )
+    @patch.object(RoleCRUD, 'get', return_value=roles[0])
+    def test_patch_user_with_email_in_use(self, RoleCRUDMock, **UserCRUDMock):
+        '''
+        Should return status 400 and expected message
+        when trying to set already in use email for user
+        '''
+        response = self.client.patch(
+            f'/user/{valid_user_id}',
+            json={'email': totvs_user_db_response['email']}
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual({'detail': 'E-mail já cadastrado.'}, response.json())
+
+    @patch.multiple(
+        UserCRUD,
+        get=MagicMock(return_value=UserResponse(**user_db_response)),
+        get_user_document_or_email=MagicMock(
+            return_value=UserResponse(**totvs_user_db_response)
+        )
+    )
+    @patch.object(RoleCRUD, 'get', return_value=roles[0])
+    def test_patch_user_with_document_in_use(self, RoleCRUDMock, **UserCRUDMock):
+        '''
+        Should return status 400 and expected message
+        when trying to set already in use document for user
+        '''
+        response = self.client.patch(
+            f'/user/{valid_user_id}',
+            json={'document': totvs_user_db_response['document']}
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual({'detail': 'Documento já cadastrado.'}, response.json())

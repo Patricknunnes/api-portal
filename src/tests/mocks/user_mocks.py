@@ -31,6 +31,20 @@ invalid_user_create_data = {
     'password': ''
 }
 
+totvs_user_db_response = {
+    'id': '071aac88-f263-4c07-b215-7170d180da6b',
+    'name': 'new_user',
+    'email': 'totvs@email.com',
+    'document': '38956656576',
+    'phone': 11111111111,
+    'is_totvs': True,
+    'password': 'user_password',
+    'role': {
+        'id': '34930736-8424-4254-84f5-92dd68e771ef',
+        'name': 'role_1'
+    }
+}
+
 user_db_response = {
     'id': '071aac88-f263-4c07-b215-7170d180da6a',
     'name': 'new_user',
