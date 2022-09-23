@@ -80,20 +80,20 @@ class UserController(BaseController):
 
         if user.is_totvs:
             raise BadRequestException(detail='Usuário só pode ser editado na TOTVS.')
-        
+
         if 'document' in new_data:
             user_with_document = self.crud_class() \
-            .get_user_document_or_email(db=db,
-                                        document=new_data['document'])
-            
+                .get_user_document_or_email(db=db,
+                                            document=new_data['document'])
+
             if user_with_document and user_with_document.email != user.email:
                 raise BadRequestException(detail='Documento já cadastrado.')
 
         if 'email' in new_data:
             user_with_email = self.crud_class() \
-            .get_user_document_or_email(db=db,
-                                        email=new_data['email'])
-            
+                .get_user_document_or_email(db=db,
+                                            email=new_data['email'])
+
             if user_with_email and user_with_email.document != user.document:
                 raise BadRequestException(detail='E-mail já cadastrado.')
 
