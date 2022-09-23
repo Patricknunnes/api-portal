@@ -35,7 +35,7 @@ totvs_user_db_response = {
     'id': '071aac88-f263-4c07-b215-7170d180da6b',
     'name': 'new_user',
     'email': 'totvs@email.com',
-    'document': '54709936802',
+    'document': '38956656576',
     'phone': 11111111111,
     'is_totvs': True,
     'password': 'user_password',
