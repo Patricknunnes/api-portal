@@ -26,14 +26,14 @@ class UserController(BaseController):
     def __clean_form(self, data: Union[UserBase, UserUpdate], session: Session = None):
         new_form = UtilService.remove_none_in_form(data)
 
-        if data.role_id:
+        if 'role_id' in new_form:
             RoleController().handle_get(db=session,
                                         object_id=data.role_id,
                                         exception_message='Role não encontrada.')
         if data.phone:
             UtilService.validate_phone(phone=data.phone)
 
-        if data.document:
+        if 'document' in new_form:
             UtilService.validate_doc(ValidateDocs(type_doc='cpf', number=data.document))
 
             new_form['document'] = re.sub(r'\W+', '', data.document)
@@ -81,20 +81,12 @@ class UserController(BaseController):
         if user.is_totvs:
             raise BadRequestException(detail='Usuário só pode ser editado na TOTVS.')
 
-        if 'document' in new_data:
-            user_with_document = self.crud_class() \
-                .get_user_document_or_email(db=db,
-                                            document=new_data['document'])
-
-            if user_with_document and user_with_document.email != user.email:
-                raise BadRequestException(detail='Documento já cadastrado.')
-
-        if 'email' in new_data:
+        if 'email' in new_data and new_data['email'] != user.email:
             user_with_email = self.crud_class() \
                 .get_user_document_or_email(db=db,
                                             email=new_data['email'])
 
-            if user_with_email and user_with_email.document != user.document:
+            if user_with_email:
                 raise BadRequestException(detail='E-mail já cadastrado.')
 
         return self.crud_class().patch(db=db,
