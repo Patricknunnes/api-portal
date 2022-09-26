@@ -11,7 +11,7 @@ services:
       - POSTGRES_USER=postgres
     networks:
       idor_network:
-        aliases: 
+        aliases:
           - db_host
 
   api:
@@ -29,10 +29,10 @@ services:
       idor_network:
         aliases:
           - api_host
-    
+
 networks:
   idor_network:
-    name: ido_net
+    name: idor_net
     driver: bridge
 
 
