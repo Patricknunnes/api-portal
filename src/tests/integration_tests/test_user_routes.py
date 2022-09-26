@@ -207,7 +207,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         '''
         response = self.client.patch(
             f'/user/{valid_user_id}',
-            json={'email': totvs_user_db_response['email']}
+            json=user_update_data
         )
         self.assertEqual(400, response.status_code)
         self.assertEqual({'detail': 'E-mail já cadastrado.'}, response.json())
