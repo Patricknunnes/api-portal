@@ -207,27 +207,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         '''
         response = self.client.patch(
             f'/user/{valid_user_id}',
-            json={'email': totvs_user_db_response['email']}
+            json=user_update_data
         )
         self.assertEqual(400, response.status_code)
         self.assertEqual({'detail': 'E-mail já cadastrado.'}, response.json())
-
-    @patch.multiple(
-        UserCRUD,
-        get=MagicMock(return_value=UserResponse(**user_db_response)),
-        get_user_document_or_email=MagicMock(
-            return_value=UserResponse(**totvs_user_db_response)
-        )
-    )
-    @patch.object(RoleCRUD, 'get', return_value=roles[0])
-    def test_patch_user_with_document_in_use(self, RoleCRUDMock, **UserCRUDMock):
-        '''
-        Should return status 400 and expected message
-        when trying to set already in use document for user
-        '''
-        response = self.client.patch(
-            f'/user/{valid_user_id}',
-            json={'document': totvs_user_db_response['document']}
-        )
-        self.assertEqual(400, response.status_code)
-        self.assertEqual({'detail': 'Documento já cadastrado.'}, response.json())

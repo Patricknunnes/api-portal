@@ -17,10 +17,8 @@ user_create_data_no_phone = {
 
 user_update_data = {
     'name': 'updated_user',
-    'role_id': '34930736-8424-4254-84f5-92dd68e77148',
-    'email': 'updated_user@email.com',
-    'document': '54709936803',
-    'phone': 22222222222,
+    'email': 'totvs@email.com',
+    'phone': 22222222222
 }
 
 invalid_user_create_data = {

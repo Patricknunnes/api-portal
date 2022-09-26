@@ -50,9 +50,7 @@ class UserResponsePaginate(BaseModel):
 class UserUpdate(BaseModel):
     name: Optional[str]
     email: Optional[EmailStr]
-    document: Optional[str]
     phone: Optional[int]
-    role_id: Optional[UUID]
 
     class Config:
         orm_mode = True

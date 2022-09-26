@@ -9,6 +9,10 @@ services:
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
+    networks:
+      idor_network:
+        aliases:
+          - db_host
 
   api:
     build: .
@@ -21,5 +25,14 @@ services:
       - "8080:8080"
     depends_on:
       - postgres
+    networks:
+      idor_network:
+        aliases:
+          - api_host
+
+networks:
+  idor_network:
+    name: idor_net
+    driver: bridge
 
 

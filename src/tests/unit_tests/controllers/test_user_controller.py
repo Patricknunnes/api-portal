@@ -231,24 +231,3 @@ class UserControllerTestClass(BaseTestCase):
 
         exception = error.exception
         self.assertEqual('E-mail já cadastrado.', exception.detail)
-
-    @patch.multiple(
-        UserCRUD,
-        get=MagicMock(return_value=UserResponse(**user_db_response)),
-        get_user_document_or_email=MagicMock(
-            return_value=UserResponse(**totvs_user_db_response)
-        )
-    )
-    def test_handle_patch_when_updating_with_document_in_use(self):
-        '''
-        Should raise exception when new document is already in use
-        '''
-        with self.assertRaises(BadRequestException) as error:
-            UserController().handle_patch(
-                db=self.session,
-                object_id=valid_user_id,
-                data=UserUpdate(document=totvs_user_db_response['document'])
-            )
-
-        exception = error.exception
-        self.assertEqual('Documento já cadastrado.', exception.detail)
