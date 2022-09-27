@@ -38,7 +38,7 @@ class UserCRUD(BaseCRUD):
             count = self.count_registers(db=db, filters=filters)
         else:
             result = db.query(self.model).limit(limit).offset((page - 1) * limit).all()
-            count = self.count_registers(db=db, filters=filters)
+            count = self.count_registers(db=db)
 
         return {'total': count, 'page': page, 'user_response': result}
 
