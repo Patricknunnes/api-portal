@@ -17,6 +17,7 @@ class UserModel(Base):
     phone = Column(String(12), nullable=True)
     username = Column(String(50), nullable=True, unique=True)
     password = Column(String(255), nullable=False)
+    image = Column(String(255), nullable=True)
     is_totvs = Column(Boolean, nullable=False, default=False)
     last_sync = Column(TIMESTAMP, nullable=True)
     created_at = Column(TIMESTAMP,

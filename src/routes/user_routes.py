@@ -62,4 +62,4 @@ def handle_patch_user(user_data: UserUpdate,
     """
     Update values from a user
     """
-    UserController().handle_patch(db=db, object_id=user_id, data=user_data)
+    UserController().handle_patch(db=db, object_id=user_id, data=user_data, role_name=profile.role.name)

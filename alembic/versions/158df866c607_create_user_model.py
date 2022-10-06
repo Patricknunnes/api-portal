@@ -27,6 +27,7 @@ def upgrade() -> None:
                     sa.Column('phone', sa.String(length=12), nullable=True),
                     sa.Column('username', sa.String(length=50), nullable=True),
                     sa.Column('password', sa.String(length=255), nullable=False),
+                    sa.Column('image', sa.String(length=255), nullable=True),
                     sa.Column('is_totvs', sa.Boolean(), nullable=False),
                     sa.Column('last_sync', sa.TIMESTAMP(), nullable=True),
                     sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=True),
