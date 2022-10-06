@@ -48,7 +48,7 @@ async def current_user(token: str = Depends(oauth2_scheme),
 
 
 async def is_accessible(db: Session, datas: PermissionParams) -> bool:
-    if datas.user_role.name.lower() == 'root' or '/me' in datas.path:
+    if datas.user_role.name.lower() == 'root' or '/me' in datas.path or '/utils' in datas.path:
         return True
 
     user_permissions = PermissionCRUD().get_permission(db=db, datas=datas)

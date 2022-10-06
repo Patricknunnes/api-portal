@@ -4,7 +4,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 
 from src.db.cruds.base import BaseCRUD
-from src.db.models.user_model import UserModel
+from src.db.models.user_model import UserModel, GUID
+
+from src.schemas.utils_schema import Image
 
 
 class UserCRUD(BaseCRUD):
@@ -50,3 +52,7 @@ class UserCRUD(BaseCRUD):
                             self.model.document.ilike(f'%{filters}%'),
                             self.model.phone.ilike(f'%{filters}%'))).count()
         return db.query(self.model).count()
+
+    def insert_image(self,db:Session,data_image: Image,user_id:GUID):
+        pass
+
