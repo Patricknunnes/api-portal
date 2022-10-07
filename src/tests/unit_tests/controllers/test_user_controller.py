@@ -207,8 +207,10 @@ class UserControllerTestClass(BaseTestCase):
             )
 
         exception = error.exception
-        self.assertEqual('Usuário sem permissão para atualizar a senha.', exception.detail)
-
+        self.assertEqual(
+            'Usuário sem permissão para atualizar a senha.',
+            exception.detail
+        )
 
     @patch.multiple(
         UserCRUD,

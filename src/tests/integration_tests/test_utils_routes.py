@@ -1,4 +1,3 @@
-from json import JSONDecodeError
 from unittest.mock import patch
 
 from src.db.cruds.user_crud import UserCRUD
