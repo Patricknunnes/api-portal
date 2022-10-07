@@ -176,6 +176,23 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         self.assertEqual(204, response.status_code)
         self.assertRaises(JSONDecodeError, response.json)
 
+
+    @patch.object(UserCRUD, 'get', return_value=UserResponse(**user_db_response))
+    def test_patch_user_password_when_token_is_from_non_root_user(self, getMock):
+        '''
+        Should return status 400 and expected message when user trying to change password is not root
+        '''
+        response = self.client.patch(
+            f'/user/{valid_user_id}',
+            json={'password': '123456'}
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            {'detail': 'Usuário sem permissão para atualizar a senha.'},
+            response.json()
+        )
+
+
     @patch.object(UserCRUD, 'get', return_value=UserResponse(**totvs_user_db_response))
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
     def test_patch_user_from_totvs(self, RoleCRUDMock, UserCRUDMock):
