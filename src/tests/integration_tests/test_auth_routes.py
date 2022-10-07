@@ -30,9 +30,9 @@ class AuthRouteTestClass(ApiBaseTestCase):
         self.assertEqual(201, response.status_code)
         self.assertIsNotNone(response.json()['access_token'])
 
-    def test_create_token_with_incorrect_email(self):
+    def test_create_token_with_incorrect_document(self):
         '''
-        Should return error message and status 400 when incorrect email
+        Should return error message and status 400 when incorrect document
         '''
         response = self.client.post('/auth/token', json=login_incorrect_document)
         self.assertEqual(400, response.status_code)
