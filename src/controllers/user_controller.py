@@ -38,6 +38,9 @@ class UserController(BaseController):
 
             new_form['document'] = re.sub(r'\W+', '', data.document)
 
+        if 'password' in new_form:
+            new_form['password'] = get_password_hash(new_form['password'])
+
         return new_form
 
     def handle_create(self, db: Session, data: UserBase, commit=True) -> UserResponse:
@@ -52,7 +55,6 @@ class UserController(BaseController):
             raise BadRequestException(detail='Documento ou Email já cadastrado.')
 
         UtilService.validate_schema(schema_base=UserSchemaValidate, form=new_data)
-        new_data['password'] = get_password_hash(new_data['password'])
 
         return self.crud_class().create(db=db, data=new_data, commit=commit)
 
@@ -67,16 +69,20 @@ class UserController(BaseController):
 
         return search_result
 
-    def handle_patch(self,
-                     db: Session,
+    def handle_patch(self, db: Session,
                      object_id: UUID,
                      data: UserUpdate,
-                     commit=True) -> None:
+                     profile: UserResponse = None) -> None:
         new_data = self.__clean_form(data=data, session=db)
 
         user = self.handle_get(db=db,
                                object_id=object_id,
                                exception_message='Usuário não encontrado.')
+
+        if 'password' in new_data and profile.role.name.upper() != 'ROOT':
+            raise BadRequestException(
+                detail='Usuário sem permissão para atualizar a senha.'
+            )
 
         if user.is_totvs:
             raise BadRequestException(detail='Usuário só pode ser editado na TOTVS.')

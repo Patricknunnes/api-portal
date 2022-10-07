@@ -31,6 +31,7 @@ class UserResponse(BaseModel):
     email: EmailStr
     document: str
     phone: Optional[int]
+    image: Optional[str]
     is_totvs: bool
     role: RoleResponse
 
@@ -51,6 +52,7 @@ class UserUpdate(BaseModel):
     name: Optional[str]
     email: Optional[EmailStr]
     phone: Optional[int]
+    password: Optional[str]
 
     class Config:
         orm_mode = True
