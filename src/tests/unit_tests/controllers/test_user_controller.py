@@ -193,6 +193,23 @@ class UserControllerTestClass(BaseTestCase):
 
         self.assertIsNone(result)
 
+    @patch.object(UserCRUD, 'get', return_value=UserResponse(**user_db_response))
+    def test_handle_patch_when_updating_non_root_user_password(self, mock):
+        '''
+            Should raise exception when trying to update non-root password
+        '''
+        with self.assertRaises(BadRequestException) as error:
+            UserController().handle_patch(
+                db=self.session,
+                object_id=user_db_response['id'],
+                data=UserUpdate(password='123456'),
+                profile=UserResponse(**user_db_response)
+            )
+
+        exception = error.exception
+        self.assertEqual('Usuário sem permissão para atualizar a senha.', exception.detail)
+
+
     @patch.multiple(
         UserCRUD,
         get=MagicMock(return_value=UserResponse(**totvs_user_db_response))
