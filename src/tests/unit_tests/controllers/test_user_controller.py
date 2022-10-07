@@ -196,7 +196,7 @@ class UserControllerTestClass(BaseTestCase):
     @patch.object(UserCRUD, 'get', return_value=UserResponse(**user_db_response))
     def test_handle_patch_when_updating_non_root_user_password(self, mock):
         '''
-            Should raise exception when trying to update non-root password
+        Should raise exception when non-root user tries to update password
         '''
         with self.assertRaises(BadRequestException) as error:
             UserController().handle_patch(
