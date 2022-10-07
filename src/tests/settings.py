@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from src.main import app
+from src.schemas.user_schema import UserResponse
 from src.db.settings.config import Base, get_db
 from src.shared.auth.auth_utils import current_user
 from src.tests.mocks.user_mocks import user_db_response
@@ -58,7 +59,7 @@ class ApiBaseTestCase(TestCase):
 
 
 def override_current_user():
-    return user_db_response
+    return UserResponse(**user_db_response)
 
 
 class ApiWithAuthTestCase(ApiBaseTestCase):

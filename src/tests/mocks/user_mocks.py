@@ -54,7 +54,8 @@ user_db_response = {
     'role': {
         'id': '34930736-8424-4254-84f5-92dd68e771ef',
         'name': 'role_1'
-    }
+    },
+    'image': None
 }
 
 user_db_response_no_phone = {
