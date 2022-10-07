@@ -69,7 +69,10 @@ class UserController(BaseController):
 
         return search_result
 
-    def handle_patch(self, db: Session, object_id: UUID, data: UserUpdate, profile: UserResponse = None) -> None:
+    def handle_patch(self, db: Session,
+                     object_id: UUID,
+                     data: UserUpdate,
+                     profile: UserResponse = None) -> None:
         new_data = self.__clean_form(data=data, session=db)
 
         user = self.handle_get(db=db,
@@ -77,7 +80,9 @@ class UserController(BaseController):
                                exception_message='Usuário não encontrado.')
 
         if 'password' in new_data and profile.role.name.upper() != 'ROOT':
-            raise BadRequestException(detail='Usuário sem permissão para atualizar a senha.')
+            raise BadRequestException(
+                detail='Usuário sem permissão para atualizar a senha.'
+            )
 
         if user.is_totvs:
             raise BadRequestException(detail='Usuário só pode ser editado na TOTVS.')
