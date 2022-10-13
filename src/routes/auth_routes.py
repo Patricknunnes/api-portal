@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from src.controllers.auth_controller import AuthController
 from src.db.settings.config import get_db
-from src.schemas.auth_schema import LoginBase, TokenResponse
+from src.schemas.auth_schema import LoginBase, TokenResponse, ResponseSsoTotvs
 from src.schemas.user_schema import UserResponse
 from src.shared.auth.auth_utils import current_user
 
@@ -26,3 +26,12 @@ def handle_me_data(profile: UserResponse = Depends(current_user)):
     This route is used to return user data.
     """
     return profile
+
+
+@auth_router.get('/sso/totvs', response_model=ResponseSsoTotvs, status_code=status.HTTP_200_OK)
+def handle_sso_totvs(profile: UserResponse = Depends(current_user),
+                     db: Session = Depends(get_db)):
+    """
+    This route is used to return sso totvs data.
+    """
+    return AuthController().handle_sso_totvs(db=db, profile=profile)

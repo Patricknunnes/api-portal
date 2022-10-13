@@ -1,3 +1,5 @@
+import re
+
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
@@ -48,11 +50,11 @@ async def current_user(token: str = Depends(oauth2_scheme),
 
 
 async def is_accessible(db: Session, datas: PermissionParams) -> bool:
-    if (
-        datas.user_role.name.lower() == 'root'
-        or '/me' in datas.path
-        or '/utils' in datas.path
-    ):
+    free_paths = ['/me', '/utils', '/sso']
+
+    match = [x for x in free_paths if re.search(x, datas.path)]
+
+    if datas.user_role.name.lower() == 'root' or len(match):
         return True
 
     user_permissions = PermissionCRUD().get_permission(db=db, datas=datas)
