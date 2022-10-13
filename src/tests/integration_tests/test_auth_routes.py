@@ -4,7 +4,6 @@ from jose import jwt
 from src.db.cruds.user_crud import UserCRUD
 from src.db.models.user_model import UserModel
 from src.schemas.user_schema import UserResponse
-from src.shared.auth.hash_provider import pwd_context
 from src.tests.mocks.auth_mocks import (
     valid_login,
     login_incorrect_document,
@@ -16,13 +15,13 @@ from src.tests.settings import ApiBaseTestCase
 
 
 class AuthRouteTestClass(ApiBaseTestCase):
-    @patch.object(pwd_context, 'verify', return_value=True)
+    @patch('src.controllers.auth_controller.verify_password', return_value=True)
     @patch.object(
         UserCRUD,
         'get_user_document_or_email',
         return_value=UserModel(**user_db_response)
     )
-    def test_create_token(self, UserCRUD_mock, verify_mock):
+    def test_create_token_non_totvs(self, UserCRUD_mock, verify_mock):
         '''
         Should return token and status 201 when sending correct body on request
         '''
@@ -38,7 +37,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         self.assertEqual(400, response.status_code)
         self.assertEqual({'detail': 'Documento ou senha inválidos.'}, response.json())
 
-    @patch.object(pwd_context, 'verify', return_value=False)
+    @patch('src.controllers.auth_controller.verify_password', return_value=False)
     @patch.object(
         UserCRUD,
         'get_user_document_or_email',
