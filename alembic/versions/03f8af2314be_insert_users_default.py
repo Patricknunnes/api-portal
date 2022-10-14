@@ -38,7 +38,7 @@ def upgrade() -> None:
          'document': '98270825077',
          'phone': '11999991616',
          'is_totvs': False,
-         'password': 'gAAAAABjSFRVhZ2w-LDb7ZbccZJv5b_4jxI4b5lQ1Y3i5uIO0H1Z9-Skeq11lXlUK9UFC1FrJegtynCzAzb_JIAxPe1O37T9T6nNzm5Cw9O9kN1wavP1rjI='
+         'password': 'gAAAAABjSWRjJF9V-zl0Azr1XXvK140gsTshN8Tkc29TSYso51dA8genmUYQjJXkj5wa3OiSYITMOB58oDAeqL9x2IHd23BK4Q=='
          },
         {'id': uuid4(),
          'role_id': '953dc20c-dcbc-4166-9441-8d94716346b3',
@@ -47,7 +47,7 @@ def upgrade() -> None:
          'document': '24194850092',
          'phone': '11999991616',
          'is_totvs': False,
-         'password': 'gAAAAABjSFRVhZ2w-LDb7ZbccZJv5b_4jxI4b5lQ1Y3i5uIO0H1Z9-Skeq11lXlUK9UFC1FrJegtynCzAzb_JIAxPe1O37T9T6nNzm5Cw9O9kN1wavP1rjI='
+         'password': 'gAAAAABjSWRjJF9V-zl0Azr1XXvK140gsTshN8Tkc29TSYso51dA8genmUYQjJXkj5wa3OiSYITMOB58oDAeqL9x2IHd23BK4Q=='
          },
         {'id': uuid4(),
          'role_id': '69fe9d12-36d2-4454-b820-551b6e9058f0',
@@ -56,7 +56,7 @@ def upgrade() -> None:
          'document': '85809118003',
          'phone': '11999991616',
          'is_totvs': False,
-         'password': 'gAAAAABjSFRVhZ2w-LDb7ZbccZJv5b_4jxI4b5lQ1Y3i5uIO0H1Z9-Skeq11lXlUK9UFC1FrJegtynCzAzb_JIAxPe1O37T9T6nNzm5Cw9O9kN1wavP1rjI='
+         'password': 'gAAAAABjSWRjJF9V-zl0Azr1XXvK140gsTshN8Tkc29TSYso51dA8genmUYQjJXkj5wa3OiSYITMOB58oDAeqL9x2IHd23BK4Q=='
          },
         {'id': uuid4(),
          'role_id': '41354ecb-2b9a-446c-b26a-15e193592206',
@@ -65,7 +65,7 @@ def upgrade() -> None:
          'document': '18430349057',
          'phone': '11999991616',
          'is_totvs': False,
-         'password': 'gAAAAABjSFRVhZ2w-LDb7ZbccZJv5b_4jxI4b5lQ1Y3i5uIO0H1Z9-Skeq11lXlUK9UFC1FrJegtynCzAzb_JIAxPe1O37T9T6nNzm5Cw9O9kN1wavP1rjI='
+         'password': 'gAAAAABjSWRjJF9V-zl0Azr1XXvK140gsTshN8Tkc29TSYso51dA8genmUYQjJXkj5wa3OiSYITMOB58oDAeqL9x2IHd23BK4Q=='
          },
     ])
     # ### end Alembic commands ###
