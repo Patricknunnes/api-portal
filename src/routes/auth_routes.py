@@ -28,7 +28,11 @@ def handle_me_data(profile: UserResponse = Depends(current_user)):
     return profile
 
 
-@auth_router.get('/sso/totvs', response_model=ResponseSsoTotvs, status_code=status.HTTP_200_OK)
+@auth_router.get(
+    '/sso/totvs',
+    response_model=ResponseSsoTotvs,
+    status_code=status.HTTP_200_OK
+)
 def handle_sso_totvs(profile: UserResponse = Depends(current_user),
                      db: Session = Depends(get_db)):
     """

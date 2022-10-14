@@ -5,7 +5,11 @@ from sqlalchemy.orm import Session
 from src.dependencies.totvs.soap_api import TotvsWebServer
 from src.exceptions.exceptions import BadRequestException
 from src.schemas.user_schema import UserResponse
-from src.shared.auth.hash_provider import verify_password, decode_password, get_password_hash
+from src.shared.auth.hash_provider import (
+    verify_password,
+    decode_password,
+    get_password_hash
+)
 from src.db.cruds.user_crud import UserCRUD
 from src.schemas.auth_schema import LoginBase, TokenResponse, ResponseSsoTotvs
 from src.shared.auth.token_provider import create_access_token
