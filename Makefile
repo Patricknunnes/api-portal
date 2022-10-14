@@ -12,3 +12,6 @@ db_rollback:
 
 tests:
 	clear && python3 -m pytest ./src/tests
+
+pylama:
+	clear && pylama src/
