@@ -60,9 +60,14 @@ class AuthRouteTestClass(ApiBaseTestCase):
         'get_user_document_or_email',
         return_value=UserModel(**user_db_response)
     )
-    def test_create_token_with_incorrect_password_non_totvs_user(self, UserCRUD_mock, verify_mock):
+    def test_create_token_with_incorrect_password_non_totvs_user(
+        self,
+        UserCRUD_mock,
+        verify_mock
+    ):
         '''
-        Should return error message and status 400 when trying to login in as non totvs user with invalid password
+        Should return error message and status 400 when trying to login in
+        as non totvs user with invalid password
         '''
         response = self.client.post('/auth/token', json=login_incorrect_password)
         self.assertEqual(400, response.status_code)
@@ -77,9 +82,14 @@ class AuthRouteTestClass(ApiBaseTestCase):
         'get_user_document_or_email',
         return_value=UserModel(**totvs_user_db_response)
     )
-    def test_create_token_with_incorrect_password_totvs_user(self, get_mock, totvs_post_mock):
+    def test_create_token_with_incorrect_password_totvs_user(
+        self,
+        get_mock,
+        totvs_post_mock
+    ):
         '''
-        Should return error message and status 400 when trying to login in as totvs user with invalid password
+        Should return error message and status 400 when trying to login in
+        as totvs user with invalid password
         '''
         response = self.client.post('/auth/token', json=login_incorrect_password)
         self.assertEqual(400, response.status_code)
@@ -136,3 +146,46 @@ class AuthRouteTestClass(ApiBaseTestCase):
                 self.assertEqual(value, body[key])
             else:
                 self.assertTrue(key not in body)
+
+    @patch.object(jwt, 'decode', return_value={'sub': valid_user_id})
+    @patch.object(UserCRUD, 'get', return_value=UserResponse(**user_db_response))
+    def test_handle_sso_totvs_as_non_totvs_user(self, get_mock, decode_mock):
+        '''
+        Should return sso totvs data and status 200 with all fields None
+        '''
+        response = self.client.get(
+            '/auth/sso/totvs',
+            headers={'Authorization': 'Bearer valid_token'}
+        )
+        self.assertEqual(200, response.status_code)
+        body = response.json()
+        for key in body:
+            self.assertEqual(body[key], None)
+
+    @patch('src.controllers.auth_controller.decode_password', return_value='key_totvs')
+    @patch.object(jwt, 'decode', return_value={'sub': valid_user_id})
+    @patch.object(
+        UserCRUD,
+        'get',
+        side_effect=[
+            UserResponse(**totvs_user_db_response),
+            UserModel(**totvs_user_db_response)
+        ]
+    )
+    def test_handle_sso_totvs_as_totvs_user(
+        self,
+        get_mock,
+        decode_token_mock,
+        decode_key_mock
+    ):
+        '''
+        Should return sso totvs data and status 200
+        '''
+        response = self.client.get(
+            '/auth/sso/totvs',
+            headers={'Authorization': 'Bearer valid_token'}
+        )
+        self.assertEqual(200, response.status_code)
+        body = response.json()
+        self.assertEqual(body['user_name'], 'totvs_user')
+        self.assertEqual(body['key_totvs'], 'key_totvs')
