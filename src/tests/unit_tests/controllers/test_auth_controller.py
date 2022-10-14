@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from src.db.cruds.user_crud import UserCRUD
 from src.dependencies.totvs.soap_api import TotvsWebServer
@@ -80,7 +80,12 @@ class AuthControllerTestClass(BaseTestCase):
         return_value=UserModel(**totvs_user_db_response)
     )
     @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=True)
-    def test_handle_login_with_totvs_user(self, get_totvs_mock, get_user_mock, patch_mock):
+    def test_handle_login_with_totvs_user(
+        self,
+        get_totvs_mock,
+        get_user_mock,
+        patch_mock
+    ):
         '''
         Should return a TokenResponse instance and patch the password hash in db
         '''
@@ -97,7 +102,11 @@ class AuthControllerTestClass(BaseTestCase):
         return_value=UserModel(**totvs_user_db_response)
     )
     @patch('src.dependencies.totvs.soap_api.post')
-    def test_handle_login_with_totvs_user_invalid_pass(self, totvs_auth_mock, get_user_mock):
+    def test_handle_login_with_totvs_user_invalid_pass(
+        self,
+        totvs_auth_mock,
+        get_user_mock
+    ):
         '''
           Should raise exception when invalid password
         '''
