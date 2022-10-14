@@ -2,6 +2,7 @@ from unittest.mock import patch
 from jose import jwt
 
 from src.db.cruds.user_crud import UserCRUD
+from src.dependencies.totvs.soap_api import TotvsWebServer
 from src.db.models.user_model import UserModel
 from src.schemas.user_schema import UserResponse
 from src.tests.mocks.auth_mocks import (
@@ -10,7 +11,7 @@ from src.tests.mocks.auth_mocks import (
     login_incorrect_password
 )
 from src.tests.mocks.user_mocks import valid_user_id
-from src.tests.mocks.user_mocks import user_db_response
+from src.tests.mocks.user_mocks import user_db_response, totvs_user_db_response
 from src.tests.settings import ApiBaseTestCase
 
 
@@ -23,11 +24,27 @@ class AuthRouteTestClass(ApiBaseTestCase):
     )
     def test_create_token_non_totvs(self, UserCRUD_mock, verify_mock):
         '''
-        Should return token and status 201 when sending correct body on request
+        Should return token and status 201 when logging in as non totvs user
         '''
         response = self.client.post('/auth/token', json=valid_login)
         self.assertEqual(201, response.status_code)
         self.assertIsNotNone(response.json()['access_token'])
+
+    @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=True)
+    @patch.object(UserCRUD, 'patch')
+    @patch.object(
+        UserCRUD,
+        'get_user_document_or_email',
+        return_value=UserModel(**totvs_user_db_response)
+    )
+    def test_create_token_totvs_user(self, get_mock, patch_mock, totvs_auth_mock):
+        '''
+        Should return token and status 201 when logging in as totvs user
+        '''
+        response = self.client.post('/auth/token', json=valid_login)
+        self.assertEqual(201, response.status_code)
+        self.assertIsNotNone(response.json()['access_token'])
+        self.assertTrue(patch_mock.called)
 
     def test_create_token_with_incorrect_document(self):
         '''
@@ -43,9 +60,26 @@ class AuthRouteTestClass(ApiBaseTestCase):
         'get_user_document_or_email',
         return_value=UserModel(**user_db_response)
     )
-    def test_create_token_with_incorrect_password(self, UserCRUD_mock, verify_mock):
+    def test_create_token_with_incorrect_password_non_totvs_user(self, UserCRUD_mock, verify_mock):
         '''
-        Should return error message and status 400 when incorrect password
+        Should return error message and status 400 when trying to login in as non totvs user with invalid password
+        '''
+        response = self.client.post('/auth/token', json=login_incorrect_password)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            {'detail': 'Documento ou senha inválidos.'},
+            response.json()
+        )
+
+    @patch('src.dependencies.totvs.soap_api.post')
+    @patch.object(
+        UserCRUD,
+        'get_user_document_or_email',
+        return_value=UserModel(**totvs_user_db_response)
+    )
+    def test_create_token_with_incorrect_password_totvs_user(self, get_mock, totvs_post_mock):
+        '''
+        Should return error message and status 400 when trying to login in as totvs user with invalid password
         '''
         response = self.client.post('/auth/token', json=login_incorrect_password)
         self.assertEqual(400, response.status_code)
