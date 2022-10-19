@@ -27,6 +27,7 @@ def upgrade() -> None:
                      sa.column('document', sa.String),
                      sa.column('phone', sa.String),
                      sa.column('is_totvs', sa.Boolean),
+                     sa.column('username', sa.String),
                      sa.column('password', sa.String),
                      )
 
@@ -38,7 +39,8 @@ def upgrade() -> None:
          'document': '98270825077',
          'phone': '11999991616',
          'is_totvs': False,
-         'password': 'gAAAAABjSWRjJF9V-zl0Azr1XXvK140gsTshN8Tkc29TSYso51dA8genmUYQjJXkj5wa3OiSYITMOB58oDAeqL9x2IHd23BK4Q=='
+         'username': None,
+         'password': 'gAAAAABjSWRjJF9V-zl0Azr1XXvK140gsTshN8Tkc29TSYso51dA8genmUYQjJXkj5wa3OiSYITMOB58oDAeqL9x2IHd23BK4Q==' # idor123
          },
         {'id': uuid4(),
          'role_id': '953dc20c-dcbc-4166-9441-8d94716346b3',
@@ -47,6 +49,7 @@ def upgrade() -> None:
          'document': '24194850092',
          'phone': '11999991616',
          'is_totvs': False,
+         'username': None,
          'password': 'gAAAAABjSWRjJF9V-zl0Azr1XXvK140gsTshN8Tkc29TSYso51dA8genmUYQjJXkj5wa3OiSYITMOB58oDAeqL9x2IHd23BK4Q=='
          },
         {'id': uuid4(),
@@ -55,8 +58,9 @@ def upgrade() -> None:
          'email': 'professor@email.com',
          'document': '85809118003',
          'phone': '11999991616',
-         'is_totvs': False,
-         'password': 'gAAAAABjSWRjJF9V-zl0Azr1XXvK140gsTshN8Tkc29TSYso51dA8genmUYQjJXkj5wa3OiSYITMOB58oDAeqL9x2IHd23BK4Q=='
+         'is_totvs': True,
+         'username': '01472014707',
+         'password': 'gAAAAABjUAi6NvCsP1zmsQ3SOD8kt_IooTE7LYEu6RwpJqZb7azC35Ai97GwgHpTGO9Mg9mfPNfaQOtaw442a_VmYmairgvkjQ==' # 123456
          },
         {'id': uuid4(),
          'role_id': '41354ecb-2b9a-446c-b26a-15e193592206',
@@ -64,8 +68,9 @@ def upgrade() -> None:
          'email': 'student@email.com',
          'document': '18430349057',
          'phone': '11999991616',
-         'is_totvs': False,
-         'password': 'gAAAAABjSWRjJF9V-zl0Azr1XXvK140gsTshN8Tkc29TSYso51dA8genmUYQjJXkj5wa3OiSYITMOB58oDAeqL9x2IHd23BK4Q=='
+         'is_totvs': True,
+         'username': '2019G-GDSTR18',
+         'password': 'gAAAAABjUAi6NvCsP1zmsQ3SOD8kt_IooTE7LYEu6RwpJqZb7azC35Ai97GwgHpTGO9Mg9mfPNfaQOtaw442a_VmYmairgvkjQ=='
          },
     ])
     # ### end Alembic commands ###
