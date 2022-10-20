@@ -12,7 +12,7 @@ class UserModel(Base):
     id = Column(GUID(), primary_key=True, default=uuid4)
     role_id = Column(GUID(), ForeignKey("roles.id"))
     name = Column(String(150), nullable=False)
-    email = Column(String(150), nullable=False, unique=True)
+    email = Column(String(150), nullable=False)
     document = Column(String(11), nullable=False, unique=True)
     phone = Column(String(12), nullable=True)
     username = Column(String(50), nullable=True, unique=True)
