@@ -25,7 +25,7 @@ def upgrade() -> None:
                     sa.Column('email', sa.String(length=150), nullable=False),
                     sa.Column('document', sa.String(length=11), nullable=False),
                     sa.Column('phone', sa.String(length=12), nullable=True),
-                    sa.Column('username', sa.String(length=50), nullable=True),
+                    sa.Column('username', sa.String(length=50), nullable=False),
                     sa.Column('password', sa.String(length=255), nullable=False),
                     sa.Column('image', sa.String(), nullable=True),
                     sa.Column('is_totvs', sa.Boolean(), nullable=False),
@@ -33,7 +33,7 @@ def upgrade() -> None:
                     sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=True),
                     sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
                     sa.PrimaryKeyConstraint('id'),
-                    sa.UniqueConstraint('document'),
+                    sa.UniqueConstraint('email'),
                     sa.UniqueConstraint('username')
                     )
     # ### end Alembic commands ###
