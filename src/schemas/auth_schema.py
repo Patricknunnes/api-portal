@@ -23,7 +23,7 @@ class ProfileResponse(BaseModel):
 
 
 class LoginBase(BaseModel):
-    document: str
+    username: str
     password: str
 
 

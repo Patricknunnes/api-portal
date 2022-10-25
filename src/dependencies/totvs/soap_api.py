@@ -36,7 +36,7 @@ class TotvsWebServer:
         if response.status_code != 200 or self.clean_response(
             text=str(response.content)
         ) != 1:
-            raise BadRequestException('Documento ou senha inválidos.')
+            raise BadRequestException('Usuário ou senha inválidos.')
 
         return True
 

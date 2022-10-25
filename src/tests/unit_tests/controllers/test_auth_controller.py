@@ -9,7 +9,7 @@ from src.schemas.user_schema import UserResponse
 from src.controllers.auth_controller import AuthController
 from src.tests.settings import BaseTestCase
 from src.tests.mocks.auth_mocks import (
-    login_incorrect_document,
+    login_incorrect_username,
     login_incorrect_password,
     valid_login
 )
@@ -17,25 +17,25 @@ from src.tests.mocks.user_mocks import user_db_response, totvs_user_db_response
 
 
 class AuthControllerTestClass(BaseTestCase):
-    def test_handle_login_with_invalid_document(self):
+    def test_handle_login_with_invalid_username(self):
         '''
-          Should raise exception when user not found by document
+          Should raise exception when user is not found by username
         '''
         with self.assertRaises(BadRequestException) as error:
             AuthController().handle_login(
                 db=self.session,
-                data_login=LoginBase(**login_incorrect_document)
+                data_login=LoginBase(**login_incorrect_username)
             )
         exception = error.exception
         self.assertEqual(
-            'Documento ou senha inválidos.',
+            'Usuário ou senha inválidos.',
             exception.detail
         )
 
     @patch('src.controllers.auth_controller.verify_password', return_value=False)
     @patch.object(
         UserCRUD,
-        'get_user_document_or_email',
+        'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
     def test_handle_login_with_invalid_password(
@@ -53,14 +53,14 @@ class AuthControllerTestClass(BaseTestCase):
             )
         exception = error.exception
         self.assertEqual(
-            'Documento ou senha inválidos.',
+            'Usuário ou senha inválidos.',
             exception.detail
         )
 
     @patch('src.controllers.auth_controller.verify_password', return_value=True)
     @patch.object(
         UserCRUD,
-        'get_user_document_or_email',
+        'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
     def test_handle_login_with_valid_non_totvs_user(self, UserCRUD_mock, verify_mock):
@@ -76,7 +76,7 @@ class AuthControllerTestClass(BaseTestCase):
     @patch.object(UserCRUD, 'patch')
     @patch.object(
         UserCRUD,
-        'get_user_document_or_email',
+        'get_user_by_username_or_email',
         return_value=UserModel(**totvs_user_db_response)
     )
     @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=True)
@@ -98,7 +98,7 @@ class AuthControllerTestClass(BaseTestCase):
 
     @patch.object(
         UserCRUD,
-        'get_user_document_or_email',
+        'get_user_by_username_or_email',
         return_value=UserModel(**totvs_user_db_response)
     )
     @patch('src.dependencies.totvs.soap_api.post')
@@ -117,7 +117,7 @@ class AuthControllerTestClass(BaseTestCase):
             )
         exception = error.exception
         self.assertEqual(
-            'Documento ou senha inválidos.',
+            'Usuário ou senha inválidos.',
             exception.detail
         )
 

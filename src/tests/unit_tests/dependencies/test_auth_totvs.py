@@ -4,30 +4,29 @@ from src.exceptions.exceptions import BadRequestException
 from src.tests.mocks.totvs_mocks import RESPONSE_AUTH
 from src.tests.settings import BaseTestCase
 from src.dependencies.totvs.soap_api import TotvsWebServer
-from src.tests.mocks.user_mocks import user_create_data
+from src.tests.mocks.auth_mocks import login_incorrect_username, valid_login
 
 
 class TotvsWebServerTestClass(BaseTestCase):
-
     @patch('src.dependencies.totvs.soap_api.post')
-    def test_handle_login_totvs_with_invalid_datas(self, mock_post):
+    def test_handle_login_totvs_with_invalid_data(self, mock_post):
         '''
-            Should raise exception when user datas not found
+            Should raise exception when get invalid login data
         '''
 
         with self.assertRaises(BadRequestException) as error:
-            TotvsWebServer().get_auth_totvs(username=user_create_data.get('username'),
-                                            password=user_create_data.get('password'))
+            TotvsWebServer().get_auth_totvs(username=login_incorrect_username.get('username'),
+                                            password=login_incorrect_username.get('password'))
         exception = error.exception
         self.assertEqual(
-            'Documento ou senha inválidos.',
+            'Usuário ou senha inválidos.',
             exception.detail
         )
 
     @patch('src.dependencies.totvs.soap_api.post')
     def test_handle_response_totvs(self, mock_post):
         '''
-           Should return 1
+           Should return 1 when get valid login data
         '''
 
         mock_response = MagicMock()
@@ -36,8 +35,8 @@ class TotvsWebServerTestClass(BaseTestCase):
 
         mock_post.return_value = mock_response
 
-        result_auth = TotvsWebServer().get_auth_totvs(username='Teste',
-                                                      password='password')
+        result_auth = TotvsWebServer().get_auth_totvs(username=valid_login.get('username'),
+                                                      password=valid_login.get('password'))
         self.assertTrue(result_auth)
 
         self.assertEqual(int(TotvsWebServer().clean_response(text=RESPONSE_AUTH)), 1)

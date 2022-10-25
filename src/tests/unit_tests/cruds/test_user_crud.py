@@ -3,7 +3,7 @@ from src.tests.settings import BaseTestCase
 from src.db.models.user_model import UserModel
 from src.tests.mocks.user_mocks import (
     user_create_data,
-    invalid_document,
+    invalid_username,
     invalid_user_id,
     user_update_data
 )
@@ -18,46 +18,46 @@ class UserCrudTestClass(BaseTestCase):
 
     def test_get_user_with_unregistered_email(self):
         '''Should return None with unregistered email'''
-        result = UserCRUD().get_user_document_or_email(
+        result = UserCRUD().get_user_by_username_or_email(
             db=self.session,
             email='unregistered@email.com'
         )
         self.assertIsNone(result)
 
-    def test_get_user_with_unregistered_document(self):
-        '''Should return None with unregistered document'''
-        result = UserCRUD().get_user_document_or_email(
+    def test_get_user_with_unregistered_username(self):
+        '''Should return None with unregistered username'''
+        result = UserCRUD().get_user_by_username_or_email(
             db=self.session,
-            document=invalid_document
+            username=invalid_username
         )
         self.assertIsNone(result)
 
-    def test_get_user_with_registered_document(self):
-        '''Should return user with registered document'''
-        result = UserCRUD().get_user_document_or_email(
+    def test_get_user_with_registered_username(self):
+        '''Should return user with registered username'''
+        result = UserCRUD().get_user_by_username_or_email(
             db=self.session,
-            document=user_create_data['document']
+            username=user_create_data['username']
         )
         self.assertIsNotNone(result)
         self.assertTrue(isinstance(result, UserModel))
 
     def test_get_user_with_registered_email(self):
         '''Should return user with registered email'''
-        result = UserCRUD().get_user_document_or_email(
+        result = UserCRUD().get_user_by_username_or_email(
             db=self.session,
             email=user_create_data['email']
         )
         self.assertIsNotNone(result)
         self.assertTrue(isinstance(result, UserModel))
 
-    def test_get_user_with_registered_email_but_unregistered_document(self):
+    def test_get_user_with_registered_email_but_unregistered_username(self):
         '''
         Should return user when just one info match
         '''
-        result = UserCRUD().get_user_document_or_email(
+        result = UserCRUD().get_user_by_username_or_email(
             db=self.session,
             email=user_create_data['email'],
-            document=invalid_document
+            username=invalid_username
         )
         self.assertIsNotNone(result)
 

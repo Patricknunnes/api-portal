@@ -39,7 +39,7 @@ def upgrade() -> None:
          'document': '98270825077',
          'phone': '11999991616',
          'is_totvs': False,
-         'username': None,
+         'username': '98270825077',
          'password': 'gAAAAABjSWRjJF9V-zl0Azr1XXvK140gsTshN8Tkc29TSYso51dA8genmUYQjJXkj5wa3OiSYITMOB58oDAeqL9x2IHd23BK4Q==' # idor123
          },
         {'id': uuid4(),
@@ -49,7 +49,7 @@ def upgrade() -> None:
          'document': '24194850092',
          'phone': '11999991616',
          'is_totvs': False,
-         'username': None,
+         'username': '24194850092',
          'password': 'gAAAAABjSWRjJF9V-zl0Azr1XXvK140gsTshN8Tkc29TSYso51dA8genmUYQjJXkj5wa3OiSYITMOB58oDAeqL9x2IHd23BK4Q=='
          },
         {'id': uuid4(),

@@ -20,13 +20,12 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 class AuthController:
 
     def handle_login(self, db: Session, data_login: LoginBase) -> TokenResponse:
-        document = re.sub(r'\W+', '', data_login.document)
-        user = UserCRUD().get_user_document_or_email(db=db, document=document)
+        user = UserCRUD().get_user_by_username_or_email(db=db, username=data_login.username)
 
         if not user:
-            raise BadRequestException(detail='Documento ou senha inválidos.')
+            raise BadRequestException(detail='Usuário ou senha inválidos.')
 
-        if user.username:
+        if user.is_totvs:
             TotvsWebServer().get_auth_totvs(username=user.username,
                                             password=data_login.password)
 
@@ -35,7 +34,7 @@ class AuthController:
             UserCRUD().patch(db=db, data={'password': password}, object_id=user.id)
 
         elif not verify_password(data_login.password, user.password):
-            raise BadRequestException(detail='Documento ou senha inválidos.')
+            raise BadRequestException(detail='Usuário ou senha inválidos.')
 
         response = TokenResponse(access_token=create_access_token(
             data={'sub': str(user.id)}),

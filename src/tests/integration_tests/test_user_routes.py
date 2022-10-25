@@ -117,7 +117,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         self.assertEqual(400, response.status_code)
         self.assertEqual({'detail': 'Documento invalido.'}, response.json())
 
-    @patch.object(UserCRUD, 'get_user_document_or_email', return_value=True)
+    @patch.object(UserCRUD, 'get_user_by_username_or_email', return_value=True)
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
     def test_create_user_with_document_or_email_in_use(self, RoleCRUDMock, UserCRUDMock):
         '''
@@ -152,7 +152,8 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         body = response.json()
 
         for key, value in user_create_data.items():
-            if key != 'password' and key != 'role_id':
+            keys_not_in_body = ['password', 'role_id', 'username']
+            if key not in keys_not_in_body:
                 self.assertEqual(value, body[key])
             else:
                 self.assertTrue(key not in body)
@@ -211,7 +212,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
     @patch.multiple(
         UserCRUD,
         get=MagicMock(return_value=UserResponse(**user_db_response)),
-        get_user_document_or_email=MagicMock(
+        get_user_by_username_or_email=MagicMock(
             return_value=UserResponse(**totvs_user_db_response)
         )
     )

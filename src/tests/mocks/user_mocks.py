@@ -4,7 +4,8 @@ user_create_data = {
     'email': 'new_user@email.com',
     'document': '54709936803',
     'phone': 11111111111,
-    'password': 'user_password'
+    'password': 'user_password',
+    'username': '54709936803'
 }
 
 user_create_data_no_phone = {
@@ -72,6 +73,8 @@ user_db_response_no_phone = {
 }
 
 invalid_document = '11111111111'
+
+invalid_username = 'invalid_username'
 
 invalid_phone = 123
 
