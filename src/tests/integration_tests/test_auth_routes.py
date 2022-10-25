@@ -7,7 +7,7 @@ from src.db.models.user_model import UserModel
 from src.schemas.user_schema import UserResponse
 from src.tests.mocks.auth_mocks import (
     valid_login,
-    login_incorrect_document,
+    login_incorrect_username,
     login_incorrect_password
 )
 from src.tests.mocks.user_mocks import valid_user_id
@@ -19,7 +19,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
     @patch('src.controllers.auth_controller.verify_password', return_value=True)
     @patch.object(
         UserCRUD,
-        'get_user_document_or_email',
+        'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
     def test_create_token_non_totvs(self, UserCRUD_mock, verify_mock):
@@ -34,7 +34,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
     @patch.object(UserCRUD, 'patch')
     @patch.object(
         UserCRUD,
-        'get_user_document_or_email',
+        'get_user_by_username_or_email',
         return_value=UserModel(**totvs_user_db_response)
     )
     def test_create_token_totvs_user(self, get_mock, patch_mock, totvs_auth_mock):
@@ -50,14 +50,14 @@ class AuthRouteTestClass(ApiBaseTestCase):
         '''
         Should return error message and status 400 when incorrect document
         '''
-        response = self.client.post('/auth/token', json=login_incorrect_document)
+        response = self.client.post('/auth/token', json=login_incorrect_username)
         self.assertEqual(400, response.status_code)
-        self.assertEqual({'detail': 'Documento ou senha inválidos.'}, response.json())
+        self.assertEqual({'detail': 'Usuário ou senha inválidos.'}, response.json())
 
     @patch('src.controllers.auth_controller.verify_password', return_value=False)
     @patch.object(
         UserCRUD,
-        'get_user_document_or_email',
+        'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
     def test_create_token_with_incorrect_password_non_totvs_user(
@@ -72,14 +72,14 @@ class AuthRouteTestClass(ApiBaseTestCase):
         response = self.client.post('/auth/token', json=login_incorrect_password)
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            {'detail': 'Documento ou senha inválidos.'},
+            {'detail': 'Usuário ou senha inválidos.'},
             response.json()
         )
 
     @patch('src.dependencies.totvs.soap_api.post')
     @patch.object(
         UserCRUD,
-        'get_user_document_or_email',
+        'get_user_by_username_or_email',
         return_value=UserModel(**totvs_user_db_response)
     )
     def test_create_token_with_incorrect_password_totvs_user(
@@ -94,7 +94,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         response = self.client.post('/auth/token', json=login_incorrect_password)
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            {'detail': 'Documento ou senha inválidos.'},
+            {'detail': 'Usuário ou senha inválidos.'},
             response.json()
         )
 

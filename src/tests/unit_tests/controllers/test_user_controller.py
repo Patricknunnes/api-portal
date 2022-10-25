@@ -76,7 +76,7 @@ class UserControllerTestClass(BaseTestCase):
         exception = error.exception
         self.assertEqual('Documento invalido.', exception.detail)
 
-    @patch.object(UserCRUD, 'get_user_document_or_email', return_value=user_db_response)
+    @patch.object(UserCRUD, 'get_user_by_username_or_email', return_value=user_db_response)
     @patch.object(RoleController, 'handle_get', return_value=None)
     def test_handle_create_when_document_or_email_in_use(
         self,
@@ -233,7 +233,7 @@ class UserControllerTestClass(BaseTestCase):
     @patch.multiple(
         UserCRUD,
         get=MagicMock(return_value=UserResponse(**user_db_response)),
-        get_user_document_or_email=MagicMock(
+        get_user_by_username_or_email=MagicMock(
             return_value=UserResponse(**totvs_user_db_response)
         )
     )
