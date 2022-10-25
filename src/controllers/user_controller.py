@@ -47,14 +47,16 @@ class UserController(BaseController):
         new_data = self.__clean_form(data=data, session=db)
 
         user = self.crud_class() \
-            .get_user_document_or_email(db=db,
-                                        document=new_data['document'],
+            .get_user_by_username_or_email(db=db,
+                                        username=new_data['document'],
                                         email=new_data['email'])
 
         if user:
             raise BadRequestException(detail='Documento ou Email já cadastrado.')
 
         UtilService.validate_schema(schema_base=UserSchemaValidate, form=new_data)
+
+        new_data['username'] = new_data['document']
 
         return self.crud_class().create(db=db, data=new_data, commit=commit)
 
@@ -89,7 +91,7 @@ class UserController(BaseController):
 
         if 'email' in new_data and new_data['email'] != user.email:
             user_with_email = self.crud_class() \
-                .get_user_document_or_email(db=db,
+                .get_user_by_username_or_email(db=db,
                                             email=new_data['email'])
 
             if user_with_email:
