@@ -36,7 +36,7 @@ class UserCrudTestClass(BaseTestCase):
         '''Should return user with registered username'''
         result = UserCRUD().get_user_by_username_or_email(
             db=self.session,
-            username=user_create_data['document']
+            username=user_create_data['username']
         )
         self.assertIsNotNone(result)
         self.assertTrue(isinstance(result, UserModel))
