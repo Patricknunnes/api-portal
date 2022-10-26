@@ -228,7 +228,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         )
         self.assertEqual(400, response.status_code)
         self.assertEqual({'detail': 'E-mail já cadastrado.'}, response.json())
-    
+
     def test_get_divergences(self):
         '''
         Should return list with status 200

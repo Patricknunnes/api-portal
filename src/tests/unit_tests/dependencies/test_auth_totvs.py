@@ -15,8 +15,10 @@ class TotvsWebServerTestClass(BaseTestCase):
         '''
 
         with self.assertRaises(BadRequestException) as error:
-            TotvsWebServer().get_auth_totvs(username=login_incorrect_username.get('username'),
-                                            password=login_incorrect_username.get('password'))
+            TotvsWebServer().get_auth_totvs(
+                username=login_incorrect_username.get('username'),
+                password=login_incorrect_username.get('password')
+            )
         exception = error.exception
         self.assertEqual(
             'Usuário ou senha inválidos.',
@@ -35,8 +37,10 @@ class TotvsWebServerTestClass(BaseTestCase):
 
         mock_post.return_value = mock_response
 
-        result_auth = TotvsWebServer().get_auth_totvs(username=valid_login.get('username'),
-                                                      password=valid_login.get('password'))
+        result_auth = TotvsWebServer().get_auth_totvs(
+            username=valid_login.get('username'),
+            password=valid_login.get('password')
+        )
         self.assertTrue(result_auth)
 
         self.assertEqual(int(TotvsWebServer().clean_response(text=RESPONSE_AUTH)), 1)

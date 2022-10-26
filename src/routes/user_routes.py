@@ -13,7 +13,6 @@ from src.schemas.user_schema import (
 )
 from src.controllers.user_controller import UserController
 from src.controllers.divergence_controller import DivergenceController
-from src.db.models.divergence_model import DivergenceModel
 
 user_router = APIRouter(prefix='/user', tags=['Users'])
 
