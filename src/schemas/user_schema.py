@@ -56,3 +56,14 @@ class UserUpdate(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class UserDivergence(BaseModel):
+    name: str
+    email: Optional[str]
+    document: str
+    username: str
+    error: str
+
+    class Config:
+        orm_mode = True
