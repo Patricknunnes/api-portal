@@ -11,10 +11,12 @@ class UserCRUD(BaseCRUD):
     def __init__(self):
         super(UserCRUD, self).__init__(UserModel)
 
-    def get_user_by_username_or_email(self,
-                                   db: Session,
-                                   username: str = None,
-                                   email: str = None) -> Union[UserModel, None]:
+    def get_user_by_username_or_email(
+        self,
+        db: Session,
+        username: str = None,
+        email: str = None
+    ) -> Union[UserModel, None]:
         user = db.query(self.model) \
             .where(or_(self.model.username == username, self.model.email == email)) \
             .first()

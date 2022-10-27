@@ -46,10 +46,11 @@ class UserController(BaseController):
     def handle_create(self, db: Session, data: UserBase, commit=True) -> UserResponse:
         new_data = self.__clean_form(data=data, session=db)
 
-        user = self.crud_class() \
-            .get_user_by_username_or_email(db=db,
-                                        username=new_data['document'],
-                                        email=new_data['email'])
+        user = self.crud_class().get_user_by_username_or_email(
+            db=db,
+            username=new_data['document'],
+            email=new_data['email']
+        )
 
         if user:
             raise BadRequestException(detail='Documento ou Email já cadastrado.')
@@ -90,9 +91,10 @@ class UserController(BaseController):
             raise BadRequestException(detail='Usuário só pode ser editado na TOTVS.')
 
         if 'email' in new_data and new_data['email'] != user.email:
-            user_with_email = self.crud_class() \
-                .get_user_by_username_or_email(db=db,
-                                            email=new_data['email'])
+            user_with_email = self.crud_class().get_user_by_username_or_email(
+                db=db,
+                email=new_data['email']
+            )
 
             if user_with_email:
                 raise BadRequestException(detail='E-mail já cadastrado.')

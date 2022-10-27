@@ -1,4 +1,3 @@
-import re
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
@@ -20,7 +19,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 class AuthController:
 
     def handle_login(self, db: Session, data_login: LoginBase) -> TokenResponse:
-        user = UserCRUD().get_user_by_username_or_email(db=db, username=data_login.username)
+        user = UserCRUD().get_user_by_username_or_email(
+            db=db,
+            username=data_login.username
+        )
 
         if not user:
             raise BadRequestException(detail='Usuário ou senha inválidos.')

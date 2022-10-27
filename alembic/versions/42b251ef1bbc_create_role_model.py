@@ -37,7 +37,7 @@ def upgrade() -> None:
         },
         {
             'id': '953dc20c-dcbc-4166-9441-8d94716346b3',
-            'name': 'admin'
+            'name': 'colaborador'
         },
         {
             'id': '69fe9d12-36d2-4454-b820-551b6e9058f0',
@@ -45,7 +45,7 @@ def upgrade() -> None:
         },
         {
             'id': '41354ecb-2b9a-446c-b26a-15e193592206',
-            'name': 'student'
+            'name': 'aluno'
         },
     ])
 
