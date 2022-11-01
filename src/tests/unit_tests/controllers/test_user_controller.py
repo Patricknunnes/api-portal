@@ -254,3 +254,10 @@ class UserControllerTestClass(BaseTestCase):
 
         exception = error.exception
         self.assertEqual('E-mail já cadastrado.', exception.detail)
+
+    def test_handle_list(self):
+        '''
+        Should return page info with list
+        '''
+        result = UserController().handle_list(db=self.session)
+        self.assertEqual(result, {'page': 1, 'total': 0, 'user_response': []})
