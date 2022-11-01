@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm import Session
 from uuid import UUID
-from typing import List
 from src.db.settings.config import get_db
 from src.shared.auth.auth_utils import current_user
 from src.schemas.user_schema import (

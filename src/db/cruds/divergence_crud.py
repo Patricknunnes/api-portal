@@ -22,4 +22,4 @@ class DivergenceCRUD(BaseCRUD):
         return {'total': count, 'page': page, 'divergences': result}
 
     def count_registers(self, db: Session):
-        return db.query(self.model).count()    
+        return db.query(self.model).count()

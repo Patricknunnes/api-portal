@@ -69,6 +69,7 @@ class UserDivergence(BaseModel):
     class Config:
         orm_mode = True
 
+
 class DivergenceResponsePaginate(BaseModel):
     page: int = 1
     total: int
