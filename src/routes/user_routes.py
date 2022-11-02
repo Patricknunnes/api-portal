@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm import Session
 from uuid import UUID
-from typing import List
 from src.db.settings.config import get_db
 from src.shared.auth.auth_utils import current_user
 from src.schemas.user_schema import (
@@ -9,7 +8,7 @@ from src.schemas.user_schema import (
     UserResponse,
     UserResponsePaginate,
     UserUpdate,
-    UserDivergence
+    DivergenceResponsePaginate
 )
 from src.controllers.user_controller import UserController
 from src.controllers.divergence_controller import DivergenceController
@@ -31,15 +30,17 @@ def handle_get_all_users(
     return UserController().handle_list(db=db, filters=filters, page=page, limit=limit)
 
 
-@user_router.get('/divergences', response_model=List[UserDivergence])
+@user_router.get('/divergences', response_model=DivergenceResponsePaginate)
 def handle_get_all_divergences(
     db: Session = Depends(get_db),
+    page: int = None,
+    limit: int = None,
     profile: UserResponse = Depends(current_user)
 ):
     """
     Return all registration divergences from database
     """
-    return DivergenceController().handle_list(db=db)
+    return DivergenceController().handle_list(db=db, page=page, limit=limit)
 
 
 @user_router.get('/{user_id}',

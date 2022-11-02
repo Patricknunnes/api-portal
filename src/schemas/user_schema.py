@@ -63,7 +63,17 @@ class UserDivergence(BaseModel):
     email: Optional[str]
     document: str
     username: str
+    role: RoleResponse
     error: str
+
+    class Config:
+        orm_mode = True
+
+
+class DivergenceResponsePaginate(BaseModel):
+    page: int = 1
+    total: int
+    divergences: List[UserDivergence]
 
     class Config:
         orm_mode = True

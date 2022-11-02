@@ -63,10 +63,12 @@ class UserCrudTestClass(BaseTestCase):
 
     def test_list(self):
         '''
-          Should return list
+        Should return page info with list
         '''
-        result = UserCRUD().list(db=self.session)
-        self.assertEqual(type(result), list)
+        result = UserCRUD().handle_list(db=self.session)
+        self.assertEqual(result['page'], 1)
+        self.assertEqual(result['total'], 1)
+        self.assertEqual(len(result['user_response']), 1)
 
     def test_get_without_match(self):
         '''
