@@ -30,3 +30,56 @@ class CanvasIntegrationTestClass(TestCase):
         '''Succeeded update login data request should return True'''
         result = self.canvas._CanvasApiIntegration__update_login_data(1, {})
         self.assertTrue(result)
+
+    @patch.object(
+        CanvasApiIntegration,
+        '_CanvasApiIntegration__request_login_id',
+        return_value=None
+    )
+    def test_sync_password_with_no_login_id(self, request_mock):
+        '''
+        Should return False when __request_login_id return None
+        '''
+        result = self.canvas.sync_password(1, 'password')
+        request_mock.assert_called_with(1)
+        self.assertFalse(result)
+
+    @patch.object(
+        CanvasApiIntegration,
+        '_CanvasApiIntegration__update_login_data',
+        return_value=False
+    )
+    @patch.object(
+        CanvasApiIntegration,
+        '_CanvasApiIntegration__request_login_id',
+        return_value=2
+    )
+    def test_sync_password_with_update_fail(self, request_mock, update_mock):
+        '''
+        Should return False when __request_login_id return id
+        but __update_login fail
+        '''
+        result = self.canvas.sync_password(1, 'password')
+        request_mock.assert_called_with(1)
+        update_mock.assert_called_with(2, {'login[password]': 'password'})
+        self.assertFalse(result)
+
+    @patch.object(
+        CanvasApiIntegration,
+        '_CanvasApiIntegration__update_login_data',
+        return_value=True
+    )
+    @patch.object(
+        CanvasApiIntegration,
+        '_CanvasApiIntegration__request_login_id',
+        return_value=2
+    )
+    def test_sync_password_with_update_success(self, request_mock, update_mock):
+        '''
+        Should return True when __request_login_id return id
+        and __update_login succeed
+        '''
+        result = self.canvas.sync_password(1, 'password')
+        request_mock.assert_called_with(1)
+        update_mock.assert_called_with(2, {'login[password]': 'password'})
+        self.assertTrue(result)
