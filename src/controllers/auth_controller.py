@@ -36,7 +36,6 @@ class AuthController:
 
             UserCRUD().patch(db=db, data={'password': password}, object_id=user.id)
             CanvasApiIntegration().sync_password(user.canvas_id, data_login.password)
-            
 
         elif not verify_password(data_login.password, user.password):
             raise BadRequestException(detail='Usuário ou senha inválidos.')

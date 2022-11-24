@@ -6,8 +6,9 @@ from src.settings.settings import BASE_DIR
 
 load_dotenv(os.path.join(BASE_DIR, '../.env'))
 
+
 class CanvasApiIntegration:
-    __HEADERS = { 'Authorization': os.getenv('CANVAS_ACCESS_TOKEN') }
+    __HEADERS = {'Authorization': os.getenv('CANVAS_ACCESS_TOKEN')}
 
     __BASE_API_URL = os.getenv('CANVAS_BASE_API_URL')
 
@@ -29,9 +30,8 @@ class CanvasApiIntegration:
 
         return response.status_code == 200
 
-
     def sync_password(self, user_id: int, password: str) -> bool:
         login_id = self.__request_login_id(user_id)
-        login_data = { 'login[password]': password }
+        login_data = {'login[password]': password}
 
         return self.__update_login_data(login_id, login_data) if login_id else False
