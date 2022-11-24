@@ -9,7 +9,7 @@ from src.tests.mocks.auth_mocks import login_incorrect_username, valid_login
 
 class TotvsWebServerTestClass(TestCase):
     @patch('src.dependencies.totvs.soap_api.post')
-    def test_handle_login_totvs_with_invalid_data(self, mock_post):
+    def test_handle_login_totvs_with_invalid_data(self, _):
         '''
             Should raise exception when get invalid login data
         '''

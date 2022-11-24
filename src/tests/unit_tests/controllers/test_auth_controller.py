@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from src.db.cruds.user_crud import UserCRUD
 from src.dependencies.totvs.soap_api import TotvsWebServer
@@ -38,11 +38,7 @@ class AuthControllerTestClass(BaseTestCase):
         'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
-    def test_handle_login_with_invalid_password(
-        self,
-        UserCRUD_mock,
-        verify_mock
-    ):
+    def test_handle_login_with_invalid_password(self, *_):
         '''
           Should raise exception when invalid password
         '''
@@ -63,7 +59,7 @@ class AuthControllerTestClass(BaseTestCase):
         'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
-    def test_handle_login_with_valid_non_totvs_user(self, UserCRUD_mock, verify_mock):
+    def test_handle_login_with_valid_non_totvs_user(self, *_):
         '''
         Should return a TokenResponse instance
         '''
@@ -73,21 +69,22 @@ class AuthControllerTestClass(BaseTestCase):
         )
         self.assertTrue(isinstance(result, TokenResponse))
 
-    @patch.object(UserCRUD, 'patch')
-    @patch.object(
+    @patch.multiple(
         UserCRUD,
-        'get_user_by_username_or_email',
-        return_value=UserModel(**totvs_user_db_response)
+        patch,
+        get_user_by_username_or_email=MagicMock(
+            return_value=UserModel(**totvs_user_db_response)
+        )
     )
     @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=True)
     def test_handle_login_with_totvs_user(
         self,
-        get_totvs_mock,
-        get_user_mock,
-        patch_mock
+        patch_mock,
+        *_
     ):
         '''
-        Should return a TokenResponse instance and patch the password hash in db
+        Should return a TokenResponse instance,
+        patch the password hash in db and canvas
         '''
         result = AuthController().handle_login(
             db=self.session,
@@ -102,11 +99,7 @@ class AuthControllerTestClass(BaseTestCase):
         return_value=UserModel(**totvs_user_db_response)
     )
     @patch('src.dependencies.totvs.soap_api.post')
-    def test_handle_login_with_totvs_user_invalid_pass(
-        self,
-        totvs_auth_mock,
-        get_user_mock
-    ):
+    def test_handle_login_with_totvs_user_invalid_pass(self, *_):
         '''
           Should raise exception when invalid password
         '''
@@ -126,7 +119,7 @@ class AuthControllerTestClass(BaseTestCase):
         'get',
         return_value=UserModel(**user_db_response)
     )
-    def test_handle_sso_totvs_with_non_totvs_user(self, get_mock):
+    def test_handle_sso_totvs_with_non_totvs_user(self, _):
         '''
         Should return ResponseSsoTotvs instance with all fields values as None
         '''
@@ -144,7 +137,7 @@ class AuthControllerTestClass(BaseTestCase):
         'get',
         return_value=UserModel(**totvs_user_db_response)
     )
-    def test_handle_sso_totvs_with_totvs_user(self, get_mock, decode_mock):
+    def test_handle_sso_totvs_with_totvs_user(self, *_):
         '''
         Should return ResponseSsoTotvs instance with username and key_totvs
         '''
