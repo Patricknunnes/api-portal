@@ -2,6 +2,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from src.dependencies.totvs.soap_api import TotvsWebServer
+from src.dependencies.canvas.api_integration import CanvasApiIntegration
 from src.exceptions.exceptions import BadRequestException
 from src.schemas.user_schema import UserResponse
 from src.shared.auth.hash_provider import (
@@ -34,6 +35,8 @@ class AuthController:
             password = get_password_hash(data_login.password)
 
             UserCRUD().patch(db=db, data={'password': password}, object_id=user.id)
+            CanvasApiIntegration().sync_password(user.canvas_id, data_login.password)
+            
 
         elif not verify_password(data_login.password, user.password):
             raise BadRequestException(detail='Usuário ou senha inválidos.')
