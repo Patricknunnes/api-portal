@@ -1,13 +1,13 @@
 from unittest.mock import patch, MagicMock
+from unittest import TestCase
 
 from src.exceptions.exceptions import BadRequestException
 from src.tests.mocks.totvs_mocks import RESPONSE_AUTH
-from src.tests.settings import BaseTestCase
 from src.dependencies.totvs.soap_api import TotvsWebServer
 from src.tests.mocks.auth_mocks import login_incorrect_username, valid_login
 
 
-class TotvsWebServerTestClass(BaseTestCase):
+class TotvsWebServerTestClass(TestCase):
     @patch('src.dependencies.totvs.soap_api.post')
     def test_handle_login_totvs_with_invalid_data(self, mock_post):
         '''
