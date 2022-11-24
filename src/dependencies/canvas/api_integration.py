@@ -18,7 +18,7 @@ class CanvasApiIntegration:
             headers=self.__HEADERS
         )
 
-        if response.status_code == 200:
+        if response.ok:
             return response.json()[0]['id']
 
     def __update_login_data(self, login_id: int, login_data: dict):
@@ -28,7 +28,7 @@ class CanvasApiIntegration:
             params=login_data
         )
 
-        return response.status_code == 200
+        return response.ok
 
     def sync_password(self, user_id: int, password: str) -> bool:
         login_id = self.__request_login_id(user_id)
