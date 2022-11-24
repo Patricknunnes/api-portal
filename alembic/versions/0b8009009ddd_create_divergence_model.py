@@ -23,7 +23,7 @@ def upgrade() -> None:
         sa.Column('username', sa.String(length=50), nullable=False),
         sa.Column('name', sa.String(length=150), nullable=False),
         sa.Column('email', sa.String(length=150), nullable=True),
-        sa.Column('document', sa.String(length=11), nullable=False),
+        sa.Column('document', sa.String(length=50), nullable=True),
         sa.Column('role_id', GUID(), nullable=True),
         sa.Column('error', sa.String(), nullable=False),
         sa.PrimaryKeyConstraint('id'),
