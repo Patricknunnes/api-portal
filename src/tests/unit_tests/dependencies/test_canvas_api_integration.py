@@ -13,7 +13,7 @@ class CanvasIntegrationTestClass(TestCase):
         result = self.canvas._CanvasApiIntegration__request_login_id(9999)
         self.assertIsNone(result)
 
-    @patch('requests.get', return_value=MagicMock(ok=True, json= lambda : [{'id': 20}]))
+    @patch('requests.get', return_value=MagicMock(ok=True, json=lambda: [{'id': 20}]))
     def test_request_login_id_when_succeed(self, _):
         '''Succeeded login_id request should return login_id'''
         result = self.canvas._CanvasApiIntegration__request_login_id(1)

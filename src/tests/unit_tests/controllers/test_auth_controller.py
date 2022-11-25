@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from src.db.cruds.user_crud import UserCRUD
 from src.dependencies.totvs.soap_api import TotvsWebServer
@@ -61,7 +61,7 @@ class AuthControllerTestClass(BaseTestCase):
         return_value=UserModel(**user_db_response)
     )
     @patch.object(CanvasApiIntegration, 'sync_password')
-    def test_handle_login_with_valid_non_totvs_user(self, sync_mock,*_):
+    def test_handle_login_with_valid_non_totvs_user(self, sync_mock, *_):
         '''
         Should return a TokenResponse instance and do not sync with canvas
         '''
