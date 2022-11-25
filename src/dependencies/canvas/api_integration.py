@@ -30,8 +30,8 @@ class CanvasApiIntegration:
 
         return response.ok
 
-    def sync_password(self, user_id: int, password: str) -> bool:
-        login_id = self.__request_login_id(user_id)
+    def sync_password(self, user_id: int | None, password: str) -> bool:
+        login_id = self.__request_login_id(user_id) if user_id else None
         login_data = {'login[password]': password}
 
         return self.__update_login_data(login_id, login_data) if login_id else False
