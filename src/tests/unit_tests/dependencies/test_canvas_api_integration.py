@@ -31,6 +31,15 @@ class CanvasIntegrationTestClass(TestCase):
         result = self.canvas._CanvasApiIntegration__update_login_data(1, {})
         self.assertTrue(result)
 
+    @patch.object(CanvasApiIntegration, '_CanvasApiIntegration__request_login_id')
+    def test_sync_password_with_no_user_id(self, request_mock):
+        '''
+        Should return False when user_id is None
+        '''
+        result = self.canvas.sync_password(None, 'password')
+        request_mock.assert_not_called()
+        self.assertFalse(result)
+
     @patch.object(
         CanvasApiIntegration,
         '_CanvasApiIntegration__request_login_id',
