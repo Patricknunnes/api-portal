@@ -9,7 +9,7 @@ from src.tests.mocks.role_mocks import roles, invalid_role_id, valid_role_id
 
 class RoleControllerTestClass(BaseTestCase):
     @patch.object(RoleCRUD, 'list', return_value=roles)
-    def test_handle_list(self, mock):
+    def test_handle_list(self, _):
         '''
           Should return list with all roles
         '''
@@ -17,7 +17,7 @@ class RoleControllerTestClass(BaseTestCase):
         self.assertEqual(roles, result)
 
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
-    def test_handle_get_when_id_found(self, mock):
+    def test_handle_get_when_id_found(self, _):
         '''
           Should return single role when id found
         '''
@@ -29,7 +29,7 @@ class RoleControllerTestClass(BaseTestCase):
         self.assertEqual(roles[0], result)
 
     @patch.object(RoleCRUD, 'get', return_value=None)
-    def test_handle_get_when_id_not_found(self, mock):
+    def test_handle_get_when_id_not_found(self, _):
         '''
           Should raise exception when role id not found
         '''

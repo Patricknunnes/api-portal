@@ -26,7 +26,7 @@ from src.tests.settings import BaseTestCase
 
 class UserControllerTestClass(BaseTestCase):
     @patch.object(RoleCRUD, 'get', return_value=None)
-    def test_handle_create_when_role_id_not_found(self, mock):
+    def test_handle_create_when_role_id_not_found(self, _):
         '''
           Should raise exception when role id not found
         '''
@@ -42,7 +42,7 @@ class UserControllerTestClass(BaseTestCase):
         self.assertEqual('Role não encontrada.', exception.detail)
 
     @patch.object(RoleController, 'handle_get', return_value=None)
-    def test_handle_create_when_invalid_phone(self, mock):
+    def test_handle_create_when_invalid_phone(self, _):
         '''
           Should raise exception when invalid phone
         '''
@@ -58,7 +58,7 @@ class UserControllerTestClass(BaseTestCase):
         self.assertEqual('Telefone invalido.', exception.detail)
 
     @patch.object(RoleController, 'handle_get', return_value=None)
-    def test_handle_create_when_invalid_document(self, mock):
+    def test_handle_create_when_invalid_document(self, _):
         '''
           Should raise exception when invalid document
         '''
@@ -82,11 +82,7 @@ class UserControllerTestClass(BaseTestCase):
         return_value=user_db_response
     )
     @patch.object(RoleController, 'handle_get', return_value=None)
-    def test_handle_create_when_document_or_email_in_use(
-        self,
-        RoleController_mock,
-        UserCRUD_mock
-    ):
+    def test_handle_create_when_document_or_email_in_use(self, *_):
         '''
           Should raise exception when document or email already in use
         '''
@@ -100,7 +96,7 @@ class UserControllerTestClass(BaseTestCase):
         self.assertEqual('Documento ou Email já cadastrado.', exception.detail)
 
     @patch.object(RoleController, 'handle_get', return_value=None)
-    def test_handle_create_when_fields_missing(self, RoleController_mock):
+    def test_handle_create_when_fields_missing(self, _):
         '''
           Should raise exception when required fields are missing
         '''
@@ -115,7 +111,7 @@ class UserControllerTestClass(BaseTestCase):
 
     @patch.object(UserCRUD, 'create', return_value=user_db_response)
     @patch.object(RoleController, 'handle_get', return_value=None)
-    def test_handle_create_when_valid_user_data(self, RoleController_mock, UserCRUD_mock):
+    def test_handle_create_when_valid_user_data(self, *_):
         '''
           Should return created user when valid user data
         '''
@@ -127,11 +123,7 @@ class UserControllerTestClass(BaseTestCase):
 
     @patch.object(UserCRUD, 'create', return_value=user_db_response_no_phone)
     @patch.object(RoleController, 'handle_get', return_value=None)
-    def test_handle_create_when_valid_user_data_but_no_phone(
-        self,
-        RoleController_mock,
-        UserCRUD_mock
-    ):
+    def test_handle_create_when_valid_user_data_but_no_phone(self, *_):
         '''
           Should return created user when valid user data without phone
         '''
@@ -161,11 +153,7 @@ class UserControllerTestClass(BaseTestCase):
         patch=MagicMock(return_value=None)
     )
     @patch.object(RoleController, 'handle_get', return_value=None)
-    def test_handle_patch_when_all_possible_fields_change(
-        self,
-        RoleController_mock,
-        **UserCRUD_mocks
-    ):
+    def test_handle_patch_when_all_possible_fields_change(self, *_):
         '''
           Should return None when valid user id and change all fields
         '''
@@ -182,10 +170,7 @@ class UserControllerTestClass(BaseTestCase):
         get=MagicMock(return_value=UserResponse(**user_db_response)),
         patch=MagicMock(return_value=None)
     )
-    def test_handle_patch_when_no_data_change(
-        self,
-        **mocks
-    ):
+    def test_handle_patch_when_no_data_change(self):
         '''
           Should return None when valid user id and no data to patch
         '''
@@ -198,7 +183,7 @@ class UserControllerTestClass(BaseTestCase):
         self.assertIsNone(result)
 
     @patch.object(UserCRUD, 'get', return_value=UserResponse(**user_db_response))
-    def test_handle_patch_when_updating_non_root_user_password(self, mock):
+    def test_handle_patch_when_updating_non_root_user_password(self, _):
         '''
         Should raise exception when non-root user tries to update password
         '''

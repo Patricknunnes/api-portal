@@ -2,6 +2,7 @@ from unittest.mock import patch
 
 from src.db.cruds.user_crud import UserCRUD
 from src.dependencies.totvs.soap_api import TotvsWebServer
+from src.dependencies.canvas.api_integration import CanvasApiIntegration
 from src.db.models.user_model import UserModel
 from src.exceptions.exceptions import BadRequestException
 from src.schemas.auth_schema import LoginBase, ResponseSsoTotvs, TokenResponse
@@ -38,11 +39,7 @@ class AuthControllerTestClass(BaseTestCase):
         'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
-    def test_handle_login_with_invalid_password(
-        self,
-        UserCRUD_mock,
-        verify_mock
-    ):
+    def test_handle_login_with_invalid_password(self, *_):
         '''
           Should raise exception when invalid password
         '''
@@ -63,38 +60,43 @@ class AuthControllerTestClass(BaseTestCase):
         'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
-    def test_handle_login_with_valid_non_totvs_user(self, UserCRUD_mock, verify_mock):
+    @patch.object(CanvasApiIntegration, 'sync_password')
+    def test_handle_login_with_valid_non_totvs_user(self, sync_mock, *_):
         '''
-        Should return a TokenResponse instance
+        Should return a TokenResponse instance and do not sync with canvas
         '''
         result = AuthController().handle_login(
             db=self.session,
             data_login=LoginBase(**valid_login)
         )
+        sync_mock.assert_not_called()
         self.assertTrue(isinstance(result, TokenResponse))
 
-    @patch.object(UserCRUD, 'patch')
+    @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=True)
     @patch.object(
         UserCRUD,
         'get_user_by_username_or_email',
         return_value=UserModel(**totvs_user_db_response)
     )
-    @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=True)
+    @patch.object(CanvasApiIntegration, 'sync_password')
+    @patch.object(UserCRUD, 'patch')
     def test_handle_login_with_totvs_user(
         self,
-        get_totvs_mock,
-        get_user_mock,
-        patch_mock
+        patch_mock,
+        sync_mock,
+        *_
     ):
         '''
-        Should return a TokenResponse instance and patch the password hash in db
+        Should return a TokenResponse instance,
+        patch the password hash in db and canvas
         '''
         result = AuthController().handle_login(
             db=self.session,
             data_login=LoginBase(**valid_login)
         )
         self.assertTrue(isinstance(result, TokenResponse))
-        self.assertTrue(patch_mock.called)
+        patch_mock.assert_called()
+        sync_mock.assert_called()
 
     @patch.object(
         UserCRUD,
@@ -102,11 +104,7 @@ class AuthControllerTestClass(BaseTestCase):
         return_value=UserModel(**totvs_user_db_response)
     )
     @patch('src.dependencies.totvs.soap_api.post')
-    def test_handle_login_with_totvs_user_invalid_pass(
-        self,
-        totvs_auth_mock,
-        get_user_mock
-    ):
+    def test_handle_login_with_totvs_user_invalid_pass(self, *_):
         '''
           Should raise exception when invalid password
         '''
@@ -126,7 +124,7 @@ class AuthControllerTestClass(BaseTestCase):
         'get',
         return_value=UserModel(**user_db_response)
     )
-    def test_handle_sso_totvs_with_non_totvs_user(self, get_mock):
+    def test_handle_sso_totvs_with_non_totvs_user(self, _):
         '''
         Should return ResponseSsoTotvs instance with all fields values as None
         '''
@@ -144,7 +142,7 @@ class AuthControllerTestClass(BaseTestCase):
         'get',
         return_value=UserModel(**totvs_user_db_response)
     )
-    def test_handle_sso_totvs_with_totvs_user(self, get_mock, decode_mock):
+    def test_handle_sso_totvs_with_totvs_user(self, *_):
         '''
         Should return ResponseSsoTotvs instance with username and key_totvs
         '''

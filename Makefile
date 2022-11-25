@@ -11,7 +11,7 @@ db_rollback:
 	alembic downgrade -1
 
 tests:
-	clear && python3 -m pytest ./src/tests
+	rm -f test.db test.db-journal && clear && python3 -m pytest ./src/tests
 
 pylama:
 	clear && pylama src/

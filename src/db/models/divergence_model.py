@@ -12,7 +12,7 @@ class DivergenceModel(Base):
     name = Column(String(150), nullable=False)
     username = Column(String(50), nullable=False)
     email = Column(String(150), nullable=True)
-    document = Column(String(11), nullable=False)
+    document = Column(String(50), nullable=True)
     role_id = Column(GUID(), ForeignKey("roles.id"))
     error = Column(String, nullable=False)
 

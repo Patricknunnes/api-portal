@@ -42,7 +42,7 @@ class RoleRouteWithAuthTestClass(ApiWithAuthTestCase):
         self.assertEqual([], response.json())
 
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
-    def test_get_role_by_id_when_id_found(self, mock):
+    def test_get_role_by_id_when_id_found(self, _):
         '''
           Should return single role and status 200 when id found
         '''
