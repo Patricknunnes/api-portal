@@ -2,6 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from src.db.cruds.user_crud import UserCRUD
 from src.dependencies.totvs.soap_api import TotvsWebServer
+from src.dependencies.canvas.api_integration import CanvasApiIntegration
 from src.db.models.user_model import UserModel
 from src.exceptions.exceptions import BadRequestException
 from src.schemas.auth_schema import LoginBase, ResponseSsoTotvs, TokenResponse
@@ -59,27 +60,30 @@ class AuthControllerTestClass(BaseTestCase):
         'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
-    def test_handle_login_with_valid_non_totvs_user(self, *_):
+    @patch.object(CanvasApiIntegration, 'sync_password')
+    def test_handle_login_with_valid_non_totvs_user(self, sync_mock,*_):
         '''
-        Should return a TokenResponse instance
+        Should return a TokenResponse instance and do not sync with canvas
         '''
         result = AuthController().handle_login(
             db=self.session,
             data_login=LoginBase(**valid_login)
         )
+        sync_mock.assert_not_called()
         self.assertTrue(isinstance(result, TokenResponse))
 
-    @patch.multiple(
-        UserCRUD,
-        patch,
-        get_user_by_username_or_email=MagicMock(
-            return_value=UserModel(**totvs_user_db_response)
-        )
-    )
     @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=True)
+    @patch.object(
+        UserCRUD,
+        'get_user_by_username_or_email',
+        return_value=UserModel(**totvs_user_db_response)
+    )
+    @patch.object(CanvasApiIntegration, 'sync_password')
+    @patch.object(UserCRUD, 'patch')
     def test_handle_login_with_totvs_user(
         self,
         patch_mock,
+        sync_mock,
         *_
     ):
         '''
@@ -91,7 +95,8 @@ class AuthControllerTestClass(BaseTestCase):
             data_login=LoginBase(**valid_login)
         )
         self.assertTrue(isinstance(result, TokenResponse))
-        self.assertTrue(patch_mock.called)
+        patch_mock.assert_called()
+        sync_mock.assert_called()
 
     @patch.object(
         UserCRUD,
