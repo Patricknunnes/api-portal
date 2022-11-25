@@ -83,7 +83,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         self.assertEqual({'detail': 'Usuário não encontrado'}, response.json())
 
     @patch.object(UserCRUD, 'get', return_value=user_db_response)
-    def test_get_user_by_id_when_id_found(self, mock):
+    def test_get_user_by_id_when_id_found(self, _):
         '''
         Should return user data and status 200 when id found
         '''
@@ -108,7 +108,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         self.assertEqual({'detail': 'Role não encontrada.'}, response.json())
 
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
-    def test_create_user_with_invalid_document(self, mock):
+    def test_create_user_with_invalid_document(self, _):
         '''
         Should return error message and status 400 when document is invalid
         '''
@@ -119,7 +119,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
 
     @patch.object(UserCRUD, 'get_user_by_username_or_email', return_value=True)
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
-    def test_create_user_with_document_or_email_in_use(self, RoleCRUDMock, UserCRUDMock):
+    def test_create_user_with_document_or_email_in_use(self, *_):
         '''
         Should return error message and status 400 when document or email already in use
         '''
@@ -129,7 +129,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         self.assertEqual({'detail': 'Documento ou Email já cadastrado.'}, response.json())
 
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
-    def test_create_user_with_invalid_fields(self, mock):
+    def test_create_user_with_invalid_fields(self, _):
         '''
         Should return error message and status 400
         when required fields have invalid value
@@ -141,7 +141,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
 
     @patch.object(UserCRUD, 'create', return_value=user_db_response)
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
-    def test_create_user(self, RoleCRUDMock, UserCRUDMock):
+    def test_create_user(self, *_):
         '''
         Should return created user and status 201
         '''
@@ -166,7 +166,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         patch=MagicMock(return_value=None)
     )
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
-    def test_patch_user(self, RoleCRUDMock, **UserCRUDMock):
+    def test_patch_user(self, _):
         '''
         Should return status 204 and no body
         '''
@@ -178,7 +178,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         self.assertRaises(JSONDecodeError, response.json)
 
     @patch.object(UserCRUD, 'get', return_value=UserResponse(**user_db_response))
-    def test_patch_user_password_when_token_is_from_non_root_user(self, getMock):
+    def test_patch_user_password_when_token_is_from_non_root_user(self, _):
         '''
         Should return status 400 and expected message when user trying
         to change password is not root
@@ -195,7 +195,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
 
     @patch.object(UserCRUD, 'get', return_value=UserResponse(**totvs_user_db_response))
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
-    def test_patch_user_from_totvs(self, RoleCRUDMock, UserCRUDMock):
+    def test_patch_user_from_totvs(self, *_):
         '''
         Should return status 400 and expected message when user is_totvs value is True
         '''
@@ -217,7 +217,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         )
     )
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
-    def test_patch_user_with_email_in_use(self, RoleCRUDMock, **UserCRUDMock):
+    def test_patch_user_with_email_in_use(self, _):
         '''
         Should return status 400 and expected message
         when trying to set already in use email for user

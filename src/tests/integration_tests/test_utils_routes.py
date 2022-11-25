@@ -6,7 +6,7 @@ from src.tests.settings import ApiWithAuthTestCase
 
 class UtilsRouteWithAuthTestClass(ApiWithAuthTestCase):
     @patch.object(UserCRUD, 'patch', return_value=None)
-    def test_handle_insert_image(self, RoleCRUDMock, **UserCRUDMock):
+    def test_handle_insert_image(self, _):
         '''
         Should return status 201 and None in body
         '''

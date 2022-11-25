@@ -22,7 +22,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
-    def test_create_token_non_totvs(self, UserCRUD_mock, verify_mock):
+    def test_create_token_non_totvs(self, *_):
         '''
         Should return token and status 201 when logging in as non totvs user
         '''
@@ -31,20 +31,20 @@ class AuthRouteTestClass(ApiBaseTestCase):
         self.assertIsNotNone(response.json()['access_token'])
 
     @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=True)
-    @patch.object(UserCRUD, 'patch')
     @patch.object(
         UserCRUD,
         'get_user_by_username_or_email',
         return_value=UserModel(**totvs_user_db_response)
     )
-    def test_create_token_totvs_user(self, get_mock, patch_mock, totvs_auth_mock):
+    @patch.object(UserCRUD, 'patch')
+    def test_create_token_totvs_user(self, patch_mock, *_):
         '''
         Should return token and status 201 when logging in as totvs user
         '''
         response = self.client.post('/auth/token', json=valid_login)
         self.assertEqual(201, response.status_code)
         self.assertIsNotNone(response.json()['access_token'])
-        self.assertTrue(patch_mock.called)
+        patch_mock.assert_called()
 
     def test_create_token_with_incorrect_document(self):
         '''
@@ -60,11 +60,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
-    def test_create_token_with_incorrect_password_non_totvs_user(
-        self,
-        UserCRUD_mock,
-        verify_mock
-    ):
+    def test_create_token_with_incorrect_password_non_totvs_user(self, *_):
         '''
         Should return error message and status 400 when trying to login in
         as non totvs user with invalid password
@@ -82,11 +78,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         'get_user_by_username_or_email',
         return_value=UserModel(**totvs_user_db_response)
     )
-    def test_create_token_with_incorrect_password_totvs_user(
-        self,
-        get_mock,
-        totvs_post_mock
-    ):
+    def test_create_token_with_incorrect_password_totvs_user(self, *_):
         '''
         Should return error message and status 400 when trying to login in
         as totvs user with invalid password
@@ -124,11 +116,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
 
     @patch.object(UserCRUD, 'get', return_value=UserResponse(**user_db_response))
     @patch.object(jwt, 'decode', return_value={'sub': valid_user_id})
-    def test_handle_me_data_with_valid_token_and_user_match(
-        self,
-        jwt_verify_mock,
-        UserCRUD_mock
-    ):
+    def test_handle_me_data_with_valid_token_and_user_match(self, *_):
         '''
         Should return user data and status 200
         when valid token and matching user_id
@@ -149,7 +137,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
 
     @patch.object(jwt, 'decode', return_value={'sub': valid_user_id})
     @patch.object(UserCRUD, 'get', return_value=UserResponse(**user_db_response))
-    def test_handle_sso_totvs_as_non_totvs_user(self, get_mock, decode_mock):
+    def test_handle_sso_totvs_as_non_totvs_user(self, *_):
         '''
         Should return sso totvs data and status 200 with all fields None
         '''
@@ -172,12 +160,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
             UserModel(**totvs_user_db_response)
         ]
     )
-    def test_handle_sso_totvs_as_totvs_user(
-        self,
-        get_mock,
-        decode_token_mock,
-        decode_key_mock
-    ):
+    def test_handle_sso_totvs_as_totvs_user(self, *_):
         '''
         Should return sso totvs data and status 200
         '''
