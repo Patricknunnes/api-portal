@@ -1,5 +1,6 @@
 from unittest.mock import patch
 from jose import jwt
+import json
 
 from src.db.cruds.user_crud import UserCRUD
 from src.dependencies.totvs.soap_api import TotvsWebServer
@@ -30,6 +31,12 @@ class AuthRouteTestClass(ApiBaseTestCase):
         self.assertEqual(201, response.status_code)
         self.assertIsNotNone(response.json()['access_token'])
 
+        user_response = response.json()['user']
+        expected_user_dict = json.loads(UserResponse(**user_db_response).json())
+
+        for key, value in user_response.items():
+            self.assertEqual(value, expected_user_dict[key])
+
     @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=True)
     @patch.object(
         UserCRUD,
@@ -45,6 +52,12 @@ class AuthRouteTestClass(ApiBaseTestCase):
         self.assertEqual(201, response.status_code)
         self.assertIsNotNone(response.json()['access_token'])
         patch_mock.assert_called()
+
+        user_response = response.json()['user']
+        expected_user_dict = json.loads(UserResponse(**totvs_user_db_response).json())
+
+        for key, value in user_response.items():
+            self.assertEqual(value, expected_user_dict[key])
 
     def test_create_token_with_incorrect_document(self):
         '''
@@ -114,7 +127,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
         self.assertEqual(401, response.status_code)
         self.assertEqual(self.invalid_token_msg, response.json())
 
-    @patch.object(UserCRUD, 'get', return_value=UserResponse(**user_db_response))
+    @patch.object(UserCRUD, 'get', return_value=UserModel(**user_db_response))
     @patch.object(jwt, 'decode', return_value={'sub': valid_user_id})
     def test_handle_me_data_with_valid_token_and_user_match(self, *_):
         '''
@@ -136,7 +149,7 @@ class AuthRouteTestClass(ApiBaseTestCase):
                 self.assertTrue(key not in body)
 
     @patch.object(jwt, 'decode', return_value={'sub': valid_user_id})
-    @patch.object(UserCRUD, 'get', return_value=UserResponse(**user_db_response))
+    @patch.object(UserCRUD, 'get', return_value=UserModel(**user_db_response))
     def test_handle_sso_totvs_as_non_totvs_user(self, *_):
         '''
         Should return sso totvs data and status 200 with all fields None
