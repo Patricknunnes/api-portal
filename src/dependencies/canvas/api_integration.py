@@ -1,6 +1,7 @@
 import os
 import requests
 from dotenv import load_dotenv
+from typing import Union
 
 from src.settings.settings import BASE_DIR
 
@@ -30,7 +31,7 @@ class CanvasApiIntegration:
 
         return response.ok
 
-    def sync_password(self, user_id: int | None, password: str) -> bool:
+    def sync_password(self, user_id: Union[int, None], password: str) -> bool:
         login_id = self.__request_login_id(user_id) if user_id else None
         login_data = {'login[password]': password}
 

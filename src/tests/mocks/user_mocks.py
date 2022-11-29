@@ -37,6 +37,7 @@ totvs_user_db_response = {
     'document': '38956656576',
     'phone': 11111111111,
     'is_totvs': True,
+    'canvas_id': 1,
     'password': 'user_password',
     'role': {
         'id': '34930736-8424-4254-84f5-92dd68e771ef',
