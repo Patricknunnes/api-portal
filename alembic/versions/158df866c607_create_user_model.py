@@ -32,11 +32,13 @@ def upgrade() -> None:
                     sa.Column('canvas_id', sa.Integer(), nullable=True),
                     sa.Column('last_sync', sa.TIMESTAMP(), nullable=True),
                     sa.Column('created_at', sa.TIMESTAMP(), server_default=sa.text('now()'), nullable=True),
+                    sa.Column('session_code', sa.String(length=25), nullable=True),
                     sa.ForeignKeyConstraint(['role_id'], ['roles.id'], ),
                     sa.PrimaryKeyConstraint('id'),
                     sa.UniqueConstraint('email'),
                     sa.UniqueConstraint('canvas_id'),
-                    sa.UniqueConstraint('username')
+                    sa.UniqueConstraint('username'),
+                    sa.UniqueConstraint('session_code')
                     )
     # ### end Alembic commands ###
 
