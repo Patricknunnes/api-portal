@@ -2,7 +2,7 @@ from src.sso.sso_utils import AuthRequestParameters
 
 
 def check_client_id(client_id: str):
-    valid_client_ids = ['canvas_idor']
+    valid_client_ids = ['portal_idor']
     return client_id in valid_client_ids
 
 
