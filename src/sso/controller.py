@@ -10,3 +10,6 @@ class SSOController:
         UserCRUD().patch(db=db, object_id=user_id, data={'session_code': session_code})
 
         return session_code
+
+    def validate_session(self, session_code: str, db: Session):
+        return UserCRUD().get(db=db, session_code=session_code)

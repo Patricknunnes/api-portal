@@ -1,5 +1,6 @@
 from fastapi import Depends, Form
 from fastapi.security import OAuth2PasswordBearer
+from typing import Union
 from sqlalchemy.orm import Session
 from jose import JWTError
 
@@ -26,6 +27,22 @@ class AuthRequestParameters:
         self.response_type = response_type
         self.scope = scope
         self.state = state
+
+
+class TokenRequestBody:
+    def __init__(
+        self,
+        grant_type: str = Form(default=None),
+        client_id: str = Form(default=None),
+        client_secret: str = Form(default=None),
+        redirect_uri: str = Form(default=None),
+        code: str = Form(),
+    ):
+        self.grant_type = grant_type
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.redirect_uri = redirect_uri
+        self.code = code
 
 
 async def current_user(
