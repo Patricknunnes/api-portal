@@ -7,18 +7,11 @@ def check_client_id(client_id: str):
 
 
 def check_scope(request_scope: str):
-    scopes = request_scope.split()
-
-    valid_scopes = ['openid', 'canvas']
-    for scope in scopes:
-        if scope not in valid_scopes:
-            return False
-    return True
+    return 'openid' in request_scope
 
 
 def check_response_type(type: str):
-    valid_types = ['code']
-    return type in valid_types
+    return 'code' in type
 
 
 def check_redirection_uri(uri: str):
