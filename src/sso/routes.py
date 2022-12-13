@@ -1,11 +1,13 @@
 from fastapi import APIRouter, Depends, Form, status, Request
 from fastapi.responses import RedirectResponse
-from random import choices
+from sqlalchemy.orm import Session
 
+from src.db.settings.config import get_db
 from src.schemas.user_schema import UserResponse
-from src.shared.auth.token_provider import create_access_token
 from src.sso.sso_utils import current_user, AuthRequestParameters
 from src.sso.validators import validate_params
+from src.sso.token_provider import create_access_token
+from src.sso.controller import SSOController
 
 
 sso_router = APIRouter(prefix='/sso', tags=['sso'])
@@ -14,15 +16,15 @@ sso_router = APIRouter(prefix='/sso', tags=['sso'])
 @sso_router.post('/auth')
 def handle_auth(
     params: AuthRequestParameters = Depends(AuthRequestParameters),
-    _: UserResponse = Depends(current_user)
+    db: Session = Depends(get_db),
+    user: UserResponse = Depends(current_user)
 ):
     if not validate_params(params):
         return RedirectResponse(
             url=f'{params.redirect_uri}?error=invalid_request&state={params.state}'
         )
 
-    code = ''.join(choices(params.state, k=25))
-
+    code = SSOController().create_session(user_id=user.id, state=params.state, db=db)
     return RedirectResponse(url=f'{params.redirect_uri}?state={params.state}&code={code}')
 
 
