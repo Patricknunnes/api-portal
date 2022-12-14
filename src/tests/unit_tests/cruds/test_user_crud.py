@@ -1,6 +1,6 @@
 from src.db.cruds.user_crud import UserCRUD
 from src.tests.settings import BaseTestCase
-from src.db.models.user_model import UserModel
+from src.db.models.models import UserModel
 from src.tests.mocks.user_mocks import (
     user_create_data,
     invalid_username,

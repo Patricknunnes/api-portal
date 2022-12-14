@@ -1,6 +1,6 @@
 from src.db.cruds.role_crud import RoleCRUD
 from src.tests.settings import BaseTestCase
-from src.db.models.role_model import RoleModel
+from src.db.models.models import RoleModel
 from src.tests.mocks.role_mocks import roles, invalid_role_id, valid_role_id
 
 
