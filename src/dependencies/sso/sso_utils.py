@@ -6,8 +6,8 @@ from jose import JWTError
 from src.db.cruds.user_crud import UserCRUD
 from src.db.settings.config import get_db
 from src.schemas.user_schema import UserResponse
-from src.sso.exceptions import UnAuthorizedException
-from src.sso.token_provider import decode_token
+from src.dependencies.sso.exceptions import UnAuthorizedException
+from src.dependencies.sso.token_provider import decode_token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/sso/token")
 

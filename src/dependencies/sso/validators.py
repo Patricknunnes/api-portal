@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.sso.sso_utils import AuthRequestParameters
+from src.dependencies.sso.sso_utils import AuthRequestParameters
 from src.db.cruds.client_crud import ClientCRUD
 
 

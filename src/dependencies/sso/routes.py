@@ -5,11 +5,11 @@ from sqlalchemy.orm import Session
 from src.db.settings.config import get_db
 from src.schemas.user_schema import UserResponse
 
-from src.sso.sso_utils import current_user, AuthRequestParameters, TokenRequestBody
-from src.sso.validators import ParamsValidator
-from src.sso.token_provider import create_access_token
-from src.sso.controller import SSOController
-from src.sso.exceptions import BadRequestException
+from src.dependencies.sso.sso_utils import current_user, AuthRequestParameters, TokenRequestBody
+from src.dependencies.sso.validators import ParamsValidator
+from src.dependencies.sso.token_provider import create_access_token
+from src.dependencies.sso.controller import SSOController
+from src.dependencies.sso.exceptions import BadRequestException
 
 sso_router = APIRouter(prefix='/sso', tags=['sso'])
 

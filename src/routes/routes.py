@@ -4,7 +4,7 @@ from src.routes.role_routes import role_router
 from src.routes.user_routes import user_router
 from src.routes.auth_routes import auth_router
 from src.routes.utils_routes import util_router
-from src.sso.routes import sso_router
+from src.dependencies.sso.routes import sso_router
 
 
 def include_routes(app: FastAPI):
