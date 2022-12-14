@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 
 from src.db.cruds.base import BaseCRUD
-from src.db.models.user_model import UserModel
+from src.db.models.models import UserModel
 
 
 class UserCRUD(BaseCRUD):

@@ -1,5 +1,5 @@
 from src.db.cruds.base import BaseCRUD
-from src.db.models.route_model import RouteModel
+from src.db.models.models import RouteModel
 
 
 class RouteCRUD(BaseCRUD):
