@@ -1,28 +1,38 @@
+from sqlalchemy.orm import Session
+
 from src.sso.sso_utils import AuthRequestParameters
+from src.db.cruds.client_crud import ClientCRUD
 
 
-def check_client_id(client_id: str):
-    valid_client_ids = ['portal_idor']
-    return client_id in valid_client_ids
+class ParamsValidator:
+    def check_client_id(self, db: Session, client_id: str):
+        client = ClientCRUD().get(db=db, client_id=client_id)
+        if client:
+            return True
+        return False
 
+    def check_client_secret(self, db: Session, client_id: str, client_secret: str = None):
+        client = ClientCRUD().get(db=db, client_id=client_id)
+        if client.client_secret == None:
+            return True
+        pass
 
-def check_scope(request_scope: str):
-    return 'openid' in request_scope
+    def check_scope(self, request_scope: str):
+        return 'openid' in request_scope
 
+    def check_response_type(self, type: str):
+        return 'code' == type
 
-def check_response_type(type: str):
-    return 'code' in type
+    def check_redirection_uri(self, db: Session, client_id: str, uri: str):
+        client = ClientCRUD().get(db=db, client_id=client_id)
 
+        return client.redirect_uri == uri
 
-def check_redirection_uri(uri: str):
-    valid_uris = ['https://sso.test.canvaslms.com/login/oauth2/callback']
-    return uri in valid_uris
-
-
-def validate_params(params: AuthRequestParameters):
-    return (
-        check_client_id(params.client_id) and
-        check_redirection_uri(params.redirect_uri) and
-        check_response_type(params.response_type) and
-        check_scope(params.scope)
-    )
+    def validate_authorize_params(self, params: AuthRequestParameters, db: Session):
+        return (
+            self.check_client_id(db, params.client_id) and
+            self.check_client_secret(db, params.client_id, params.client_secret) and
+            self.check_redirection_uri(db, params.client_id, params.redirect_uri) and
+            self.check_response_type(params.response_type) and
+            self.check_scope(params.scope)
+        )

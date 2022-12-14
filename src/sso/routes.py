@@ -6,7 +6,7 @@ from src.db.settings.config import get_db
 from src.schemas.user_schema import UserResponse
 
 from src.sso.sso_utils import current_user, AuthRequestParameters, TokenRequestBody
-from src.sso.validators import validate_params
+from src.sso.validators import ParamsValidator
 from src.sso.token_provider import create_access_token
 from src.sso.controller import SSOController
 from src.sso.exceptions import BadRequestException
@@ -21,7 +21,7 @@ async def handle_auth(
     params: AuthRequestParameters = Depends(AuthRequestParameters)
 ):
     user = await current_user(token=access_key, db=db)
-    if not validate_params(params):
+    if not ParamsValidator().validate_authorize_params(params=params, db=db):
         return RedirectResponse(
             url=f'{params.redirect_uri}?error=invalid_request&state={params.state}'
         )
