@@ -21,7 +21,7 @@ def upgrade() -> None:
                     sa.Column('id', GUID(), nullable=False, primary_key=True),
                     sa.Column('client_id', sa.String(length=30), nullable=False, unique=True),
                     sa.Column('client_secret', sa.String(length=255), nullable=True),
-                    sa.Column('redirect_uri', sa.String(255), nullable=False)
+                    sa.Column('redirect_uri', sa.String(length=255), nullable=False)
                     )
 
 
