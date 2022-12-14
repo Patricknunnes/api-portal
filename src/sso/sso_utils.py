@@ -1,16 +1,15 @@
 from fastapi import Depends, Form
 from fastapi.security import OAuth2PasswordBearer
-from typing import Union
 from sqlalchemy.orm import Session
 from jose import JWTError
 
 from src.db.cruds.user_crud import UserCRUD
 from src.db.settings.config import get_db
-from src.exceptions.exceptions import UnAuthorizedException
 from src.schemas.user_schema import UserResponse
+from src.sso.exceptions import UnAuthorizedException
 from src.sso.token_provider import decode_token
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/sso/token")
 
 
 class AuthRequestParameters:
@@ -46,13 +45,13 @@ class TokenRequestBody:
 
 
 async def current_user(
-    access_key: str = Form(),
+    token: str = Depends(oauth2_scheme),
     db: Session = Depends(get_db)
 ) -> UserResponse:
-    exception = UnAuthorizedException(detail="Token invalido.")
+    exception = UnAuthorizedException(detail="invalid_token")
 
     try:
-        user_id: str = decode_token(token=access_key)
+        user_id: str = decode_token(token=token)
 
         if not user_id:
             raise exception
