@@ -20,8 +20,10 @@ class AuthRequestParameters:
         response_type: str,
         scope: str,
         state: str,
+        client_secret: str = None
     ):
         self.client_id = client_id
+        self.client_secret = client_secret
         self.redirect_uri = redirect_uri
         self.response_type = response_type
         self.scope = scope
