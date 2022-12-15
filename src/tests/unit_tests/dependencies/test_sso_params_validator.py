@@ -135,15 +135,6 @@ class ParamsValidatorTestClass(BaseTestCase):
         self.assertFalse(result)
 
     @patch.object(ClientCRUD, 'get', return_value=ClientModel(**client_with_secret))
-    def test_validate_authorize_params_invalid_client_secret(self, _):
-        self.auth_params.client_secret = 'invalid'
-        result = ParamsValidator().validate_authorize_params(
-            db=self.session,
-            params=self.auth_params
-        )
-        self.assertFalse(result)
-
-    @patch.object(ClientCRUD, 'get', return_value=ClientModel(**client_with_secret))
     def test_validate_authorize_params_invalid_redirect_uri(self, _):
         self.auth_params.redirect_uri = 'invalid'
         result = ParamsValidator().validate_authorize_params(

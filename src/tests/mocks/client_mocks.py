@@ -22,6 +22,5 @@ valid_auth_request_params = {
     'redirect_uri': 'http://redirect_uri/client1.com',
     'response_type': 'code',
     'scope': 'openid',
-    'state': 'any_jwt',
-    'client_secret': 'client1_secret'
+    'state': 'any_jwt'
 }

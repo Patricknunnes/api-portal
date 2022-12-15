@@ -33,7 +33,6 @@ class ParamsValidator:
     def validate_authorize_params(self, params: AuthRequestParameters, db: Session):
         return (
             self.check_client_id(db, params.client_id) and
-            self.check_client_secret(db, params.client_id, params.client_secret) and
             self.check_redirect_uri(db, params.client_id, params.redirect_uri) and
             self.check_response_type(params.response_type) and
             self.check_scope(params.scope)
