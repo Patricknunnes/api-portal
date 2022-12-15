@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from src.dependencies.sso.sso_utils import AuthRequestParameters
+from src.dependencies.sso.sso_utils import AuthRequestParameters, TokenRequestBody
 from src.db.cruds.client_crud import ClientCRUD
 from src.dependencies.sso.hash_provider import verify_password
 
@@ -30,10 +30,21 @@ class ParamsValidator:
 
         return client.redirect_uri == uri
 
+    def check_grant_type(self, type: str):
+        return 'authorization_code' == type
+
     def validate_authorize_params(self, params: AuthRequestParameters, db: Session):
         return (
             self.check_client_id(db, params.client_id) and
             self.check_redirect_uri(db, params.client_id, params.redirect_uri) and
             self.check_response_type(params.response_type) and
             self.check_scope(params.scope)
+        )
+
+    def validate_token_params(self, params: TokenRequestBody, db: Session):
+        return (
+            self.check_client_id(db, params.client_id) and
+            self.check_redirect_uri(db, params.client_id, params.redirect_uri) and
+            self.check_client_secret(db, params.client_id, params.client_secret) and
+            self.check_grant_type(params.grant_type)
         )

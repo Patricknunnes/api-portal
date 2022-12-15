@@ -44,21 +44,22 @@ def handle_token(
     body: TokenRequestBody = Depends(TokenRequestBody),
     db: Session = Depends(get_db)
 ):
-    user = SSOController().validate_session(session_code=body.code, db=db)
+    if ParamsValidator().validate_token_params(params=body, db=db):
+        user = SSOController().validate_session(session_code=body.code, db=db)
 
-    response.headers['Cache-Control'] = 'no-store'
-    response.headers['Pragma'] = 'no-cache'
+        response.headers['Cache-Control'] = 'no-store'
+        response.headers['Pragma'] = 'no-cache'
 
-    if user:
-        id_token = create_access_token(data={'sub': user.username})
-        access_token = create_access_token(data={'sub': str(user.id)})
+        if user:
+            id_token = create_access_token(data={'sub': user.username})
+            access_token = create_access_token(data={'sub': str(user.id)})
 
-        return {
-            'access_token': access_token,
-            'token_type': 'Bearer',
-            'expires_in': 1800,
-            'id_token': id_token
-        }
+            return {
+                'access_token': access_token,
+                'token_type': 'Bearer',
+                'expires_in': 1800,
+                'id_token': id_token
+            }
 
     raise BadRequestException('invalid_request')
 
