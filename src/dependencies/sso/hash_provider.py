@@ -6,7 +6,7 @@ from src.settings.settings import BASE_DIR
 
 load_dotenv(os.path.join(BASE_DIR, '../../.env'))
 
-fernet = Fernet(os.getenv("SECRET_KEY_PASSWD"))
+fernet = Fernet(os.getenv("SSO_SECRET"))
 
 
 def get_password_hash(password):
