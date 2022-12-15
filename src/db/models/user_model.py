@@ -21,7 +21,7 @@ class UserModel(Base):
     is_totvs = Column(Boolean, nullable=False, default=False)
     canvas_id = Column(Integer, nullable=True, unique=True)
     last_sync = Column(TIMESTAMP, nullable=True)
-    created_at = Column(TIMESTAMP,
-                        server_default=func.now())
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    session_code = Column(String(25), nullable=True, unique=True)
 
     role = relationship("RoleModel")

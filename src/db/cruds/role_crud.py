@@ -1,5 +1,5 @@
 from src.db.cruds.base import BaseCRUD
-from src.db.models.role_model import RoleModel
+from src.db.models.models import RoleModel
 
 
 class RoleCRUD(BaseCRUD):

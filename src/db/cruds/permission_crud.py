@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from src.db.cruds.base import BaseCRUD
 from src.db.models.permission_model import PermissionModel
-from src.db.models.route_model import RouteModel
+from src.db.models.models import RouteModel
 from src.schemas.auth_schema import PermissionParams
 
 

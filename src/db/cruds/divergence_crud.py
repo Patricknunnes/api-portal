@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from src.db.cruds.base import BaseCRUD
-from src.db.models.divergence_model import DivergenceModel
+from src.db.models.models import DivergenceModel
 
 
 class DivergenceCRUD(BaseCRUD):

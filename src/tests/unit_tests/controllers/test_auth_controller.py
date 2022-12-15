@@ -2,7 +2,6 @@ from unittest.mock import patch
 
 from src.db.cruds.user_crud import UserCRUD
 from src.dependencies.totvs.soap_api import TotvsWebServer
-from src.dependencies.canvas.api_integration import CanvasApiIntegration
 from src.db.models.user_model import UserModel
 from src.exceptions.exceptions import BadRequestException
 from src.schemas.auth_schema import LoginBase, ResponseSsoTotvs, TokenResponse
@@ -60,35 +59,34 @@ class AuthControllerTestClass(BaseTestCase):
         'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
-    @patch.object(CanvasApiIntegration, 'sync_password')
-    def test_handle_login_with_valid_non_totvs_user(self, sync_mock, *_):
+    @patch.object(TotvsWebServer, 'get_auth_totvs')
+    def test_handle_login_with_valid_non_totvs_user(self, totvs_mock, *_):
         '''
-        Should return a TokenResponse instance and do not sync with canvas
+        Should return a TokenResponse instance without trying to log in with TOTVS
         '''
         result = AuthController().handle_login(
             db=self.session,
             data_login=LoginBase(**valid_login)
         )
-        sync_mock.assert_not_called()
+        totvs_mock.assert_not_called()
         self.assertTrue(isinstance(result, TokenResponse))
 
-    @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=True)
     @patch.object(
         UserCRUD,
         'get_user_by_username_or_email',
         return_value=UserModel(**totvs_user_db_response)
     )
-    @patch.object(CanvasApiIntegration, 'sync_password')
+    @patch.object(TotvsWebServer, 'get_auth_totvs', return_value=True)
     @patch.object(UserCRUD, 'patch')
     def test_handle_login_with_totvs_user(
         self,
         patch_mock,
-        sync_mock,
+        totvs_mock,
         *_
     ):
         '''
-        Should return a TokenResponse instance,
-        patch the password hash in db and canvas
+        Should log in with TOTVS, return a TokenResponse instance and
+        patch the password hash in db
         '''
         result = AuthController().handle_login(
             db=self.session,
@@ -96,7 +94,7 @@ class AuthControllerTestClass(BaseTestCase):
         )
         self.assertTrue(isinstance(result, TokenResponse))
         patch_mock.assert_called()
-        sync_mock.assert_called()
+        totvs_mock.assert_called()
 
     @patch.object(
         UserCRUD,

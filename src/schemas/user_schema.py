@@ -33,7 +33,6 @@ class UserResponse(BaseModel):
     phone: Optional[int]
     image: Optional[str]
     is_totvs: bool
-    canvas_id: Optional[int]
     role: RoleResponse
 
     class Config:
