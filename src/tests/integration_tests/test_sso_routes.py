@@ -4,8 +4,11 @@ from src.db.cruds.user_crud import UserCRUD
 from src.db.models.models import UserModel
 from src.dependencies.sso.validators import ParamsValidator
 from src.tests.mocks.user_mocks import totvs_user_db_response
+from src.dependencies.sso.sso_utils import current_user
 from src.tests.mocks.client_mocks import valid_token_request_body
 from src.tests.settings import ApiBaseTestCase
+
+from src.main import app
 
 
 class SSORouteTestClass(ApiBaseTestCase):
@@ -108,12 +111,48 @@ class SSORouteTestClass(ApiBaseTestCase):
         response = self.client.post('/sso/token', data=self.token_request_body)
 
         self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers['Cache-Control'], 'no-store')
+        self.assertEqual(response.headers['Pragma'], 'no-cache')
         self.assertEqual(
             {
                 'access_token': 'token',
                 'token_type': 'Bearer',
                 'expires_in': 1800,
                 'id_token': 'token'
+            },
+            response.json()
+        )
+
+    def test_handle_user_info_without_token(self):
+        response = self.client.get('/sso/user_info')
+
+        self.assertEqual(401, response.status_code)
+        self.assertEqual({'detail': 'Not authenticated'}, response.json())
+
+    def test_handle_user_info_with_invalid_token(self):
+        response = self.client.get(
+            '/sso/user_info',
+            headers={'Authorization': 'Bearer invalid_token'}
+        )
+
+        self.assertEqual(401, response.status_code)
+        self.assertEqual({'detail': 'invalid_token'}, response.json())
+
+    def test_handle_user_info_with_valid_token(self):
+        app.dependency_overrides[current_user] = (
+            lambda: UserModel(**totvs_user_db_response)
+        )
+        response = self.client.get(
+            '/sso/user_info',
+            headers={'Authorization': 'Bearer valid_token'}
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            {
+                'sub': totvs_user_db_response['username'],
+                'name': totvs_user_db_response['name'],
+                'email': totvs_user_db_response['email']
             },
             response.json()
         )
