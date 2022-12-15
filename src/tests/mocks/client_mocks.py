@@ -24,3 +24,11 @@ valid_auth_request_params = {
     'scope': 'openid',
     'state': 'any_jwt'
 }
+
+valid_token_request_body = {
+    'client_id': 'client1',
+    'redirect_uri': 'http://redirect_uri/client1.com',
+    'grant_type': 'authorization_code',
+    'client_secret': 'openid',
+    'code': 'valid_code'
+}
