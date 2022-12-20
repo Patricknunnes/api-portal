@@ -56,5 +56,7 @@ In order to run the API without docker, run
 After that, you can access the API's docs through `http://localhost:8080/docs`
 
 ## More docs
+- [Creating OpenID Connect Authentication Provider](./docs/sso/Creating%20OpenID%20Connect%20Auth%20Provider.md)
 
 - [Registering OpenID Connect Authentication Provider on Canvas](./docs/canvas/Registering%20OpenId%20Connect%20Auth%20Provider.md)
+
