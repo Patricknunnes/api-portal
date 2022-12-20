@@ -5,6 +5,7 @@
 - [1. Goals](#goals)
 - [2. Technologies and tools](#technologies-and-tools)
 - [3. Running the application](#running-the-application)
+- [4. More docs](#more-docs)
 
 ## Goals
 This API will be used to grant access to Portal IDOR website, as well as to manage users data through database interaction.
@@ -53,3 +54,9 @@ In order to run the API without docker, run
     make dev_server
 
 After that, you can access the API's docs through `http://localhost:8080/docs`
+
+## More docs
+- [Creating OpenID Connect Authentication Provider](./docs/sso/Creating%20OpenID%20Connect%20Auth%20Provider.md)
+
+- [Registering OpenID Connect Authentication Provider on Canvas](./docs/canvas/Registering%20OpenId%20Connect%20Auth%20Provider.md)
+
