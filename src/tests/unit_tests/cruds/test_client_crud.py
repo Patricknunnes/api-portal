@@ -9,7 +9,7 @@ class ClientCRUDTestClass(BaseTestCase):
         '''Should return created client'''
         result = ClientCRUD().create(db=self.session, data=client_with_secret)
         self.assertIsNotNone(result)
-        self.assertTrue(isinstance(result, ClientModel))
+        self.assertIsInstance(result, ClientModel)
 
     def test_get_client_with_match(self):
         '''Should return client found'''
@@ -18,7 +18,7 @@ class ClientCRUDTestClass(BaseTestCase):
             client_id=client_with_secret['client_id']
         )
         self.assertIsNotNone(result)
-        self.assertTrue(isinstance(result, ClientModel))
+        self.assertIsInstance(result, ClientModel)
 
     def test_get_client_without_match(self):
         '''Should return None when client_id match no client'''
