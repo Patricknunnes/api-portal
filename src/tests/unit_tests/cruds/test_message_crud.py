@@ -1,13 +1,13 @@
 from src.db.cruds.message_crud import MessageCRUD
 from src.db.models.models import MessageModel
-from src.tests.mocks.message_mocks import message_one, message_two
+from src.tests.mocks.message_mocks import message
 from src.tests.settings import BaseTestCase
 
 
 class MessageCRUDTestClass(BaseTestCase):
     def test_create(self):
         '''Should return created message'''
-        result = MessageCRUD().create(db=self.session, data=message_one)
+        result = MessageCRUD().create(db=self.session, data=message)
         self.assertIsNotNone(result)
         self.assertIsInstance(result, MessageModel)
 
@@ -26,9 +26,10 @@ class MessageCRUDTestClass(BaseTestCase):
 
     def test_get_message_with_match(self):
         '''Should return message found'''
+        messages = MessageCRUD().handle_list(db=self.session)['results']
         result = MessageCRUD().get(
             db=self.session,
-            id=message_one['id']
+            id=messages[0].id
         )
         self.assertIsNotNone(result)
         self.assertIsInstance(result, MessageModel)
@@ -36,13 +37,13 @@ class MessageCRUDTestClass(BaseTestCase):
     def test_patch(self):
         '''Should update message'''
         new_title = 'another title'
-        result = MessageCRUD().get(db=self.session, id=message_one['id'])
+        message_from_db = MessageCRUD().handle_list(db=self.session)['results'][0]
 
-        self.assertNotEqual(result.title, new_title)
+        self.assertNotEqual(message_from_db.title, new_title)
 
-        MessageCRUD().patch(db=self.session, object_id=message_one['id'], data={'title': new_title})
+        MessageCRUD().patch(db=self.session, object_id=message_from_db.id, data={'title': new_title})
 
-        result = MessageCRUD().get(db=self.session, id=message_one['id'])
+        result = MessageCRUD().get(db=self.session, id=message_from_db.id)
 
         self.assertEqual(result.title, new_title)
 
@@ -56,13 +57,11 @@ class MessageCRUDTestClass(BaseTestCase):
     
     def test_delete(self):
         '''Should delete message'''
-        MessageCRUD().create(db=self.session, data=message_two)
-        result = MessageCRUD().get(db=self.session, id=message_two['id'])
+        MessageCRUD().create(db=self.session, data=message)
+        message_from_db = MessageCRUD().handle_list(db=self.session)['results'][1]
 
-        self.assertIsNotNone(result)
+        MessageCRUD().delete(db=self.session, object_id=message_from_db.id)
 
-        MessageCRUD().delete(db=self.session, object_id=message_two['id'])
-
-        result = MessageCRUD().get(db=self.session, id=message_two['id'])
+        result = MessageCRUD().get(db=self.session, id=message_from_db.id)
 
         self.assertIsNone(result)
