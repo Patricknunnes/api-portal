@@ -34,7 +34,8 @@ class MessageControllerTestClass(BaseTestCase):
 
     def test_handle_create_with_invalid_string_as_expiration_date(self):
         '''
-        Trying to create a message with a invalid string as expiration_date must raise an error
+        Trying to create a message with a invalid string as
+        expiration_date must raise an error
         '''
         with self.assertRaises(BadRequestException) as error:
             MessageController().handle_create(
@@ -49,7 +50,8 @@ class MessageControllerTestClass(BaseTestCase):
 
     def test_handle_create_with_invalid_date_format(self):
         '''
-        Trying to create a message with a invalid format for expiration_date must raise an error
+        Trying to create a message with a invalid format for
+        expiration_date must raise an error
         '''
         with self.assertRaises(BadRequestException) as error:
             MessageController().handle_create(
@@ -114,7 +116,8 @@ class MessageControllerTestClass(BaseTestCase):
     @patch.object(MessageCRUD, 'create')
     def test_handle_create_without_optional_fields(self, create_mock):
         '''
-        Trying to create a message without the optional fields, will call MessageCRUD.create
+        Trying to create a message without the optional fields
+        will call MessageCRUD.create
         '''
         MessageController().handle_create(
             db=self.session,
@@ -128,7 +131,8 @@ class MessageControllerTestClass(BaseTestCase):
     @patch.object(MessageCRUD, 'create')
     def test_handle_create_with_all_fields(self, create_mock, datetime_mock, *_):
         '''
-        Trying to create a message without the optional fields, will call MessageCRUD.create
+        Trying to create a message without the optional fields
+        will call MessageCRUD.create
         '''
         datetime_mock.now.return_value = datetime.strptime('2000-01-01', '%Y-%m-%d')
         MessageController().handle_create(
@@ -139,7 +143,8 @@ class MessageControllerTestClass(BaseTestCase):
 
     def test_handle_patch_with_invalid_string_as_expiration_date(self):
         '''
-        Trying to patch a message with a invalid string as expiration_date must raise an error
+        Trying to patch a message with a invalid string as
+        expiration_date must raise an error
         '''
         with self.assertRaises(BadRequestException) as error:
             MessageController().handle_patch(
@@ -155,7 +160,8 @@ class MessageControllerTestClass(BaseTestCase):
 
     def test_handle_patch_with_invalid_date_format(self):
         '''
-        Trying to patch a message with a invalid format for expiration_date must raise an error
+        Trying to patch a message with a invalid format for
+        expiration_date must raise an error
         '''
         with self.assertRaises(BadRequestException) as error:
             MessageController().handle_patch(
@@ -220,7 +226,6 @@ class MessageControllerTestClass(BaseTestCase):
             'Usuário não encontrado.',
             exception.detail
         )
-
 
     def test_handle_patch_with_invalid_id(self):
         '''
