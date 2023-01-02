@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
+from uuid import UUID
 
 from src.db.settings.config import get_db
 from src.shared.auth.auth_utils import current_user
@@ -33,3 +34,19 @@ def handle_create_message(
     Create message
     """
     return MessageController().handle_create(db=db, data=message_data)
+
+
+@message_router.delete('/{message_id}', status_code=status.HTTP_204_NO_CONTENT)
+def handle_delete_message(
+    message_id: UUID,
+    db: Session = Depends(get_db),
+    _: UserResponse = Depends(current_user)
+):
+    """
+    Delete message
+    """
+    MessageController().handle_delete(
+        db=db,
+        object_id=message_id, 
+        exception_message='Mensagem não encontrada'
+    )
