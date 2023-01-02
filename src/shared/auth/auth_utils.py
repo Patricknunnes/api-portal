@@ -50,11 +50,9 @@ async def current_user(token: str = Depends(oauth2_scheme),
 
 
 async def is_accessible(db: Session, datas: PermissionParams) -> bool:
-    free_paths = ['/me', '/utils', '/sso']
+    free_paths = ['/auth/me', '/auth/utils', '/auth/sso/totvs']
 
-    match = [x for x in free_paths if re.search(x, datas.path)]
-
-    if datas.user_role.name.lower() == 'root' or len(match):
+    if datas.user_role.name.lower() == 'root' or datas.path in free_paths:
         return True
 
     user_permissions = PermissionCRUD().get_permission(db=db, datas=datas)
