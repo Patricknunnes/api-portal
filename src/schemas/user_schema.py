@@ -73,7 +73,7 @@ class UserDivergence(BaseModel):
 class DivergenceResponsePaginate(BaseModel):
     page: int = 1
     total: int
-    divergences: List[UserDivergence]
+    results: List[UserDivergence]
 
     class Config:
         orm_mode = True
