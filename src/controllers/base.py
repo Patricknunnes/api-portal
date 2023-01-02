@@ -35,13 +35,10 @@ class BaseController(BaseInterfaceController):
 
         return self.crud_class().delete(db, object_id, commit)
 
-    def handle_patch(self, db: Session, object_id: Any, data: Any, commit=True):
+    def handle_patch(self, db: Session, object_id: Any, data: Any, exception_message: str, commit=True):
         db_customer = self.crud_class().get(db, id=object_id)
 
         if db_customer is None:
-            raise HTTPException(
-                status_code=404,
-                detail={'message': 'resource not found'}
-            )
+            raise NotFoundException(detail=exception_message)
 
         return self.crud_class().patch(db, object_id, data, commit)
