@@ -27,7 +27,7 @@ class MessageControllerTestClass(BaseTestCase):
 
     def test_handle_create_with_invalid_string_as_expiration_date(self):
         '''
-        Trying to create a user with a invalid string as expiration_date must raise an error
+        Trying to create a message with a invalid string as expiration_date must raise an error
         '''
         with self.assertRaises(BadRequestException) as error:
             MessageController().handle_create(
@@ -42,7 +42,7 @@ class MessageControllerTestClass(BaseTestCase):
 
     def test_handle_create_with_invalid_date_format(self):
         '''
-        Trying to create a user with a invalid format for expiration_date must raise an error
+        Trying to create a message with a invalid format for expiration_date must raise an error
         '''
         with self.assertRaises(BadRequestException) as error:
             MessageController().handle_create(
@@ -58,7 +58,7 @@ class MessageControllerTestClass(BaseTestCase):
     @patch('src.controllers.message_controller.datetime', wraps=datetime)
     def test_handle_create_with_day_past(self, datetime_mock):
         '''
-        Trying to create a user with a date past as expiration_date must raise an error
+        Trying to create a message with a date past as expiration_date must raise an error
         '''
         with self.assertRaises(BadRequestException) as error:
             datetime_mock.now.return_value = datetime.strptime('2100-01-01', '%Y-%m-%d')
@@ -75,7 +75,7 @@ class MessageControllerTestClass(BaseTestCase):
     @patch.object(RoleCRUD, 'get', return_value=None)
     def test_handle_create_with_not_found_role(self, _):
         '''
-        Trying to create a user with an invalid role_id must raise an error
+        Trying to create a message with an invalid role_id must raise an error
         '''
         with self.assertRaises(NotFoundException) as error:
             MessageController().handle_create(
@@ -91,7 +91,7 @@ class MessageControllerTestClass(BaseTestCase):
     @patch.object(UserCRUD, 'get', return_value=None)
     def test_handle_create_with_not_found_role(self, _):
         '''
-        Trying to create a user with an invalid user_id must raise an error
+        Trying to create a message with an invalid user_id must raise an error
         '''
         with self.assertRaises(NotFoundException) as error:
             MessageController().handle_create(
