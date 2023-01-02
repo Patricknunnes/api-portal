@@ -11,11 +11,18 @@ class MessageCRUDTestClass(BaseTestCase):
         self.assertIsNotNone(result)
         self.assertIsInstance(result, MessageModel)
 
-    def test_list(self):
-        '''Should return message list'''
-        result = MessageCRUD().list(db=self.session)
-        self.assertIsInstance(result, list)
-        self.assertGreater(len(result), 0)
+    def test_messages_count(self):
+        result = MessageCRUD().count_records(db=self.session)
+        self.assertEqual(result, 1)
+
+    def test_messages_list(self):
+        '''
+        Should return page info with list
+        '''
+        result = MessageCRUD().handle_list(db=self.session)
+        self.assertEqual(result['page'], 1)
+        self.assertEqual(result['total'], 1)
+        self.assertEqual(len(result['results']), 1)
 
     def test_get_message_with_match(self):
         '''Should return message found'''
