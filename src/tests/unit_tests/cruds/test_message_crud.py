@@ -41,7 +41,11 @@ class MessageCRUDTestClass(BaseTestCase):
 
         self.assertNotEqual(message_from_db.title, new_title)
 
-        MessageCRUD().patch(db=self.session, object_id=message_from_db.id, data={'title': new_title})
+        MessageCRUD().patch(
+            db=self.session,
+            object_id=message_from_db.id,
+            data={'title': new_title}
+        )
 
         result = MessageCRUD().get(db=self.session, id=message_from_db.id)
 
@@ -54,7 +58,7 @@ class MessageCRUDTestClass(BaseTestCase):
             id='88888ecb-2b9a-486c-b26a-17e198592206'
         )
         self.assertIsNone(result)
-    
+
     def test_delete(self):
         '''Should delete message'''
         MessageCRUD().create(db=self.session, data=message)

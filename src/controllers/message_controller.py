@@ -18,11 +18,15 @@ class MessageController(PaginationOrientedController):
     def __validate_expiration_date(self, date: str):
         try:
             expiration_date = datetime.strptime(date, '%Y-%m-%d')
-            
+
             if expiration_date < datetime.now():
-                raise BadRequestException(detail='A data de expiração deve ser uma data futura.')
+                raise BadRequestException(
+                    detail='A data de expiração deve ser uma data futura.'
+                )
         except ValueError:
-            raise BadRequestException(detail='Data de expiração inválida. Siga o formato YYYY-MM-DD.')
+            raise BadRequestException(
+                detail='Data de expiração inválida. Siga o formato YYYY-MM-DD.'
+            )
 
     def __validate_fields(self, db: Session, data: MessageCreate):
         if 'expiration_date' in data:
@@ -41,7 +45,6 @@ class MessageController(PaginationOrientedController):
                 object_id=data['user_permission'],
                 exception_message='Usuário não encontrado.'
             )
-
 
     def handle_create(self, db: Session, data: MessageCreate):
         cleaned_data = UtilService().remove_none_in_form(data)

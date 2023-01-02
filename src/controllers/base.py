@@ -1,4 +1,3 @@
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from typing import Any
 
@@ -35,7 +34,14 @@ class BaseController(BaseInterfaceController):
 
         return self.crud_class().delete(db, object_id, commit)
 
-    def handle_patch(self, db: Session, object_id: Any, data: Any, exception_message: str, commit=True):
+    def handle_patch(
+        self,
+        db: Session,
+        object_id: Any,
+        data: Any,
+        exception_message: str,
+        commit=True
+    ):
         db_customer = self.crud_class().get(db, id=object_id)
 
         if db_customer is None:
