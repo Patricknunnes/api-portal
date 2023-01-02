@@ -22,7 +22,7 @@ def handle_get_all_users(
     page: int = None,
     limit: int = None,
     db: Session = Depends(get_db),
-    profile: UserResponse = Depends(current_user)
+    _: UserResponse = Depends(current_user)
 ):
     """
     Return all users from database
@@ -35,7 +35,7 @@ def handle_get_all_divergences(
     db: Session = Depends(get_db),
     page: int = None,
     limit: int = None,
-    profile: UserResponse = Depends(current_user)
+    _: UserResponse = Depends(current_user)
 ):
     """
     Return all registration divergences from database
@@ -48,7 +48,7 @@ def handle_get_all_divergences(
                  status_code=status.HTTP_200_OK)
 def handle_get_user(user_id: UUID,
                     db: Session = Depends(get_db),
-                    profile: UserResponse = Depends(current_user)):
+                    _: UserResponse = Depends(current_user)):
     """
     This route return the user data by UUID.
     """
@@ -60,7 +60,7 @@ def handle_get_user(user_id: UUID,
 @user_router.post('', response_model=UserResponse, status_code=status.HTTP_201_CREATED)
 def handle_create_user(user_data: UserBase,
                        db: Session = Depends(get_db),
-                       profile: UserResponse = Depends(current_user)):
+                       _: UserResponse = Depends(current_user)):
     """
     This route is used do create a new user.
     """
