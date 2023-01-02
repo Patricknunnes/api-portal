@@ -15,6 +15,14 @@ class MessageCreate(BaseModel):
     user_permission: Optional[UUID]
 
 
+class MessageUpdate(BaseModel):
+    title: Optional[str]
+    text: Optional[str]
+    expiration_date: Optional[str]
+    role_permission: Optional[UUID]
+    user_permission: Optional[UUID]
+
+
 class MessageResponse(BaseModel):
     id: UUID
     title: str

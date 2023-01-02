@@ -5,14 +5,14 @@ from uuid import UUID
 from src.db.settings.config import get_db
 from src.shared.auth.auth_utils import current_user
 from src.controllers.message_controller import MessageController
-from src.schemas.message_schema import MessageResponsePaginate, MessageResponse, MessageCreate
+from src.schemas.message_schema import MessageResponsePaginate, MessageResponse, MessageCreate, MessageUpdate
 from src.schemas.user_schema import UserResponse
 
 message_router = APIRouter(prefix='/message', tags=['Messages'])
 
 
 @message_router.get('', response_model=MessageResponsePaginate)
-def handle_get_messages(
+def handle_list_messages(
     page: int = None,
     limit: int = None,
     db: Session = Depends(get_db),
@@ -49,4 +49,21 @@ def handle_delete_message(
         db=db,
         object_id=message_id, 
         exception_message='Mensagem não encontrada'
+    )
+
+
+@message_router.patch('/{message_id}', status_code=status.HTTP_204_NO_CONTENT)
+def handle_patch_message(
+    message_id: UUID,
+    message_data: MessageUpdate,
+    db: Session = Depends(get_db),
+    _: UserResponse = Depends(current_user)
+):
+    """
+    Update message
+    """
+    MessageController().handle_patch(
+        db=db,
+        object_id=message_id,
+        data=message_data
     )
