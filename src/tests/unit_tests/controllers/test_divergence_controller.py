@@ -9,4 +9,4 @@ class DivergenceControllerTestClass(BaseTestCase):
         '''
         result = DivergenceController().handle_list(db=self.session)
 
-        self.assertEqual(result, {'page': 1, 'total': 0, 'divergences': []})
+        self.assertEqual(result, {'page': 1, 'total': 0, 'results': []})
