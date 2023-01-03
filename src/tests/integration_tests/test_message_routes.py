@@ -238,3 +238,115 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
                 'user': None
             }
         )
+
+    def test_patch_with_invalid_string_as_expiration_date(self):
+        '''
+        Should return status 400 when invalid string as date
+        '''
+        response = self.client.patch(
+            f'/message/{uuid_test}',
+            headers=self.headers,
+            json=message_with_invalid_string_as_date
+        )
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            response.json(), 
+            {'detail': 'Data de expiração inválida. Siga o formato YYYY-MM-DD.'}
+        )
+
+    def test_patch_with_invalid_date_format(self):
+        '''
+        Should return status 400 when date is in an invalid format
+        '''
+        response = self.client.patch(
+            f'/message/{uuid_test}',
+            headers=self.headers,
+            json=message_with_invalid_format_date
+        )
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            response.json(), 
+            {'detail': 'Data de expiração inválida. Siga o formato YYYY-MM-DD.'}
+        )
+
+    @patch('src.controllers.message_controller.datetime', wraps=datetime)
+    def test_patch_with_day_past(self, datetime_mock):
+        '''
+        Should return status 400 when setting a expiration date past
+        '''
+        datetime_mock.now.return_value = datetime.strptime('2100-01-01', '%Y-%m-%d')
+        response = self.client.patch(
+            f'/message/{uuid_test}',
+            headers=self.headers,
+            json=message_with_expiration_date
+        )
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            response.json(), 
+            {'detail': 'A data de expiração deve ser uma data futura.'}
+        )
+
+    def test_patch_with_not_found_role(self):
+        '''
+        Should return status 404 when role id not found
+        '''
+        response = self.client.patch(
+            f'/message/{uuid_test}',
+            headers=self.headers,
+            json=message_with_role_permission
+        )
+
+        self.assertEqual(404, response.status_code)
+        self.assertEqual(response.json(), {'detail': 'Cargo não encontrado.'})
+
+    def test_patch_with_not_found_user(self):
+        '''
+        Should return status 404 when user id not found
+        '''
+        response = self.client.patch(
+            f'/message/{uuid_test}',
+            headers=self.headers,
+            json=message_with_user_permission
+        )
+
+        self.assertEqual(404, response.status_code)
+        self.assertEqual(response.json(), {'detail': 'Usuário não encontrado.'})
+
+    @patch.object(RoleCRUD, 'get', return_value=roles[0])
+    @patch.object(UserCRUD, 'get', return_value=user_db_response)
+    @patch.object(MessageCRUD, 'get', return_value=message)
+    @patch.object(MessageCRUD, 'patch', return_value=None)
+    @patch('src.controllers.message_controller.datetime', wraps=datetime)
+    def test_patch_with_all_fields(self, datetime_mock, *_):
+        '''
+        Should return status 204 when message is patched successfully
+        '''
+        datetime_mock.now.return_value = datetime.strptime('2000-01-01', '%Y-%m-%d')
+        response = self.client.patch(
+            f'/message/{uuid_test}',
+            headers=self.headers,
+            json=message_with_all_fields
+        )
+
+        self.assertEqual(204, response.status_code)
+        self.assertIsNone(response.json())
+
+    @patch.object(RoleCRUD, 'get', return_value=roles[0])
+    @patch.object(UserCRUD, 'get', return_value=user_db_response)
+    @patch('src.controllers.message_controller.datetime', wraps=datetime)
+    def test_patch_with_all_fields_when_message_id_not_found(self, datetime_mock, *_):
+        '''
+        Should return status 404 when message id not found
+        '''
+        datetime_mock.now.return_value = datetime.strptime('2000-01-01', '%Y-%m-%d')
+        response = self.client.patch(
+            f'/message/{uuid_test}',
+            headers=self.headers,
+            json=message_with_all_fields
+        )
+
+        self.assertEqual(404, response.status_code)
+        self.assertEqual({'detail': 'Mensagem não encontrada'}, response.json())
