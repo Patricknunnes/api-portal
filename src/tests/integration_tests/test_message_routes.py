@@ -15,7 +15,6 @@ from src.tests.mocks.message_mocks import (
 from src.tests.mocks.role_mocks import roles
 from src.tests.mocks.user_mocks import user_db_response
 from src.tests.settings import ApiWithAuthTestCase, ApiBaseTestCase
-from src.db.models.models import MessageModel
 from src.db.cruds.message_crud import MessageCRUD
 from src.db.cruds.role_crud import RoleCRUD
 from src.db.cruds.user_crud import UserCRUD
@@ -147,7 +146,7 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
 
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            response.json(), 
+            response.json(),
             {'detail': 'Data de expiração inválida. Siga o formato YYYY-MM-DD.'}
         )
 
@@ -163,7 +162,7 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
 
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            response.json(), 
+            response.json(),
             {'detail': 'Data de expiração inválida. Siga o formato YYYY-MM-DD.'}
         )
 
@@ -181,7 +180,7 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
 
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            response.json(), 
+            response.json(),
             {'detail': 'A data de expiração deve ser uma data futura.'}
         )
 
@@ -251,7 +250,7 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
 
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            response.json(), 
+            response.json(),
             {'detail': 'Data de expiração inválida. Siga o formato YYYY-MM-DD.'}
         )
 
@@ -267,7 +266,7 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
 
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            response.json(), 
+            response.json(),
             {'detail': 'Data de expiração inválida. Siga o formato YYYY-MM-DD.'}
         )
 
@@ -285,7 +284,7 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
 
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            response.json(), 
+            response.json(),
             {'detail': 'A data de expiração deve ser uma data futura.'}
         )
 
