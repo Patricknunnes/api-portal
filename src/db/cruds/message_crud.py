@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
+from sqlalchemy import func
 from uuid import UUID
 
 from src.db.cruds.pagination_oriented_crud import PaginationOrientedCRUD
@@ -23,10 +23,12 @@ class MessageCRUD(PaginationOrientedCRUD):
 
         result = db.query(self.model) \
             .filter(
-                (self.model.role_permission == role_permission) | \
-                (self.model.user_permission == user_permission) | \
-                ((self.model.role_permission == None) & \
-                    (self.model.user_permission == None))
+                ((self.model.expiration_date > func.now()) | \
+                    (self.model.expiration_date == None)) & \
+                ((self.model.role_permission == role_permission) | \
+                    (self.model.user_permission == user_permission) | \
+                    ((self.model.role_permission == None) & \
+                        (self.model.user_permission == None)))
             ).limit(limit).offset((page - 1) * limit).all()
         count = self.count_records_per_permissions(
             db=db,
@@ -42,8 +44,10 @@ class MessageCRUD(PaginationOrientedCRUD):
         user_permission: UUID
     ):
         return db.query(self.model).filter(
-                (self.model.role_permission == role_permission) | \
-                (self.model.user_permission == user_permission) | \
-                ((self.model.role_permission == None) & \
-                    (self.model.user_permission == None))
+                ((self.model.expiration_date > func.now()) | \
+                    (self.model.expiration_date == None)) & \
+                ((self.model.role_permission == role_permission) | \
+                    (self.model.user_permission == user_permission) | \
+                    ((self.model.role_permission == None) & \
+                        (self.model.user_permission == None)))
             ).count()
