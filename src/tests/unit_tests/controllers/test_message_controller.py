@@ -131,7 +131,7 @@ class MessageControllerTestClass(BaseTestCase):
     @patch.object(MessageCRUD, 'create')
     def test_handle_create_with_all_fields(self, create_mock, datetime_mock, *_):
         '''
-        Trying to create a message without the optional fields
+        Trying to create a message with all the optional fields
         will call MessageCRUD.create
         '''
         datetime_mock.now.return_value = datetime.strptime('2000-01-01', '%Y-%m-%d')
