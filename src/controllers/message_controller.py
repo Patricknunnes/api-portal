@@ -8,6 +8,7 @@ from src.controllers.pagination_oriented_controller import PaginationOrientedCon
 from src.controllers.role_controller import RoleController
 from src.controllers.user_controller import UserController
 from src.schemas.message_schema import MessageCreate, MessageUpdate
+from src.schemas.user_schema import UserResponse
 from src.db.cruds.message_crud import MessageCRUD
 
 
@@ -61,4 +62,19 @@ class MessageController(PaginationOrientedController):
             object_id=object_id,
             data=cleaned_data,
             exception_message='Mensagem não encontrada'
+        )
+
+    def handle_list_per_permissions(
+        self,
+        db: Session,
+        user: UserResponse,
+        page: int = None,
+        limit: int = None
+    ):
+        return self.crud_class().list_per_permissions(
+            db=db,
+            role_permission=user.role.id,
+            user_permission=user.id,
+            page=page,
+            limit=limit
         )

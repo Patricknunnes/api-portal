@@ -29,6 +29,24 @@ def handle_list_messages(
     return MessageController().handle_list(db=db, page=page, limit=limit)
 
 
+@message_router.get('/me', response_model=MessageResponsePaginate)
+def handle_list_messages(
+    page: int = None,
+    limit: int = None,
+    db: Session = Depends(get_db),
+    profile: UserResponse = Depends(current_user)
+):
+    """
+    Return messages according to role id and user id according to token
+    """
+    return MessageController().handle_list_per_permissions(
+        db=db,
+        user=profile,
+        page=page,
+        limit=limit
+    )
+
+
 @message_router.post(
     '',
     response_model=MessageResponse,
