@@ -21,6 +21,7 @@ from src.db.cruds.role_crud import RoleCRUD
 from src.db.cruds.user_crud import UserCRUD
 from src.exceptions.exceptions import BadRequestException, NotFoundException
 from src.schemas.message_schema import MessageCreate, MessageUpdate
+from src.schemas.user_schema import UserResponse
 
 
 class MessageControllerTestClass(BaseTestCase):
@@ -273,3 +274,24 @@ class MessageControllerTestClass(BaseTestCase):
             object_id=uuid_test
         )
         patch_mock.assert_called()
+
+    @patch.object(MessageCRUD, 'list_per_permissions')
+    def test_handle_list_per_permissions(self, list_mock):
+        '''
+        Assert MessageController's handle_list_per_permission method calls
+        MessageCRUD's list_per_permissions with expected parameters
+        '''
+        user = UserResponse(**user_db_response)
+        MessageController().handle_list_per_permissions(
+            db=self.session,
+            user=user,
+            limit=10,
+            page=2
+        )
+        list_mock.assert_called_with(
+            db=self.session,
+            role_permission=user.role.id,
+            user_permission=user.id,
+            page=2,
+            limit=10
+        )
