@@ -86,18 +86,5 @@ def upgrade() -> None:
     ])
 
 def downgrade() -> None:
-    route_id_list = [
-        list_route_id,
-        create_route_id,
-        delete_route_id,
-        patch_route_id
-    ]
-    permission_id_list = [
-        list_permission_id,
-        create_permission_id,
-        delete_permission_id,
-        patch_permission_id
-    ]
-
     op.execute(f"DELETE FROM public.permissions WHERE id in {list_permission_id, create_permission_id, delete_permission_id, patch_permission_id}")
     op.execute(f"DELETE FROM public.routes WHERE id in {list_route_id, create_route_id, delete_route_id, patch_route_id}")
