@@ -1,19 +1,32 @@
+from datetime import datetime
+
 from src.db.cruds.message_crud import MessageCRUD
 from src.db.models.models import MessageModel
 from src.tests.mocks.message_mocks import message
+from src.tests.mocks.role_mocks import roles
+from src.tests.mocks.user_mocks import user_db_response
 from src.tests.settings import BaseTestCase
 
 
 class MessageCRUDTestClass(BaseTestCase):
+    def setUp(self) -> None:
+        super().setUp()
+        self.default_message = MessageCRUD().create(db=self.session, data=message)
+
+    def tearDown(self) -> None:
+        MessageCRUD().delete(db=self.session, object_id=self.default_message.id)
+        return super().tearDown()
+
     def test_create(self):
         '''Should return created message'''
         result = MessageCRUD().create(db=self.session, data=message)
-        self.assertIsNotNone(result)
+
         self.assertIsInstance(result, MessageModel)
 
+        MessageCRUD().delete(db=self.session, object_id=result.id)
+
     def test_messages_count(self):
-        result = MessageCRUD().count_records(db=self.session)
-        self.assertEqual(result, 1)
+        self.assertEqual(MessageCRUD().count_records(db=self.session), 1)
 
     def test_messages_list(self):
         '''
@@ -31,8 +44,7 @@ class MessageCRUDTestClass(BaseTestCase):
             db=self.session,
             id=messages[0].id
         )
-        self.assertIsNotNone(result)
-        self.assertIsInstance(result, MessageModel)
+        self.assertEqual(result, self.default_message)
 
     def test_patch(self):
         '''Should update message'''
@@ -61,11 +73,51 @@ class MessageCRUDTestClass(BaseTestCase):
 
     def test_delete(self):
         '''Should delete message'''
-        MessageCRUD().create(db=self.session, data=message)
-        message_from_db = MessageCRUD().handle_list(db=self.session)['results'][1]
+        new_message = MessageCRUD().create(db=self.session, data=message)
 
-        MessageCRUD().delete(db=self.session, object_id=message_from_db.id)
+        self.assertEqual(MessageCRUD().count_records(db=self.session), 2)
 
-        result = MessageCRUD().get(db=self.session, id=message_from_db.id)
+        MessageCRUD().delete(db=self.session, object_id=new_message.id)
+
+        self.assertEqual(MessageCRUD().count_records(db=self.session), 1)
+
+        result = MessageCRUD().get(db=self.session, id=new_message.id)
 
         self.assertIsNone(result)
+
+    def test_list_per_permissions_with_expired_message(self):
+        '''
+        When there are messages with expiration_date,
+        the ones with past dates should not be listed
+        '''
+        message_expired = MessageCRUD().create(
+            db=self.session,
+            data=dict(
+                **message,
+                expiration_date=datetime.strptime('1900-01-01', '%Y-%m-%d')
+            )
+        )
+        message_not_expired = MessageCRUD().create(
+            db=self.session,
+            data=dict(
+                **message,
+                expiration_date=datetime.strptime('3000-01-01', '%Y-%m-%d')
+            )
+        )
+
+        result = MessageCRUD().list_per_permissions(
+            db=self.session,
+            role_permission=roles[0]['id'],
+            user_permission=user_db_response['id']
+        )
+
+        self.assertEqual(MessageCRUD().count_records(db=self.session), 3)
+
+        self.assertEqual(result['total'], 2)
+        self.assertEqual(result['page'], 1)
+        self.assertEqual(len(result['results']), 2)
+        self.assertEqual(result['results'][0], self.default_message)
+        self.assertEqual(result['results'][1], message_not_expired)
+
+        MessageCRUD().delete(db=self.session, object_id=message_expired.id)
+        MessageCRUD().delete(db=self.session, object_id=message_not_expired.id)
