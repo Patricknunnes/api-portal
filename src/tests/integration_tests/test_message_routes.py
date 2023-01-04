@@ -349,3 +349,12 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
 
         self.assertEqual(404, response.status_code)
         self.assertEqual({'detail': 'Mensagem não encontrada'}, response.json())
+
+    def test_list_messages_per_permission(self):
+        '''
+        Should return status 200 and messages list
+        '''
+        response = self.client.get('/message/me', headers=self.headers)
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({'page': 1, 'results': [], 'total': 0}, response.json())
