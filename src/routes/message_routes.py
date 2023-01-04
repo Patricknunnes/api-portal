@@ -30,7 +30,7 @@ def handle_list_messages(
 
 
 @message_router.get('/me', response_model=MessageResponsePaginate)
-def handle_list_messages(
+def handle_list_per_permissions(
     page: int = None,
     limit: int = None,
     db: Session = Depends(get_db),
