@@ -14,7 +14,7 @@ class UserCrudTestClass(BaseTestCase):
         '''Should return created user'''
         result = UserCRUD().create(db=self.session, data=user_create_data)
         self.assertIsNotNone(result)
-        self.assertTrue(isinstance(result, UserModel))
+        self.assertIsInstance(result, UserModel)
 
     def test_get_user_with_unregistered_email(self):
         '''Should return None with unregistered email'''
@@ -39,7 +39,7 @@ class UserCrudTestClass(BaseTestCase):
             username=user_create_data['username']
         )
         self.assertIsNotNone(result)
-        self.assertTrue(isinstance(result, UserModel))
+        self.assertIsInstance(result, UserModel)
 
     def test_get_user_with_registered_email(self):
         '''Should return user with registered email'''
@@ -48,7 +48,7 @@ class UserCrudTestClass(BaseTestCase):
             email=user_create_data['email']
         )
         self.assertIsNotNone(result)
-        self.assertTrue(isinstance(result, UserModel))
+        self.assertIsInstance(result, UserModel)
 
     def test_get_user_with_registered_email_but_unregistered_username(self):
         '''
@@ -84,7 +84,7 @@ class UserCrudTestClass(BaseTestCase):
         user_id = UserCRUD().list(db=self.session)[0].id
         result = UserCRUD().get(db=self.session, id=user_id)
         self.assertIsNotNone(result)
-        self.assertTrue(isinstance(result, UserModel))
+        self.assertIsInstance(result, UserModel)
 
     def test_patch(self):
         '''

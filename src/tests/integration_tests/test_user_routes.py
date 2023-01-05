@@ -235,4 +235,4 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         '''
         response = self.client.get('/user/divergences')
         self.assertEqual(200, response.status_code)
-        self.assertEqual({'page': 1, 'total': 0, 'divergences': []}, response.json())
+        self.assertEqual({'page': 1, 'total': 0, 'results': []}, response.json())

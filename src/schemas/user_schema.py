@@ -13,9 +13,6 @@ class UserBase(BaseModel):
     phone: Optional[int]
     password: str
 
-    class Config:
-        orm_mode = True
-
 
 class UserSchemaValidate(BaseModel):
     role_id: UUID
@@ -25,9 +22,15 @@ class UserSchemaValidate(BaseModel):
     password: str
 
 
-class UserResponse(BaseModel):
+class User(BaseModel):
     id: UUID
     name: str
+
+    class Config:
+        orm_mode = True
+
+
+class UserResponse(User):
     email: EmailStr
     document: str
     phone: Optional[int]
@@ -35,17 +38,11 @@ class UserResponse(BaseModel):
     is_totvs: bool
     role: RoleResponse
 
-    class Config:
-        orm_mode = True
-
 
 class UserResponsePaginate(BaseModel):
     page: int = 1
     total: int
     user_response: List[UserResponse]
-
-    class Config:
-        orm_mode = True
 
 
 class UserUpdate(BaseModel):
@@ -53,9 +50,6 @@ class UserUpdate(BaseModel):
     email: Optional[EmailStr]
     phone: Optional[int]
     password: Optional[str]
-
-    class Config:
-        orm_mode = True
 
 
 class UserDivergence(BaseModel):
@@ -66,14 +60,8 @@ class UserDivergence(BaseModel):
     role: RoleResponse
     error: str
 
-    class Config:
-        orm_mode = True
-
 
 class DivergenceResponsePaginate(BaseModel):
     page: int = 1
     total: int
-    divergences: List[UserDivergence]
-
-    class Config:
-        orm_mode = True
+    results: List[UserDivergence]
