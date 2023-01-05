@@ -1,5 +1,6 @@
 from unittest.mock import patch, MagicMock
 from datetime import datetime
+from json import JSONDecodeError
 
 from src.tests.mocks.message_mocks import (
     message_created_with_all_fields,
@@ -132,7 +133,7 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
         )
 
         self.assertEqual(204, response.status_code)
-        self.assertIsNone(response.json())
+        self.assertRaises(JSONDecodeError, response.json)
 
     def test_create_with_invalid_string_as_expiration_date(self):
         '''
@@ -331,7 +332,7 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
         )
 
         self.assertEqual(204, response.status_code)
-        self.assertIsNone(response.json())
+        self.assertRaises(JSONDecodeError, response.json)
 
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
     @patch.object(UserCRUD, 'get', return_value=user_db_response)
