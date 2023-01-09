@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm import Session
 from uuid import UUID
 
@@ -63,7 +63,11 @@ def handle_create_message(
     return MessageController().handle_create(db=db, data=message_data)
 
 
-@message_router.delete('/{message_id}', status_code=status.HTTP_204_NO_CONTENT)
+@message_router.delete(
+    '/{message_id}',
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response
+)
 def handle_delete_message(
     message_id: UUID,
     db: Session = Depends(get_db),
@@ -79,7 +83,11 @@ def handle_delete_message(
     )
 
 
-@message_router.patch('/{message_id}', status_code=status.HTTP_204_NO_CONTENT)
+@message_router.patch(
+    '/{message_id}',
+    status_code=status.HTTP_204_NO_CONTENT,
+    response_class=Response
+)
 def handle_patch_message(
     message_id: UUID,
     message_data: MessageUpdate,

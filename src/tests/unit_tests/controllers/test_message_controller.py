@@ -7,7 +7,9 @@ from src.tests.mocks.message_mocks import (
     message_with_expiration_date,
     message_with_invalid_format_date,
     message_with_invalid_string_as_date,
+    message_with_max_length_title,
     message_with_role_permission,
+    message_with_too_long_title,
     message_with_user_permission,
     message,
     uuid_test
@@ -123,6 +125,40 @@ class MessageControllerTestClass(BaseTestCase):
         MessageController().handle_create(
             db=self.session,
             data=MessageCreate(**message)
+        )
+        create_mock.assert_called()
+
+    def test_handle_create_with_too_long_title(self):
+        '''
+        Trying to create a message with title longer than 50 characters
+        must raise an error
+        '''
+        with self.assertRaises(BadRequestException) as error:
+            MessageController().handle_create(
+                db=self.session,
+                data=MessageCreate(
+                    title=message_with_too_long_title['title'],
+                    text='any text'
+                )
+            )
+        exception = error.exception
+        self.assertEqual(
+            'O título pode ter no máximo 50 caracteres.',
+            exception.detail
+        )
+
+    @patch.object(MessageCRUD, 'create')
+    def test_handle_create_with_max_length_title(self, create_mock):
+        '''
+        Trying to create a message with title 50-characters long
+        will call MessageCRUD.create
+        '''
+        MessageController().handle_create(
+            db=self.session,
+            data=MessageCreate(
+                title=message_with_max_length_title['title'],
+                text='any text'
+            )
         )
         create_mock.assert_called()
 

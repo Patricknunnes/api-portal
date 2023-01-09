@@ -1,5 +1,6 @@
 from unittest.mock import patch, MagicMock
 from datetime import datetime
+from json import JSONDecodeError
 
 from src.tests.mocks.message_mocks import (
     message_created_with_all_fields,
@@ -7,7 +8,9 @@ from src.tests.mocks.message_mocks import (
     message_with_expiration_date,
     message_with_invalid_format_date,
     message_with_invalid_string_as_date,
+    message_with_max_length_title,
     message_with_role_permission,
+    message_with_too_long_title,
     message_with_user_permission,
     message,
     uuid_test
@@ -132,7 +135,7 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
         )
 
         self.assertEqual(204, response.status_code)
-        self.assertIsNone(response.json())
+        self.assertRaises(JSONDecodeError, response.json)
 
     def test_create_with_invalid_string_as_expiration_date(self):
         '''
@@ -210,6 +213,23 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
         self.assertEqual(404, response.status_code)
         self.assertEqual(response.json(), {'detail': 'Usuário não encontrado.'})
 
+    def test_create_with_too_long_title(self):
+        '''
+        Should return status 400 when title has more than
+        50 characters
+        '''
+        response = self.client.post(
+            '/message',
+            headers=self.headers,
+            json={'title': message_with_too_long_title['title'], 'text': 'any text'}
+        )
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            response.json(),
+            {'detail': 'O título pode ter no máximo 50 caracteres.'}
+        )
+
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
     @patch.object(UserCRUD, 'get', return_value=user_db_response)
     @patch.object(MessageCRUD, 'create', return_value=message_created_with_all_fields)
@@ -237,6 +257,24 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
                 'user': None
             }
         )
+
+    @patch.object(
+        MessageCRUD,
+        'create',
+        return_value=dict(**message_with_max_length_title, id=uuid_test)
+    )
+    def test_create_with_max_length_title(self, create_mock):
+        '''
+        Should create a message with 50-characters-long title
+        '''
+        response = self.client.post(
+            '/message',
+            headers=self.headers,
+            json={'title': message_with_max_length_title['title'], 'text': 'any text'}
+        )
+
+        self.assertEqual(201, response.status_code)
+        create_mock.assert_called()
 
     def test_patch_with_invalid_string_as_expiration_date(self):
         '''
@@ -331,7 +369,7 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
         )
 
         self.assertEqual(204, response.status_code)
-        self.assertIsNone(response.json())
+        self.assertRaises(JSONDecodeError, response.json)
 
     @patch.object(RoleCRUD, 'get', return_value=roles[0])
     @patch.object(UserCRUD, 'get', return_value=user_db_response)

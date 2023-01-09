@@ -7,6 +7,16 @@ message = {
     'text': 'message text'
 }
 
+message_with_max_length_title = {
+    'title': ''.join([str(i) for i in range(30)]),
+    'text': 'message text'
+}
+
+message_with_too_long_title = {
+    'title': ''.join([str(i) for i in range(31)]),
+    'text': 'message text'
+}
+
 valid_expiration_date = '2023-12-31'
 
 uuid_test = '5545ccbe-9e27-4d3f-b26d-5aa5466906c6'

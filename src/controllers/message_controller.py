@@ -29,7 +29,7 @@ class MessageController(PaginationOrientedController):
                 detail='Data de expiração inválida. Siga o formato YYYY-MM-DD.'
             )
 
-    def __validate_fields(self, db: Session, data: MessageCreate):
+    def __validate_optional_fields(self, db: Session, data: dict):
         if 'expiration_date' in data:
             self.__validate_expiration_date(data['expiration_date'])
 
@@ -47,15 +47,31 @@ class MessageController(PaginationOrientedController):
                 exception_message='Usuário não encontrado.'
             )
 
+    def __validate_title(self, data: str):
+        if len(data) > 50:
+            raise BadRequestException(
+                detail='O título pode ter no máximo 50 caracteres.'
+            )
+
+    def __validate_required_fields(self, data: dict):
+        if 'title' not in data or 'text' not in data:
+            raise BadRequestException(
+                detail='O título e o conteúdo da mensagem são obrigatórios.'
+            )
+        self.__validate_title(data=data['title'])
+
     def handle_create(self, db: Session, data: MessageCreate):
         cleaned_data = UtilService().remove_none_in_form(data)
-        self.__validate_fields(db=db, data=cleaned_data)
+        self.__validate_required_fields(data=cleaned_data)
+        self.__validate_optional_fields(db=db, data=cleaned_data)
 
         return super().handle_create(db, cleaned_data)
 
     def handle_patch(self, db: Session, object_id: UUID, data: MessageUpdate):
         cleaned_data = UtilService().remove_none_in_form(data)
-        self.__validate_fields(db=db, data=cleaned_data)
+        if 'title' in cleaned_data:
+            self.__validate_title(data=cleaned_data['title'])
+        self.__validate_optional_fields(db=db, data=cleaned_data)
 
         return super().handle_patch(
             db=db,
