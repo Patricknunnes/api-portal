@@ -18,10 +18,13 @@ class MessageCRUDTestClass(BaseTestCase):
         return super().tearDown()
 
     def test_create(self):
-        '''Should return created message'''
+        '''Should return created message with created_at as datetime and updated_at should
+        be None'''
         result = MessageCRUD().create(db=self.session, data=message)
 
         self.assertIsInstance(result, MessageModel)
+        self.assertIsInstance(result.created_at, datetime)
+        self.assertIsNone(result.updated_at)
 
         MessageCRUD().delete(db=self.session, object_id=result.id)
 
@@ -47,11 +50,13 @@ class MessageCRUDTestClass(BaseTestCase):
         self.assertEqual(result, self.default_message)
 
     def test_patch(self):
-        '''Should update message'''
+        '''Should update message, set datetime to updated_at and not modify created_at
+        value'''
         new_title = 'another title'
         message_from_db = MessageCRUD().handle_list(db=self.session)['results'][0]
 
         self.assertNotEqual(message_from_db.title, new_title)
+        self.assertIsNone(message_from_db.updated_at)
 
         MessageCRUD().patch(
             db=self.session,
@@ -62,6 +67,8 @@ class MessageCRUDTestClass(BaseTestCase):
         result = MessageCRUD().get(db=self.session, id=message_from_db.id)
 
         self.assertEqual(result.title, new_title)
+        self.assertIsInstance(message_from_db.updated_at, datetime)
+        self.assertEqual(message_from_db.created_at, result.created_at)
 
     def test_get_message_without_match(self):
         '''Should return None when id not found'''
@@ -105,13 +112,29 @@ class MessageCRUDTestClass(BaseTestCase):
             )
         )
 
+        message_to_another_role = MessageCRUD().create(
+            db=self.session,
+            data=dict(
+                **message,
+                role_permission='5545ccbe-9e27-4d3f-b26d-5aa546690612'
+            )
+        )
+
+        message_to_another_user = MessageCRUD().create(
+            db=self.session,
+            data=dict(
+                **message,
+                user_permission='5545ccbe-9e27-4d3f-b26d-5aa546690612'
+            )
+        )
+
         result = MessageCRUD().list_per_permissions(
             db=self.session,
             role_permission=roles[0]['id'],
             user_permission=user_db_response['id']
         )
 
-        self.assertEqual(MessageCRUD().count_records(db=self.session), 3)
+        self.assertEqual(MessageCRUD().count_records(db=self.session), 5)
 
         self.assertEqual(result['total'], 2)
         self.assertEqual(result['page'], 1)
@@ -121,3 +144,5 @@ class MessageCRUDTestClass(BaseTestCase):
 
         MessageCRUD().delete(db=self.session, object_id=message_expired.id)
         MessageCRUD().delete(db=self.session, object_id=message_not_expired.id)
+        MessageCRUD().delete(db=self.session, object_id=message_to_another_role.id)
+        MessageCRUD().delete(db=self.session, object_id=message_to_another_user.id)
