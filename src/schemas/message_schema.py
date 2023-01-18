@@ -13,6 +13,7 @@ class MessageCreate(BaseModel):
     expiration_date: Optional[str]
     role_permission: Optional[UUID]
     user_permission: Optional[UUID]
+    created_by: Optional[UUID]
 
 
 class MessageUpdate(BaseModel):
@@ -21,6 +22,7 @@ class MessageUpdate(BaseModel):
     expiration_date: Optional[str]
     role_permission: Optional[UUID]
     user_permission: Optional[UUID]
+    updated_by: Optional[UUID]
 
 
 class MessageResponse(BaseModel):
@@ -30,6 +32,8 @@ class MessageResponse(BaseModel):
     expiration_date: Optional[datetime]
     role: Optional[RoleResponse]
     user: Optional[User]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
     class Config:
         orm_mode = True
