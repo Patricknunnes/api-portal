@@ -7,7 +7,7 @@ from src.schemas.role_schema import RoleResponse
 from src.schemas.user_schema import User
 
 
-class MessageCreate(BaseModel):
+class MessageCreateReqBody(BaseModel):
     title: str
     text: str
     expiration_date: Optional[str]
@@ -15,12 +15,20 @@ class MessageCreate(BaseModel):
     user_permission: Optional[UUID]
 
 
-class MessageUpdate(BaseModel):
+class MessageCreate(MessageCreateReqBody):
+    created_by: UUID
+
+
+class MessageUpdateReqBody(BaseModel):
     title: Optional[str]
     text: Optional[str]
     expiration_date: Optional[str]
     role_permission: Optional[UUID]
     user_permission: Optional[UUID]
+
+
+class MessageUpdate(MessageUpdateReqBody):
+    updated_by: UUID
 
 
 class MessageResponse(BaseModel):
@@ -30,6 +38,8 @@ class MessageResponse(BaseModel):
     expiration_date: Optional[datetime]
     role: Optional[RoleResponse]
     user: Optional[User]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
     class Config:
         orm_mode = True
