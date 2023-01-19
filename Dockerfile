@@ -1,14 +1,10 @@
-FROM python:3.9-alpine
+FROM python:3
 
 WORKDIR /app
-
 COPY . .
 
-RUN apk add --no-cache postgresql-libs \
-    && apk add --no-cache --virtual .build-deps gcc musl-dev postgresql-dev \
-    && apk add --no-cache mariadb-dev \
-    && apk add --no-cache bash \
-    && python -m pip install -r requirements.txt --no-cache-dir \
-    && apk --purge del .build-deps
+RUN pip install "fastapi[all]" --no-cache-dir
+RUN pip install "python-jose[cryptography]" --no-cache-dir
+RUN pip install -r requirements.txt --no-cache-dir
 
 EXPOSE 8080
