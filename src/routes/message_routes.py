@@ -9,6 +9,8 @@ from src.schemas.message_schema import (
     MessageResponsePaginate,
     MessageResponse,
     MessageCreate,
+    MessageCreateReqBody,
+    MessageUpdateReqBody,
     MessageUpdate
 )
 from src.schemas.user_schema import UserResponse
@@ -53,14 +55,14 @@ def handle_list_per_permissions(
     status_code=status.HTTP_201_CREATED
 )
 def handle_create_message(
-    message_data: MessageCreate,
+    message_data: MessageCreateReqBody,
     db: Session = Depends(get_db),
     profile: UserResponse = Depends(current_user)
 ):
     """
     Create message
     """
-    message_data.created_by = profile.id
+    message_data = MessageCreate(**message_data.dict(), created_by=profile.id)
     return MessageController().handle_create(db=db, data=message_data)
 
 
@@ -91,14 +93,14 @@ def handle_delete_message(
 )
 def handle_patch_message(
     message_id: UUID,
-    message_data: MessageUpdate,
+    message_data: MessageUpdateReqBody,
     db: Session = Depends(get_db),
     profile: UserResponse = Depends(current_user)
 ):
     """
     Update message
     """
-    message_data.updated_by = profile.id
+    message_data = MessageUpdate(**message_data.dict(), updated_by=profile.id)
     MessageController().handle_patch(
         db=db,
         object_id=message_id,
