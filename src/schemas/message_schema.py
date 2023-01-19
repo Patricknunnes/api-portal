@@ -40,8 +40,6 @@ class MessageResponse(BaseModel):
     user: Optional[User]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
-    created_by: Optional[UUID]
-    updated_by: Optional[UUID]
 
     class Config:
         orm_mode = True
