@@ -10,6 +10,10 @@ class ValidateDocsResponse(BaseModel):
     valid: bool
 
 
+class Image(BaseModel):
+    image: str
+
+
 class ValidateCEP(BaseModel):
     cep: str
     logradouro: str

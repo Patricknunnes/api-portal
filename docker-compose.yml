@@ -2,21 +2,37 @@ version: "3.4"
 services:
   postgres:
     image: postgres:latest
+    container_name: db_idor
     ports:
       - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=root
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
+    networks:
+      idor_network:
+        aliases:
+          - db_host
 
   api:
     build: .
-    container_name: api-delivery
+    command: bash -c "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port 8080"
+    container_name: api_idor
+    restart: always
     environment:
       - .env
     ports:
       - "8080:8080"
-    links:
+    depends_on:
       - postgres
+    networks:
+      idor_network:
+        aliases:
+          - api_host
+
+networks:
+  idor_network:
+    name: idor_net
+    driver: bridge
 
 

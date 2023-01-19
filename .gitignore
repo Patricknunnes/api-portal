@@ -5,4 +5,5 @@ __pycache__/
 .vscode/
 .env
 .pytest_cache
-alembic/versions/*.py
+test.db
+test.db-journal
