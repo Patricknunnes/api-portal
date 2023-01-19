@@ -47,5 +47,9 @@ message_created_with_all_fields = MessageModel(
     **message_with_role_permission,
     expiration_date=datetime.strptime(valid_expiration_date, '%Y-%m-%d'),
     id=uuid_test,
-    user_permission=uuid_test
+    user_permission=uuid_test,
+    created_at=datetime(2000, 1, 1, 0, 0),
+    updated_at=None,
+    created_by=uuid_test,
+    updated_by=None
 )
