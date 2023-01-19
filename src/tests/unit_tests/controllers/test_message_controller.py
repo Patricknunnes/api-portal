@@ -138,7 +138,8 @@ class MessageControllerTestClass(BaseTestCase):
                 db=self.session,
                 data=MessageCreate(
                     title=message_with_too_long_title['title'],
-                    text='any text'
+                    text='any text',
+                    created_by=uuid_test
                 )
             )
         exception = error.exception
@@ -157,7 +158,8 @@ class MessageControllerTestClass(BaseTestCase):
             db=self.session,
             data=MessageCreate(
                 title=message_with_max_length_title['title'],
-                text='any text'
+                text='any text',
+                created_by=uuid_test
             )
         )
         create_mock.assert_called()
@@ -271,7 +273,7 @@ class MessageControllerTestClass(BaseTestCase):
         with self.assertRaises(NotFoundException) as error:
             MessageController().handle_patch(
                 db=self.session,
-                data=MessageUpdate(title='new title'),
+                data=MessageUpdate(title='new title', updated_by=uuid_test),
                 object_id=uuid_test
             )
         exception = error.exception
@@ -289,7 +291,7 @@ class MessageControllerTestClass(BaseTestCase):
         '''
         MessageController().handle_patch(
             db=self.session,
-            data=MessageUpdate(role_permission=uuid_test),
+            data=MessageUpdate(role_permission=uuid_test, updated_by=uuid_test),
             object_id=uuid_test
         )
         patch_mock.assert_called()
