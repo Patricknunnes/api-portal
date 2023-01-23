@@ -1,6 +1,6 @@
 from uuid import UUID
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Union
 from pydantic import BaseModel
 
 from src.schemas.role_schema import RoleResponse
@@ -13,6 +13,7 @@ class MessageCreateReqBody(BaseModel):
     expiration_date: Optional[str]
     role_permission: Optional[UUID]
     user_permission: Optional[UUID]
+    is_important: Optional[bool]
 
 
 class MessageCreate(MessageCreateReqBody):
@@ -23,8 +24,9 @@ class MessageUpdateReqBody(BaseModel):
     title: Optional[str]
     text: Optional[str]
     expiration_date: Optional[str]
-    role_permission: Optional[UUID]
-    user_permission: Optional[UUID]
+    role_permission: Optional[Union[UUID, str]]
+    user_permission: Optional[Union[UUID, str]]
+    is_important: Optional[bool]
 
 
 class MessageUpdate(MessageUpdateReqBody):
@@ -40,6 +42,7 @@ class MessageResponse(BaseModel):
     user: Optional[User]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
+    is_important: bool
 
     class Config:
         orm_mode = True
@@ -49,3 +52,22 @@ class MessageResponsePaginate(BaseModel):
     page: int = 1
     total: int
     results: List[MessageResponse]
+
+
+class MessageMeResponse(BaseModel):
+    id: UUID
+    title: str
+    text: str
+    expiration_date: Optional[datetime]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+    is_important: bool
+
+    class Config:
+        orm_mode = True
+
+
+class MessageMeResponsePaginate(BaseModel):
+    page: int = 1
+    total: int
+    results: List[MessageMeResponse]

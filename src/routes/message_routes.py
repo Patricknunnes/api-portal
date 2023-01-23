@@ -7,6 +7,7 @@ from src.shared.auth.auth_utils import current_user
 from src.controllers.message_controller import MessageController
 from src.schemas.message_schema import (
     MessageResponsePaginate,
+    MessageMeResponsePaginate,
     MessageResponse,
     MessageCreate,
     MessageCreateReqBody,
@@ -31,7 +32,7 @@ def handle_list_messages(
     return MessageController().handle_list(db=db, page=page, limit=limit)
 
 
-@message_router.get('/me', response_model=MessageResponsePaginate)
+@message_router.get('/me', response_model=MessageMeResponsePaginate)
 def handle_list_per_permissions(
     page: int = None,
     limit: int = None,

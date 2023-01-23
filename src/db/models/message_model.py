@@ -1,5 +1,5 @@
 from uuid import uuid4
-from sqlalchemy import Column, String, TIMESTAMP, ForeignKey
+from sqlalchemy import Column, String, TIMESTAMP, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
@@ -15,6 +15,7 @@ class MessageModel(Base):
     expiration_date = Column(TIMESTAMP, nullable=True)
     role_permission = Column(GUID(), ForeignKey('roles.id'), nullable=True)
     user_permission = Column(GUID(), ForeignKey('users.id'), nullable=True)
+    is_important = Column(Boolean, nullable=False, default=False)
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, nullable=True, onupdate=func.current_timestamp())
     created_by = Column(GUID(), ForeignKey('users.id'), nullable=True)
