@@ -52,3 +52,22 @@ class MessageResponsePaginate(BaseModel):
     page: int = 1
     total: int
     results: List[MessageResponse]
+
+
+class MessageMeResponse(BaseModel):
+    id: UUID
+    title: str
+    text: str
+    expiration_date: Optional[datetime]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+    is_important: bool
+
+    class Config:
+        orm_mode = True
+
+
+class MessageMeResponsePaginate(BaseModel):
+    page: int = 1
+    total: int
+    results: List[MessageMeResponse]
