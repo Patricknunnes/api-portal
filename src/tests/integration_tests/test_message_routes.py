@@ -256,7 +256,8 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
                 'title': 'message title',
                 'user': None,
                 'created_at': '2000-01-01T00:00:00',
-                'updated_at': None
+                'updated_at': None,
+                'is_important': True
             }
         )
 
