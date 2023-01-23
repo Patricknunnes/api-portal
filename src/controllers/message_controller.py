@@ -29,11 +29,16 @@ class MessageController(PaginationOrientedController):
                 detail='Data de expiração inválida. Siga o formato YYYY-MM-DD.'
             )
 
+    def __validate_str_as_uuid(self, string: str, key: str):
+        if type(string) != UUID:
+            raise BadRequestException(detail=f'{key} deve ser um UUID.')
+
     def __validate_optional_fields(self, db: Session, data: dict):
         if 'expiration_date' in data:
             self.__validate_expiration_date(data['expiration_date'])
 
         if 'role_permission' in data:
+            self.__validate_str_as_uuid(data['role_permission'], 'role_permission')
             RoleController().handle_get(
                 db=db,
                 object_id=data['role_permission'],
@@ -41,6 +46,7 @@ class MessageController(PaginationOrientedController):
             )
 
         if 'user_permission' in data:
+            self.__validate_str_as_uuid(data['user_permission'], 'user_permission')
             UserController().handle_get(
                 db=db,
                 object_id=data['user_permission'],
@@ -72,6 +78,13 @@ class MessageController(PaginationOrientedController):
         if 'title' in cleaned_data:
             self.__validate_title(data=cleaned_data['title'])
         self.__validate_optional_fields(db=db, data=cleaned_data)
+
+        if data.expiration_date == '':
+            cleaned_data['expiration_date'] = None
+        if data.role_permission == '':
+            cleaned_data['role_permission'] = None
+        if data.user_permission == '':
+            cleaned_data['user_permission'] = None
 
         return super().handle_patch(
             db=db,

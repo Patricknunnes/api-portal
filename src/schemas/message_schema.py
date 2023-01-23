@@ -1,6 +1,6 @@
 from uuid import UUID
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Union
 from pydantic import BaseModel
 
 from src.schemas.role_schema import RoleResponse
@@ -24,8 +24,8 @@ class MessageUpdateReqBody(BaseModel):
     title: Optional[str]
     text: Optional[str]
     expiration_date: Optional[str]
-    role_permission: Optional[UUID]
-    user_permission: Optional[UUID]
+    role_permission: Optional[Union[UUID, str]]
+    user_permission: Optional[Union[UUID, str]]
     is_important: Optional[bool]
 
 
