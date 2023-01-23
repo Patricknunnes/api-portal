@@ -13,6 +13,7 @@ class MessageCreateReqBody(BaseModel):
     expiration_date: Optional[str]
     role_permission: Optional[UUID]
     user_permission: Optional[UUID]
+    is_important: Optional[bool]
 
 
 class MessageCreate(MessageCreateReqBody):
@@ -25,6 +26,7 @@ class MessageUpdateReqBody(BaseModel):
     expiration_date: Optional[str]
     role_permission: Optional[UUID]
     user_permission: Optional[UUID]
+    is_important: Optional[bool]
 
 
 class MessageUpdate(MessageUpdateReqBody):
@@ -40,6 +42,7 @@ class MessageResponse(BaseModel):
     user: Optional[User]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
+    is_important: bool
 
     class Config:
         orm_mode = True
