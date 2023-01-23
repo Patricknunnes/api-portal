@@ -329,6 +329,19 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
             {'detail': 'A data de expiração deve ser uma data futura.'}
         )
 
+    def test_patch_with_not_uuid_role(self):
+        '''
+        Should return status 400 when role_permission is not an uuid
+        '''
+        response = self.client.patch(
+            f'/message/{uuid_test}',
+            headers=self.headers,
+            json={'role_permission': 'not uuid'}
+        )
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(response.json(), {'detail': 'role_permission deve ser um UUID.'})
+
     def test_patch_with_not_found_role(self):
         '''
         Should return status 404 when role id not found
@@ -341,6 +354,19 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
 
         self.assertEqual(404, response.status_code)
         self.assertEqual(response.json(), {'detail': 'Cargo não encontrado.'})
+
+    def test_patch_with_not_uuid_user(self):
+        '''
+        Should return status 400 when user_permission is not an uuid
+        '''
+        response = self.client.patch(
+            f'/message/{uuid_test}',
+            headers=self.headers,
+            json={'user_permission': 'not uuid'}
+        )
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(response.json(), {'detail': 'user_permission deve ser um UUID.'})
 
     def test_patch_with_not_found_user(self):
         '''
