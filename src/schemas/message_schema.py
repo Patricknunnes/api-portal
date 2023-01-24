@@ -11,8 +11,8 @@ class MessageCreateReqBody(BaseModel):
     title: str
     text: str
     expiration_date: Optional[str]
-    role_permission: Optional[UUID]
-    user_permission: Optional[UUID]
+    role_permission: Optional[Union[UUID, str]]
+    user_permission: Optional[Union[UUID, str]]
     is_important: Optional[bool]
 
 
