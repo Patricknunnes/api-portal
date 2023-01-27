@@ -37,7 +37,8 @@ def handle_list_per_permissions(
     page: int = None,
     limit: int = None,
     db: Session = Depends(get_db),
-    profile: UserResponse = Depends(current_user)
+    profile: UserResponse = Depends(current_user),
+    is_important: bool = None
 ):
     """
     Return messages according to role id and user id according to token
@@ -46,7 +47,8 @@ def handle_list_per_permissions(
         db=db,
         user=profile,
         page=page,
-        limit=limit
+        limit=limit,
+        is_important=is_important
     )
 
 
