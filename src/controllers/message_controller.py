@@ -114,12 +114,14 @@ class MessageController(PaginationOrientedController):
         db: Session,
         user: UserResponse,
         page: int = None,
-        limit: int = None
+        limit: int = None,
+        is_important: bool = None
     ):
         return self.crud_class().list_per_permissions(
             db=db,
             role_permission=user.role.id,
             user_permission=user.id,
             page=page,
-            limit=limit
+            limit=limit,
+            is_important=is_important,
         )
