@@ -21,27 +21,32 @@ class MessageCRUD(PaginationOrientedCRUD):
     ):
         page = page if page else 1
         limit = limit if limit else 20
-        
-        if is_important != None:
+
+        if is_important is not None:
             filter_result = db.query(self.model) \
                 .filter(
                     ((self.model.expiration_date > func.now()) |
                         (self.model.expiration_date.is_(None))) &
-                        (self.model.is_important == is_important) &
+                (self.model.is_important == is_important) &
                     ((self.model.role_permission == role_permission) |
                         (self.model.user_permission == user_permission) |
                         ((self.model.role_permission.is_(None)) &
                             (self.model.user_permission.is_(None)))))
 
-        else:
-            filter_result = db.query(self.model) \
-                .filter(
-                    ((self.model.expiration_date > func.now()) |
-                        (self.model.expiration_date.is_(None))) &
-                    ((self.model.role_permission == role_permission) |
-                        (self.model.user_permission == user_permission) |
-                        ((self.model.role_permission.is_(None)) &
-                            (self.model.user_permission.is_(None)))))
+            return {
+                'total': filter_result.count(),
+                'page': page,
+                'results': filter_result.limit(limit).offset((page - 1) * limit).all()
+            }
+
+        filter_result = db.query(self.model) \
+            .filter(
+                ((self.model.expiration_date > func.now()) |
+                    (self.model.expiration_date.is_(None))) &
+                ((self.model.role_permission == role_permission) |
+                    (self.model.user_permission == user_permission) |
+                    ((self.model.role_permission.is_(None)) &
+                        (self.model.user_permission.is_(None)))))
 
         return {
             'total': filter_result.count(),
