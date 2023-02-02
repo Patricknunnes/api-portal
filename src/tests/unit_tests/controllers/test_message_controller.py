@@ -314,10 +314,11 @@ class MessageControllerTestClass(BaseTestCase):
         patch_mock.assert_called()
 
     @patch.object(MessageCRUD, 'list_per_permissions')
-    def test_handle_list_per_permissions(self, list_mock):
+    def test_handle_list_per_permissions_with_no_is_important_value(self, list_mock):
         '''
         Assert MessageController's handle_list_per_permission method calls
-        MessageCRUD's list_per_permissions with expected parameters
+        MessageCRUD's list_per_permissions with expected parameters when
+        is_important is not passed
         '''
         user = UserResponse(**user_db_response)
         MessageController().handle_list_per_permissions(
@@ -331,5 +332,30 @@ class MessageControllerTestClass(BaseTestCase):
             role_permission=user.role.id,
             user_permission=user.id,
             page=2,
-            limit=10
+            limit=10,
+            is_important=None
+        )
+
+    @patch.object(MessageCRUD, 'list_per_permissions')
+    def test_handle_list_per_permissions_with_is_important_as_bool(self, list_mock):
+        '''
+        Assert MessageController's handle_list_per_permission method calls
+        MessageCRUD's list_per_permissions with expected parameters when
+        is_important is a bool
+        '''
+        user = UserResponse(**user_db_response)
+        MessageController().handle_list_per_permissions(
+            db=self.session,
+            user=user,
+            limit=10,
+            page=2,
+            is_important=True
+        )
+        list_mock.assert_called_with(
+            db=self.session,
+            role_permission=user.role.id,
+            user_permission=user.id,
+            page=2,
+            limit=10,
+            is_important=True
         )
