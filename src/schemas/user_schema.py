@@ -60,6 +60,9 @@ class UserDivergence(BaseModel):
     role: RoleResponse
     error: str
 
+    class Config:
+        orm_mode = True
+
 
 class DivergenceResponsePaginate(BaseModel):
     page: int = 1
