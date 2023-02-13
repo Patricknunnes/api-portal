@@ -112,6 +112,7 @@ def handle_patch_message(
         data=message_data
     )
 
+
 @message_router.post(
     '/me/read/{message_id}',
     status_code=status.HTTP_201_CREATED,

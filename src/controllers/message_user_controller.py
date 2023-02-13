@@ -1,5 +1,4 @@
 from sqlalchemy.orm import Session
-from typing import Any
 
 from src.controllers.base import BaseController
 from src.controllers.message_controller import MessageController
