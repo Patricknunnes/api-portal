@@ -35,16 +35,12 @@ class MessageController(PaginationOrientedController):
         '''
         return f'{date} 03:00:00'
 
-    def __validate_str_as_uuid(self, string: str, key: str):
-        if type(string) != UUID:
-            raise BadRequestException(detail=f'{key} deve ser um UUID.')
-
     def __validate_optional_fields(self, db: Session, data: dict):
         if 'expiration_date' in data:
             self.__validate_expiration_date(data['expiration_date'])
 
         if 'role_permission' in data:
-            self.__validate_str_as_uuid(data['role_permission'], 'role_permission')
+            UtilService.validate_str_as_uuid(data['role_permission'], 'role_permission')
             RoleController().handle_get(
                 db=db,
                 object_id=data['role_permission'],
@@ -52,7 +48,7 @@ class MessageController(PaginationOrientedController):
             )
 
         if 'user_permission' in data:
-            self.__validate_str_as_uuid(data['user_permission'], 'user_permission')
+            UtilService.validate_str_as_uuid(data['user_permission'], 'user_permission')
             UserController().handle_get(
                 db=db,
                 object_id=data['user_permission'],
@@ -73,7 +69,7 @@ class MessageController(PaginationOrientedController):
         self.__validate_title(data=data['title'])
 
     def handle_create(self, db: Session, data: MessageCreate):
-        cleaned_data = UtilService().remove_none_in_form(data)
+        cleaned_data = UtilService.remove_none_in_form(data)
         self.__validate_required_fields(data=cleaned_data)
         self.__validate_optional_fields(db=db, data=cleaned_data)
 
@@ -85,7 +81,7 @@ class MessageController(PaginationOrientedController):
         return super().handle_create(db, cleaned_data)
 
     def handle_patch(self, db: Session, object_id: UUID, data: MessageUpdate):
-        cleaned_data = UtilService().remove_none_in_form(data)
+        cleaned_data = UtilService.remove_none_in_form(data)
         if 'title' in cleaned_data:
             self.__validate_title(data=cleaned_data['title'])
         self.__validate_optional_fields(db=db, data=cleaned_data)
