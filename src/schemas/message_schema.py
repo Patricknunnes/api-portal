@@ -62,6 +62,7 @@ class MessageMeResponse(BaseModel):
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
     is_important: bool
+    message_read: bool
 
     class Config:
         orm_mode = True
