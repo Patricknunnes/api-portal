@@ -2,18 +2,20 @@ from fastapi import APIRouter, Depends, status, Response
 from sqlalchemy.orm import Session
 from uuid import UUID
 
+from src.controllers.message_controller import MessageController
+from src.controllers.message_user_controller import MessageUserController
 from src.db.settings.config import get_db
 from src.shared.auth.auth_utils import current_user
-from src.controllers.message_controller import MessageController
 from src.schemas.message_schema import (
-    MessageResponsePaginate,
-    MessageMeResponsePaginate,
-    MessageResponse,
     MessageCreate,
     MessageCreateReqBody,
-    MessageUpdateReqBody,
-    MessageUpdate
+    MessageMeResponsePaginate,
+    MessageResponse,
+    MessageResponsePaginate,
+    MessageUpdate,
+    MessageUpdateReqBody
 )
+from src.schemas.message_user_schema import MessageUserPrimaryKeys, MessageUserResponse
 from src.schemas.user_schema import UserResponse
 
 message_router = APIRouter(prefix='/message', tags=['Messages'])
@@ -108,4 +110,20 @@ def handle_patch_message(
         db=db,
         object_id=message_id,
         data=message_data
+    )
+
+@message_router.post(
+    '/me/read/{message_id}',
+    status_code=status.HTTP_201_CREATED,
+    response_model=MessageUserResponse
+)
+def handle_message_read(
+    message_id: UUID,
+    db: Session = Depends(get_db),
+    profile: UserResponse = Depends(current_user)
+):
+    '''Mark message as read by the user'''
+    return MessageUserController().handle_create(
+        db=db,
+        data=MessageUserPrimaryKeys(message_id=message_id, user_id=profile.id)
     )
