@@ -6,3 +6,4 @@ from src.db.models.permission_model import PermissionModel
 from src.db.models.divergence_model import DivergenceModel
 from src.db.models.client_model import ClientModel
 from src.db.models.message_model import MessageModel
+from src.db.models.message_user_model import MessageUserModel
