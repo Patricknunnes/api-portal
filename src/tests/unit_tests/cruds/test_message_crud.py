@@ -139,10 +139,27 @@ class MessageCRUDTestClass(BaseTestCase):
         self.assertEqual(result['total'], 2)
         self.assertEqual(result['page'], 1)
         self.assertEqual(len(result['results']), 2)
-        self.assertEqual(result['results'][0], self.default_message)
-        self.assertEqual(result['results'][1], message_not_expired)
+        self.assertEqual(
+            result['results'][0]['expiration_date'],
+            self.default_message.expiration_date)
+        self.assertEqual(
+            result['results'][1]['expiration_date'],
+            message_not_expired.expiration_date)
 
         MessageCRUD().delete(db=self.session, object_id=message_expired.id)
         MessageCRUD().delete(db=self.session, object_id=message_not_expired.id)
         MessageCRUD().delete(db=self.session, object_id=message_to_another_role.id)
         MessageCRUD().delete(db=self.session, object_id=message_to_another_user.id)
+
+    def test_message_read_data_from_list_per_permission(self):
+        '''
+        When there are messages unread by the user,
+        message_read should be False
+        '''
+        result = MessageCRUD().list_per_permissions(
+            db=self.session,
+            role_permission=roles[0]['id'],
+            user_permission=user_db_response['id']
+        )
+
+        self.assertFalse(result['results'][0]['message_read'])
