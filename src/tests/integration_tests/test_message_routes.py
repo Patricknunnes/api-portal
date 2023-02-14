@@ -1,6 +1,6 @@
-from unittest.mock import patch, MagicMock
 from datetime import datetime
 from json import JSONDecodeError
+from unittest.mock import patch, MagicMock
 
 from src.tests.mocks.message_mocks import (
     message_created_with_all_fields,
@@ -15,10 +15,13 @@ from src.tests.mocks.message_mocks import (
     message,
     uuid_test
 )
+from src.tests.mocks.message_user_mocks import message_user
 from src.tests.mocks.role_mocks import roles
 from src.tests.mocks.user_mocks import user_db_response
 from src.tests.settings import ApiWithAuthTestCase, ApiBaseTestCase
+
 from src.db.cruds.message_crud import MessageCRUD
+from src.db.cruds.message_user_crud import MessageUserCRUD
 from src.db.cruds.role_crud import RoleCRUD
 from src.db.cruds.user_crud import UserCRUD
 
@@ -425,3 +428,41 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual({'page': 1, 'results': [], 'total': 0}, response.json())
+
+    @patch.object(MessageCRUD, 'get')
+    def test_handle_message_read_with_invalid_message_id(self, _):
+        '''
+        Should return status 404 and error message
+        '''
+        response = self.client.post(f'/message/me/read/{uuid_test}', headers=self.headers)
+
+        self.assertEqual(404, response.status_code)
+        self.assertEqual({'detail': 'Usuário não encontrado.'}, response.json())
+
+    @patch.object(MessageCRUD, 'get', return_value=message_created_with_all_fields)
+    @patch.object(UserCRUD, 'get', return_value=user_db_response)
+    @patch.object(MessageUserCRUD, 'get', return_value=message_user)
+    def test_handle_message_read_with_relationship_already_registered(self, *_):
+        '''
+        Should return status 400 and error message
+        '''
+        response = self.client.post(f'/message/me/read/{uuid_test}', headers=self.headers)
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            {'detail': 'A mensagem já foi marcada como lida.'},
+            response.json())
+
+    @patch.object(MessageCRUD, 'get', return_value=message_created_with_all_fields)
+    @patch.object(UserCRUD, 'get', return_value=user_db_response)
+    @patch.object(MessageUserCRUD, 'get', return_value=None)
+    def test_handle_message_read(self, *_):
+        '''
+        Should return status 201 and message_user relationship
+        '''
+        response = self.client.post(f'/message/me/read/{uuid_test}', headers=self.headers)
+
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(user_db_response['id'], response.json()['user_id'])
+        self.assertEqual(uuid_test, response.json()['message_id'])
+        self.assertTrue(response.json()['message_read'])
