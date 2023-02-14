@@ -50,6 +50,7 @@ async def current_user(token: str = Depends(oauth2_scheme),
 async def is_accessible(db: Session, datas: PermissionParams) -> bool:
     free_paths = [
         '/access/me',
+        '/access/me/favorite/{id}',
         '/auth/me',
         '/auth/sso/totvs',
         '/auth/utils',
