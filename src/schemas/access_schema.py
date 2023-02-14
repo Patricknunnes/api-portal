@@ -21,4 +21,4 @@ class AccessResponse(AccessBase):
 
 
 class AccessMeResponse(AccessBase):
-    pass
+    is_favorite: bool

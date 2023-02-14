@@ -37,9 +37,17 @@ def handle_list_allowed_accesses(
     """
     Return allowed accesses according to user role
     """
-    return RoleController().handle_list_allowed_accesses(
+    accesses = RoleController().handle_list_allowed_accesses(
         db=session,
-        role_id=profile.role.id)
+        role_id=profile.role.id
+    )
+    return [dict(
+        is_favorite=FavoriteAccessController().handle_get(
+            db=session,
+            data=dict(user_id=profile.id, access_id=access.id)
+        ) is not None,
+        **access.__dict__
+    ) for access in accesses]
 
 
 @access_router.post(
