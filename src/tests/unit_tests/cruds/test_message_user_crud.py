@@ -13,3 +13,19 @@ class MessageCRUDTestClass(BaseTestCase):
         self.assertTrue(result.message_read)
 
         MessageUserCRUD().delete(db=self.session, object_id=result.id)
+
+    def test_get_when_there_is_data_match(self):
+        '''Should return message_user relationship row'''
+        result = MessageUserCRUD().create(db=self.session, data=message_user)
+        row = MessageUserCRUD().get(db=self.session, **message_user)
+
+        self.assertIsInstance(row, MessageUserModel)
+        self.assertTrue(row.message_read)
+
+        MessageUserCRUD().delete(db=self.session, object_id=result.id)
+
+    def test_get_when_there_is_no_data_match(self):
+        '''Should return None when there is no match'''
+        result = MessageUserCRUD().get(db=self.session, **message_user)
+
+        self.assertIsNone(result)
