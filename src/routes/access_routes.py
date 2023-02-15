@@ -39,6 +39,7 @@ def handle_list_allowed_accesses(
     """
     accesses = RoleController().handle_list_allowed_accesses(
         db=session,
+        exception_message='Cargo não encontrado.',
         role_id=profile.role.id
     )
     return [dict(

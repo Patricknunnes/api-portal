@@ -10,4 +10,7 @@ class RoleCRUD(BaseCRUD):
         super(RoleCRUD, self).__init__(RoleModel)
 
     def list_allowed_accesses(self, db: Session, role_id: UUID):
-        return self.get(db=db, id=role_id).accesses
+        role = self.get(db=db, id=role_id)
+        if role is not None:
+            return role.accesses
+
