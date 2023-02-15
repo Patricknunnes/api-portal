@@ -22,8 +22,7 @@ def upgrade() -> None:
         sa.column('access_id', GUID()),
         sa.column('role_id', GUID())
     )
-    
-    root = '5a1a0a10-4973-4ced-94e6-119ce277630d'
+
     admin = '953dc20c-dcbc-4166-9441-8d94716346b3'
     professor = '69fe9d12-36d2-4454-b820-551b6e9058f0'
     student = '41354ecb-2b9a-446c-b26a-15e193592206'
@@ -83,11 +82,6 @@ def upgrade() -> None:
             'id': 'd3fc2365-c252-4939-9655-08dbd66af471',
             'access_id': office,
             'role_id': admin
-        },
-        {
-            'id': '05e3ed59-6a98-4e6f-b6f0-8bf5907ae436',
-            'access_id': office,
-            'role_id': root
         }
     ])
 
