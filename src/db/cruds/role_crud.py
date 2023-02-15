@@ -13,4 +13,3 @@ class RoleCRUD(BaseCRUD):
         role = self.get(db=db, id=role_id)
         if role is not None:
             return role.accesses
-

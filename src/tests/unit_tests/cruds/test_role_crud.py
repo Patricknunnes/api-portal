@@ -13,7 +13,7 @@ class RoleCrudTestClass(BaseTestCase):
         Insert row with role_1 data before each test
         '''
         super().setUp()
-        return RoleCRUD().create(db=self.session, data=role_1) 
+        return RoleCRUD().create(db=self.session, data=role_1)
 
     def tearDown(self) -> None:
         '''
@@ -65,7 +65,8 @@ class RoleCrudTestClass(BaseTestCase):
         result = RoleCRUD().list_allowed_accesses(db=self.session, role_id=role_2['id'])
         self.assertEqual(result, role.accesses)
 
-        remove_access_role = access_role.delete().where(access_role.c.role_id == role_2['id'])
+        remove_access_role = access_role.delete() \
+            .where(access_role.c.role_id == role_2['id'])
         self.session.execute(remove_access_role)
         RoleCRUD().delete(db=self.session, object_id=role.id)
 
@@ -73,5 +74,8 @@ class RoleCrudTestClass(BaseTestCase):
         '''
         Should return None when role_id is invalid
         '''
-        result = RoleCRUD().list_allowed_accesses(db=self.session, role_id=invalid_role_id)
+        result = RoleCRUD().list_allowed_accesses(
+            db=self.session,
+            role_id=invalid_role_id
+        )
         self.assertIsNone(result)
