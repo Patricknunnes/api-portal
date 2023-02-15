@@ -19,7 +19,7 @@ access_router = APIRouter(prefix='/access', tags=['Accesses'])
 
 
 @access_router.get('', response_model=List[AccessResponse])
-def handle_list_access(
+def handle_list_accesses(
     session: Session = Depends(get_db),
     _: UserResponse = Depends(current_user)
 ):

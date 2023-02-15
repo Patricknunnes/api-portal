@@ -34,8 +34,7 @@ class FavoriteAccessController(BaseController):
         return super().handle_create(db=db, data=data)
 
     def handle_get(self, db: Session, data: dict):
-        object_instance = self.crud_class().get(db, **data)
-        return object_instance
+        return self.crud_class().get(db, **data)
 
     def handle_delete(self, db: Session, data: FavoriteAccessPrimaryKeys):
         object = self.handle_get(db=db, data=data.dict())
