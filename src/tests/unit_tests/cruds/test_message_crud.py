@@ -3,7 +3,7 @@ from datetime import datetime
 from src.db.cruds.message_crud import MessageCRUD
 from src.db.models.models import MessageModel
 from src.tests.mocks.message_mocks import message
-from src.tests.mocks.role_mocks import roles
+from src.tests.mocks.role_mocks import role_1
 from src.tests.mocks.user_mocks import user_db_response
 from src.tests.settings import BaseTestCase
 
@@ -130,7 +130,7 @@ class MessageCRUDTestClass(BaseTestCase):
 
         result = MessageCRUD().list_per_permissions(
             db=self.session,
-            role_permission=roles[0]['id'],
+            role_permission=role_1['id'],
             user_permission=user_db_response['id']
         )
 
@@ -158,7 +158,7 @@ class MessageCRUDTestClass(BaseTestCase):
         '''
         result = MessageCRUD().list_per_permissions(
             db=self.session,
-            role_permission=roles[0]['id'],
+            role_permission=role_1['id'],
             user_permission=user_db_response['id']
         )
 
