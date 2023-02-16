@@ -3,11 +3,9 @@ from sqlalchemy.orm import Session
 from typing import List
 from uuid import UUID
 
-from src.controllers.access_controller import AccessController
 from src.controllers.favorite_access_controller import FavoriteAccessController
-from src.controllers.role_controller import RoleController
 from src.db.settings.config import get_db
-from src.schemas.access_schema import AccessResponse, AccessMeResponse
+from src.schemas.access_schema import AccessMeResponse
 from src.schemas.favorite_access_schema import (
     FavoriteAccessResponse,
     FavoriteAccessPrimaryKeys
@@ -15,21 +13,10 @@ from src.schemas.favorite_access_schema import (
 from src.schemas.user_schema import UserResponse
 from src.shared.auth.auth_utils import current_user
 
-access_router = APIRouter(prefix='/access', tags=['Accesses'])
+access_router = APIRouter(prefix='/access/me', tags=['Accesses'])
 
 
-@access_router.get('', response_model=List[AccessResponse])
-def handle_list_accesses(
-    session: Session = Depends(get_db),
-    _: UserResponse = Depends(current_user)
-):
-    """
-    Return all access from database
-    """
-    return AccessController().handle_list(db=session)
-
-
-@access_router.get('/me', response_model=List[AccessMeResponse])
+@access_router.get('', response_model=List[AccessMeResponse])
 def handle_list_allowed_accesses(
     session: Session = Depends(get_db),
     profile: UserResponse = Depends(current_user)
@@ -37,22 +24,14 @@ def handle_list_allowed_accesses(
     """
     Return allowed accesses according to user role
     """
-    accesses = RoleController().handle_list_allowed_accesses(
+    return FavoriteAccessController().handle_allowed_access_with_favorite_info(
         db=session,
-        exception_message='Cargo não encontrado.',
-        role_id=profile.role.id
+        user=profile
     )
-    return [dict(
-        is_favorite=FavoriteAccessController().handle_get(
-            db=session,
-            data=dict(user_id=profile.id, access_id=access.id)
-        ) is not None,
-        **access.__dict__
-    ) for access in accesses]
 
 
 @access_router.post(
-    '/me/favorite/{access_id}',
+    '/favorite/{access_id}',
     status_code=status.HTTP_201_CREATED,
     response_model=FavoriteAccessResponse
 )
@@ -69,7 +48,7 @@ def handle_favorite_access(
 
 
 @access_router.delete(
-    '/me/favorite/{access_id}',
+    '/favorite/{access_id}',
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response
 )

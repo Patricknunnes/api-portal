@@ -18,15 +18,6 @@ class AccessRouteTestClass(ApiWithAuthTestCase):
         self.headers = {'Authorization': 'Bearer valid_token'}
         return super().setUp()
 
-    def test_list_accesses(self):
-        '''
-        Should return status 200 and access list
-        '''
-        response = self.client.get('/access', headers=self.headers)
-
-        self.assertEqual(200, response.status_code)
-        self.assertEqual([], response.json())
-
     @patch.object(RoleCRUD, 'get', return_value=RoleModel(**role_1))
     def test_list_user_accesses(self, _):
         '''
