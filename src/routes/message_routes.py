@@ -91,6 +91,26 @@ def handle_delete_message(
     )
 
 
+@message_router.get(
+    '/me/{message_id}',
+    response_model=MessageResponse,
+    status_code=status.HTTP_200_OK
+)
+def handle_get_message(
+    message_id: UUID,
+    db: Session = Depends(get_db),
+    _: UserResponse = Depends(current_user)
+):
+    """
+    This route return the message data by UUID.
+    """
+    return MessageController().handle_get(
+        db=db,
+        object_id=message_id,
+        exception_message='Messagem não encontrada'
+    )
+
+
 @message_router.patch(
     '/{message_id}',
     status_code=status.HTTP_204_NO_CONTENT,
