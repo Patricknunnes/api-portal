@@ -107,7 +107,7 @@ def handle_get_message(
     return MessageController().handle_get(
         db=db,
         object_id=message_id,
-        exception_message='Messagem não encontrada'
+        exception_message='Mensagem não encontrada'
     )
 
 
