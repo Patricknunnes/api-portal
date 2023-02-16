@@ -13,6 +13,11 @@ role_3 = {
     'name': 'role_3'
 }
 
+role_4 = {
+    'id': 'b4a218b0-6c39-491e-b366-449238fd2ae6',
+    'name': 'role_4'
+}
+
 roles = [role_1, role_2, role_3]
 
 valid_role_id = '34930736-8424-4254-84f5-92dd68e771ef'
