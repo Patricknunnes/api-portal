@@ -23,6 +23,8 @@ message_with_too_long_title = {
 
 valid_expiration_date = '2023-12-31'
 
+invalid_message_id = '52a558a6-8fbe-4c54-bfba-6667005f7a1a'
+
 message_with_expiration_date = dict(
     **message,
     expiration_date=valid_expiration_date

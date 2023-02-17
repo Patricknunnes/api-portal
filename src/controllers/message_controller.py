@@ -3,7 +3,7 @@ from datetime import datetime
 from uuid import UUID
 
 from src.shared.utils import UtilService
-from src.exceptions.exceptions import BadRequestException
+from src.exceptions.exceptions import BadRequestException, NotFoundException
 from src.controllers.pagination_oriented_controller import PaginationOrientedController
 from src.controllers.role_controller import RoleController
 from src.controllers.user_controller import UserController
@@ -104,6 +104,19 @@ class MessageController(PaginationOrientedController):
             data=cleaned_data,
             exception_message='Mensagem não encontrada'
         )
+
+    def handle_get_by_id_per_permissions(self, db: Session, id: UUID, user: UserResponse):
+        response = self.crud_class().get_by_id_per_permissions(
+            db=db,
+            id=id,
+            role_permission=user.role.id,
+            user_permission=user.id,
+        )
+
+        if response is None:
+            raise NotFoundException(detail="Mensagem não encontrada.")
+
+        return response
 
     def handle_list_per_permissions(
         self,

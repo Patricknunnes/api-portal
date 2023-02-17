@@ -13,7 +13,8 @@ from src.tests.mocks.message_mocks import (
     message_with_too_long_title,
     message_with_user_permission,
     message,
-    uuid_test
+    uuid_test,
+    invalid_message_id
 )
 from src.tests.mocks.message_user_mocks import message_user
 from src.tests.mocks.role_mocks import roles
@@ -122,6 +123,14 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
             {'detail': 'Mensagem não encontrada'},
             response.json()
         )
+
+    def test_get_message_by_id_when_id_not_found(self):
+        '''
+        Should return error message and status 401 when message id is invalid
+        '''
+        response = self.client.get(f'/message/me/{invalid_message_id}')
+        self.assertEqual(404, response.status_code)
+        self.assertEqual({'detail': 'Mensagem não encontrada.'}, response.json())
 
     @patch.multiple(
         MessageCRUD,

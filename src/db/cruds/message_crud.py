@@ -55,3 +55,23 @@ class MessageCRUD(PaginationOrientedCRUD):
                 **row['MessageModel'].__dict__
             ) for row in filter_result]
         }
+
+    def get_by_id_per_permissions(
+        self,
+        db: Session,
+        id: UUID,
+        role_permission: UUID,
+        user_permission: UUID,
+    ):
+
+        query = db.query(self.model).filter(
+            ((self.model.expiration_date > func.now()) |
+                (self.model.expiration_date.is_(None))) &
+            ((self.model.role_permission == role_permission) |
+                (self.model.user_permission == user_permission) |
+                ((self.model.role_permission.is_(None)) &
+                    (self.model.user_permission.is_(None))))
+        )
+
+        filter_result = query.filter(self.model.id == id).first()
+        return filter_result

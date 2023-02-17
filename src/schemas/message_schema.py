@@ -68,6 +68,19 @@ class MessageMeResponse(BaseModel):
         orm_mode = True
 
 
+class MessageMeByIdResponse(BaseModel):
+    id: UUID
+    title: str
+    text: str
+    expiration_date: Optional[datetime]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+    is_important: bool
+
+    class Config:
+        orm_mode = True
+
+
 class MessageMeResponsePaginate(BaseModel):
     page: int = 1
     total: int
