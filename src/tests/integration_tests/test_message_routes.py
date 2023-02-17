@@ -123,14 +123,14 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
             {'detail': 'Mensagem não encontrada'},
             response.json()
         )
-        
+
     def test_get_message_by_id_when_id_not_found(self):
         '''
         Should return error message and status 401 when message id is invalid
         '''
         response = self.client.get(f'/message/me/{invalid_message_id}')
         self.assertEqual(404, response.status_code)
-        self.assertEqual({'detail': 'Mensagem não encontrada'}, response.json())
+        self.assertEqual({'detail': 'Mensagem não encontrada.'}, response.json())
 
     @patch.multiple(
         MessageCRUD,

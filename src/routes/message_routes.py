@@ -9,6 +9,7 @@ from src.shared.auth.auth_utils import current_user
 from src.schemas.message_schema import (
     MessageCreate,
     MessageCreateReqBody,
+    MessageMeByIdResponse,
     MessageMeResponsePaginate,
     MessageResponse,
     MessageResponsePaginate,
@@ -93,21 +94,22 @@ def handle_delete_message(
 
 @message_router.get(
     '/me/{message_id}',
-    response_model=MessageResponse,
+    response_model=MessageMeByIdResponse,
     status_code=status.HTTP_200_OK
 )
 def handle_get_message(
     message_id: UUID,
     db: Session = Depends(get_db),
+    profile: UserResponse = Depends(current_user),
     _: UserResponse = Depends(current_user)
 ):
     """
     This route return the message data by UUID.
     """
-    return MessageController().handle_get(
+    return MessageController().handle_get_by_id_per_permissions(
         db=db,
-        object_id=message_id,
-        exception_message='Mensagem não encontrada'
+        id=message_id,
+        user=profile,
     )
 
 
