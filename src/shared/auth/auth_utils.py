@@ -53,10 +53,10 @@ async def is_accessible(db: Session, datas: PermissionParams) -> bool:
         '/access/me/favorite/{id}',
         '/auth/me',
         '/auth/sso/totvs',
-        '/auth/utils',
         '/message/me',
+        '/message/me/{id}',
         '/message/me/read/{id}',
-        '/message/me/{id}'
+        '/utils/image'
     ]
 
     if datas.user_role.name.lower() == 'root' or datas.path in free_paths:
