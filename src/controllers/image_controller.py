@@ -10,5 +10,5 @@ from src.schemas.utils_schema import (
 
 class ImageController:
 
-    def handle_create(self, db: Session, data: Image, user_id: UUID):
+    def handle_patch(self, db: Session, data: Image, user_id: UUID):
         UserCRUD().patch(db=db, object_id=user_id, data=data)
