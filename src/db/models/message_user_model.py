@@ -15,5 +15,5 @@ class MessageUserModel(Base):
     message_read = Column(Boolean, nullable=False, default=True)
     created_at = Column(TIMESTAMP, server_default=func.now())
 
-    message = relationship('MessageModel')
+    message = relationship('MessageModel', back_populates='message_users')
     user = relationship('UserModel')

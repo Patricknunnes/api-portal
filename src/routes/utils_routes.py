@@ -11,7 +11,11 @@ from src.schemas.user_schema import UserResponse
 util_router = APIRouter(prefix='/utils', tags=['Utils'])
 
 
-@util_router.patch('/image', response_class=Response, status_code=status.HTTP_204_NO_CONTENT)
+@util_router.patch(
+    '/image',
+    response_class=Response,
+    status_code=status.HTTP_204_NO_CONTENT
+)
 def handle_insert_image(image_data: Image,
                         db: Session = Depends(get_db),
                         profile: UserResponse = Depends(current_user)):

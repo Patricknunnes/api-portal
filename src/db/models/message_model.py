@@ -25,3 +25,9 @@ class MessageModel(Base):
     user = relationship("UserModel", foreign_keys='MessageModel.user_permission')
     author = relationship("UserModel", foreign_keys='MessageModel.created_by')
     update_author = relationship("UserModel", foreign_keys='MessageModel.updated_by')
+
+    message_users = relationship(
+        'MessageUserModel',
+        back_populates='message',
+        cascade='all, delete'
+    )
