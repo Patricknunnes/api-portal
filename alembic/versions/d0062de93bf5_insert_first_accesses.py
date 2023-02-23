@@ -43,7 +43,7 @@ def upgrade() -> None:
             'id': 'b76540b2-de16-447b-ad13-fd33720aa346',
             'title': 'Office 365',
             'description': 'Acesso a e-mails e ao pacote completo do Office 365.',
-            'icon_path': '/src/assets/icon-office-365.svg',
+            'icon_path': 'https://img.icons8.com/ios-filled/50/AD8300/office-365.svg',
             'link_path': 'http://office.idor.org/'
         },
         {
