@@ -25,6 +25,8 @@ class UserSchemaValidate(BaseModel):
 class User(BaseModel):
     id: UUID
     name: str
+    document: str
+    role: RoleResponse
 
     class Config:
         orm_mode = True
@@ -32,11 +34,9 @@ class User(BaseModel):
 
 class UserResponse(User):
     email: EmailStr
-    document: str
     phone: Optional[int]
     image: Optional[str]
     is_totvs: bool
-    role: RoleResponse
 
 
 class UserResponsePaginate(BaseModel):
