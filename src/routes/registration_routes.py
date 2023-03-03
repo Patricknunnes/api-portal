@@ -36,6 +36,7 @@ def handle_list_registrations(
     """
     return RegistrationController().handle_list(
         db=session,
+        filter_attrs=['email', 'status', 'service'],
         filters=filters,
         limit=limit,
         page=page,

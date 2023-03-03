@@ -38,30 +38,3 @@ class RegistrationController(PaginationOrientedController):
             raise NotFoundException(detail=exception_message)
 
         return result
-
-    def __format_sort(self, sort: str):
-        sort_tuple = tuple()
-        for option in sort.split(','):
-            sort_data = option.split(':')
-            if len(sort_data) == 1:
-                sort_data.append('asc')
-            sort_tuple = tuple([*sort_tuple, tuple(sort_data)])
-        print(sort_tuple)
-        return sort_tuple
-
-    def handle_list(
-        self,
-        db: Session,
-        filters: str = None,
-        page: int = None,
-        limit: int = None,
-        sort: str = None
-    ):
-        return self.crud_class().handle_list(
-            db=db,
-            page=page,
-            limit=limit,
-            filters=filters,
-            sort=self.__format_sort(sort) if sort else None,
-            attrs=['email', 'status', 'service']
-        )

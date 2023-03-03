@@ -44,14 +44,14 @@ class RegistrationCRUD(PaginationOrientedCRUD):
     def handle_list(
         self,
         db: Session,
+        filter_attrs: List[str],
         filters: str = None,
-        attrs: List[str] = [],
         limit: int = None,
         page: int = None,
         sort: tuple = None
     ):
         query = self._sort_query(
-            self._filter_query(db=db, filters=filters, attrs=attrs),
+            self._filter_query(db=db, filters=filters, attrs=filter_attrs),
             sort_params=sort if sort else tuple(
                 tuple(val) for val in [['user.name', 'asc']])
         )
