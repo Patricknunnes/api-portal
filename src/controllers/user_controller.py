@@ -66,11 +66,12 @@ class UserController(BaseController):
                     page: int = None,
                     limit: int = None):
 
-        search_result = self.crud_class().handle_list(db=db, filters=filters,
-                                                      page=page,
-                                                      limit=limit)
-
-        return search_result
+        return self.crud_class().handle_list(
+            db=db,
+            filters=filters,
+            page=page,
+            limit=limit
+        )
 
     def handle_patch(self, db: Session,
                      object_id: UUID,

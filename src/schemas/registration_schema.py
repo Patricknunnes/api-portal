@@ -24,7 +24,11 @@ class RegistrationCreateModel(RegistrationCreateBody):
     service: str
 
 
-class RegistrationResponse(BaseModel):
+class RegistrationUpdateBody(BaseModel):
+    status: StatusEnum
+
+
+class Registration(BaseModel):
     id: UUID
     service: str
     user: User
@@ -33,6 +37,11 @@ class RegistrationResponse(BaseModel):
     class Config:
         orm_mode = True
         use_enum_values = True
+
+
+class RegistrationResponse(Registration):
+    email: EmailStr
+    birthdate: datetime
 
 
 class RegistrationResponsePaginate(BaseModel):

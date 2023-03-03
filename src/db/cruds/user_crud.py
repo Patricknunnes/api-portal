@@ -1,5 +1,4 @@
 from typing import Union
-
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
 

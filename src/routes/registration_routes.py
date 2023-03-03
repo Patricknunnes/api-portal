@@ -6,11 +6,12 @@ from src.controllers.registration_controller import RegistrationController
 from src.db.settings.config import get_db
 from src.schemas.user_schema import UserResponse
 from src.schemas.registration_schema import (
+    Registration,
     RegistrationCreateBody,
     RegistrationCreateModel,
     RegistrationResponse,
     RegistrationResponsePaginate,
-    StatusEnum
+    RegistrationUpdateBody
 )
 from src.shared.auth.auth_utils import current_user
 
@@ -23,18 +24,28 @@ registration_router = APIRouter(prefix='/registration', tags=['Registrations'])
     status_code=status.HTTP_200_OK
 )
 def handle_list_registrations(
+    filters: str = None,
+    page: int = None,
+    limit: int = None,
+    sort: str = None,
     session: Session = Depends(get_db),
     _: UserResponse = Depends(current_user)
 ):
     """
     Return registration list
     """
-    return RegistrationController().handle_list(db=session)
+    return RegistrationController().handle_list(
+        db=session,
+        filters=filters,
+        limit=limit,
+        page=page,
+        sort=sort
+    )
 
 
 @registration_router.get(
     '/office365/me',
-    response_model=RegistrationResponse,
+    response_model=Registration,
     status_code=status.HTTP_200_OK
 )
 def handle_get_office_registration(
@@ -75,42 +86,22 @@ def handle_create_office_registration(
 
 
 @registration_router.patch(
-    '/{registration_id}/approve',
+    '/{registration_id}',
     status_code=status.HTTP_204_NO_CONTENT,
     response_class=Response
 )
 def handle_approve_registration(
+    data: RegistrationUpdateBody,
     registration_id: UUID,
     session: Session = Depends(get_db),
     _: UserResponse = Depends(current_user)
 ):
     """
-    Approve registration
+    Update registration
     """
     return RegistrationController().handle_patch(
         db=session,
         object_id=registration_id,
-        data=dict(status=StatusEnum.APPROVED),
-        exception_message='Cadastro não encontrado.'
-    )
-
-
-@registration_router.patch(
-    '/{registration_id}/reject',
-    status_code=status.HTTP_204_NO_CONTENT,
-    response_class=Response
-)
-def handle_reject_registration(
-    registration_id: UUID,
-    session: Session = Depends(get_db),
-    _: UserResponse = Depends(current_user)
-):
-    """
-    Reject registration
-    """
-    return RegistrationController().handle_patch(
-        db=session,
-        object_id=registration_id,
-        data=dict(status=StatusEnum.REJECTED),
+        data=data.dict(),
         exception_message='Cadastro não encontrado.'
     )
