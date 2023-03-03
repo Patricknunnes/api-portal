@@ -1,5 +1,6 @@
-from sqlalchemy import func
+from sqlalchemy import func, or_
 from sqlalchemy.orm import Session
+from typing import List
 from uuid import UUID
 
 from src.db.cruds.pagination_oriented_crud import PaginationOrientedCRUD
@@ -15,13 +16,12 @@ class MessageCRUD(PaginationOrientedCRUD):
         db: Session,
         role_permission: UUID,
         user_permission: UUID,
-        page: int = None,
+        filters: str = None,
+        filter_attrs: List[str] = [],
+        is_important: bool = None,
         limit: int = None,
-        is_important: bool = None
+        page: int = None
     ):
-        page = page if page else 1
-        limit = limit if limit else 20
-
         subquery = db.query(MessageUserModel) \
             .filter(
                 MessageUserModel.user_id == user_permission,
@@ -41,15 +41,19 @@ class MessageCRUD(PaginationOrientedCRUD):
                 ((self.model.role_permission.is_(None)) &
                     (self.model.user_permission.is_(None)))))
 
+        if filters:
+            filters_tuple = (
+                getattr(self.model, attr).ilike(f'%{filters}%') for attr in filter_attrs)
+            filter_result = filter_result.filter(or_(filters_tuple))
+
         if is_important is not None:
             filter_result = filter_result.filter(self.model.is_important == is_important)
 
-        total_count = filter_result.count()
-        filter_result = filter_result.limit(limit).offset((page - 1) * limit).all()
+        filter_result = self._paginate_query(query=filter_result, limit=limit, page=page)
 
         return {
-            'total': total_count,
-            'page': page,
+            'total': filter_result.count(),
+            'page': page if page else 1,
             'results': [dict(
                 message_read=row['message_read'],
                 **row['MessageModel'].__dict__

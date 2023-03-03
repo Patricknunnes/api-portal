@@ -24,19 +24,29 @@ message_router = APIRouter(prefix='/message', tags=['Messages'])
 
 @message_router.get('', response_model=MessageResponsePaginate)
 def handle_list_messages(
+    filters: str = None,
     page: int = None,
     limit: int = None,
+    sort: str = None,
     db: Session = Depends(get_db),
     _: UserResponse = Depends(current_user)
 ):
     """
     Return messages from database
     """
-    return MessageController().handle_list(db=db, page=page, limit=limit)
+    return MessageController().handle_list(
+        db=db,
+        filter_attrs=['title'],
+        filters=filters,
+        limit=limit,
+        page=page,
+        sort=sort
+    )
 
 
 @message_router.get('/me', response_model=MessageMeResponsePaginate)
 def handle_list_per_permissions(
+    filters: str = None,
     page: int = None,
     limit: int = None,
     db: Session = Depends(get_db),
@@ -48,10 +58,12 @@ def handle_list_per_permissions(
     """
     return MessageController().handle_list_per_permissions(
         db=db,
-        user=profile,
-        page=page,
+        filter_attrs=['title', 'text'],
+        filters=filters,
+        is_important=is_important,
         limit=limit,
-        is_important=is_important
+        page=page,
+        user=profile
     )
 
 

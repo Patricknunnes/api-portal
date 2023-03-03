@@ -1,15 +1,16 @@
-from sqlalchemy.orm import Session
 from datetime import datetime
+from sqlalchemy.orm import Session
+from typing import List
 from uuid import UUID
 
-from src.shared.utils import UtilService
-from src.exceptions.exceptions import BadRequestException, NotFoundException
 from src.controllers.pagination_oriented_controller import PaginationOrientedController
 from src.controllers.role_controller import RoleController
 from src.controllers.user_controller import UserController
+from src.db.cruds.message_crud import MessageCRUD
+from src.exceptions.exceptions import BadRequestException, NotFoundException
 from src.schemas.message_schema import MessageCreate, MessageUpdate
 from src.schemas.user_schema import UserResponse
-from src.db.cruds.message_crud import MessageCRUD
+from src.shared.utils import UtilService
 
 
 class MessageController(PaginationOrientedController):
@@ -118,19 +119,41 @@ class MessageController(PaginationOrientedController):
 
         return response
 
+    def handle_list(
+        self,
+        db: Session,
+        filter_attrs: List[str],
+        filters: str = None,
+        page: int = None,
+        limit: int = None,
+        sort: str = None
+    ):
+        return self.crud_class().handle_list(
+            db=db,
+            page=page,
+            limit=limit,
+            filters=filters,
+            sort=self._format_sort(sort) if sort else (('title', 'asc'),),
+            filter_attrs=filter_attrs
+        )
+
     def handle_list_per_permissions(
         self,
         db: Session,
         user: UserResponse,
-        page: int = None,
+        filter_attrs: List[str],
+        filters: str = None,
+        is_important: bool = None,
         limit: int = None,
-        is_important: bool = None
+        page: int = None
     ):
         return self.crud_class().list_per_permissions(
             db=db,
-            role_permission=user.role.id,
-            user_permission=user.id,
-            page=page,
-            limit=limit,
+            filter_attrs=filter_attrs,
+            filters=filters,
             is_important=is_important,
+            limit=limit,
+            page=page,
+            role_permission=user.role.id,
+            user_permission=user.id
         )
