@@ -53,6 +53,7 @@ class UserUpdate(BaseModel):
 
 
 class UserDivergence(BaseModel):
+    id: UUID
     name: str
     email: Optional[str]
     document: str

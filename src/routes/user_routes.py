@@ -40,15 +40,24 @@ def handle_get_all_users(
 
 @user_router.get('/divergences', response_model=DivergenceResponsePaginate)
 def handle_get_all_divergences(
-    db: Session = Depends(get_db),
+    filters: str = None,
     page: int = None,
     limit: int = None,
+    sort: str = None,
+    db: Session = Depends(get_db),
     _: UserResponse = Depends(current_user)
 ):
     """
     Return all registration divergences from database
     """
-    return DivergenceController().handle_list(db=db, page=page, limit=limit)
+    return DivergenceController().handle_list(
+        db=db,
+        filter_attrs=['name', 'email', 'error'],
+        filters=filters,
+        limit=limit,
+        page=page,
+        sort=sort
+    )
 
 
 @user_router.get('/{user_id}',
