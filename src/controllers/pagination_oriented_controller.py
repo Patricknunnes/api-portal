@@ -9,6 +9,9 @@ class PaginationOrientedController(BaseController):
         super(PaginationOrientedController, self).__init__(crud_class)
 
     def _format_sort(self, sort: str):
+        '''
+        Return sort data in the format (('columnA', 'asc'), ('columnB', 'desc'))
+        '''
         sort_tuple = tuple()
         for option in sort.split(','):
             sort_data = option.split(':')

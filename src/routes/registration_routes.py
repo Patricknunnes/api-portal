@@ -18,11 +18,7 @@ from src.shared.auth.auth_utils import current_user
 registration_router = APIRouter(prefix='/registration', tags=['Registrations'])
 
 
-@registration_router.get(
-    '',
-    response_model=RegistrationResponsePaginate,
-    status_code=status.HTTP_200_OK
-)
+@registration_router.get('', response_model=RegistrationResponsePaginate)
 def handle_list_registrations(
     filters: str = None,
     page: int = None,
@@ -44,11 +40,7 @@ def handle_list_registrations(
     )
 
 
-@registration_router.get(
-    '/office365/me',
-    response_model=Registration,
-    status_code=status.HTTP_200_OK
-)
+@registration_router.get('/office365/me', response_model=Registration)
 def handle_get_office_registration(
     session: Session = Depends(get_db),
     profile: UserResponse = Depends(current_user)

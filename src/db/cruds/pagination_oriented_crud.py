@@ -9,7 +9,11 @@ class PaginationOrientedCRUD(BaseCRUD):
     def __init__(self, model: Any):
         super(PaginationOrientedCRUD, self).__init__(model)
 
-    def _filter_query(self, db: Session, filters: str = None, filter_attrs: List[str] = []):
+    def _filter_query(
+        self, db: Session,
+        filters: str = None,
+        filter_attrs: List[str] = []
+    ):
         '''
         Return filtered query considering just its own columns
         '''
