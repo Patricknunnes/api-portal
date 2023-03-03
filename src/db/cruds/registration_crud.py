@@ -52,8 +52,7 @@ class RegistrationCRUD(PaginationOrientedCRUD):
     ):
         query = self._sort_query(
             self._filter_query(db=db, filters=filters, attrs=filter_attrs),
-            sort_params=sort if sort else tuple(
-                tuple(val) for val in [['user.name', 'asc']])
+            sort_params=sort if sort else (('user.name', 'asc'),)
         )
         query_pagination = self._paginate_query(
             query=query,

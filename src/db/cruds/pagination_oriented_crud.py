@@ -9,12 +9,30 @@ class PaginationOrientedCRUD(BaseCRUD):
     def __init__(self, model: Any):
         super(PaginationOrientedCRUD, self).__init__(model)
 
-    def _filter_query(self, db: Session, filters: str = None, attrs: List[str] = []):
+    def _filter_query(self, db: Session, filters: str = None, filter_attrs: List[str] = []):
+        '''
+        Return filtered query considering just its own columns
+        '''
         if filters:
             filters_tuple = (
-                getattr(self.model, attr).ilike(f'%{filters}%') for attr in attrs)
+                getattr(self.model, attr).ilike(f'%{filters}%') for attr in filter_attrs)
             return db.query(self.model).filter(or_(filters_tuple))
         return db.query(self.model)
+
+    def _sort_query(self, query: Query, sort_params: tuple = None):
+        '''
+        Return sorted query considering just its own columns
+        '''
+        if sort_params is not None:
+            for column, order in sort_params:
+                column_obj = getattr(self.model, column, None)
+
+                if column_obj is not None:
+                    if order == 'asc':
+                        query = query.order_by(column_obj.asc())
+                    elif order == 'desc':
+                        query = query.order_by(column_obj.desc())
+        return query
 
     def _paginate_query(
         self,
@@ -32,9 +50,11 @@ class PaginationOrientedCRUD(BaseCRUD):
         limit: int = None,
         page: int = None,
         filters: str = None,
-        attrs: List[str] = []
+        filter_attrs: List[str] = [],
+        sort: tuple = None
     ):
-        query = self._filter_query(db=db, filters=filters, attrs=attrs)
+        query = self._filter_query(db=db, filters=filters, filter_attrs=filter_attrs)
+        query = self._sort_query(query=query, sort_params=sort)
         query_pagination = self._paginate_query(query=query, page=page, limit=limit)
         return {
             'total': query.count(),
