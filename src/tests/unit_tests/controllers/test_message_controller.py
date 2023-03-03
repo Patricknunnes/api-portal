@@ -31,7 +31,7 @@ class MessageControllerTestClass(BaseTestCase):
         '''
           Should return list with all messages
         '''
-        result = MessageController().handle_list(db=self.session)
+        result = MessageController().handle_list(db=self.session, filter_attrs=[])
 
         self.assertEqual(result, {'page': 1, 'total': 0, 'results': []})
 
@@ -323,17 +323,20 @@ class MessageControllerTestClass(BaseTestCase):
         user = UserResponse(**user_db_response)
         MessageController().handle_list_per_permissions(
             db=self.session,
-            user=user,
+            filter_attrs=[],
             limit=10,
-            page=2
+            page=2,
+            user=user
         )
         list_mock.assert_called_with(
             db=self.session,
-            role_permission=user.role.id,
-            user_permission=user.id,
-            page=2,
+            filter_attrs=[],
+            is_important=None,
             limit=10,
-            is_important=None
+            page=2,
+            filters=None,
+            role_permission=user.role.id,
+            user_permission=user.id
         )
 
     @patch.object(MessageCRUD, 'list_per_permissions')
@@ -346,16 +349,19 @@ class MessageControllerTestClass(BaseTestCase):
         user = UserResponse(**user_db_response)
         MessageController().handle_list_per_permissions(
             db=self.session,
-            user=user,
+            filter_attrs=[],
+            is_important=True,
             limit=10,
             page=2,
-            is_important=True
+            user=user,
         )
         list_mock.assert_called_with(
             db=self.session,
-            role_permission=user.role.id,
-            user_permission=user.id,
-            page=2,
+            filter_attrs=[],
+            filters=None,
+            is_important=True,
             limit=10,
-            is_important=True
+            page=2,
+            role_permission=user.role.id,
+            user_permission=user.id
         )
