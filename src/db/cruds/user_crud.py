@@ -1,12 +1,12 @@
-from typing import Union
-from sqlalchemy.orm import Session
 from sqlalchemy import or_
+from sqlalchemy.orm import Session, Query
+from typing import List, Union
 
-from src.db.cruds.base import BaseCRUD
-from src.db.models.models import UserModel
+from src.db.cruds.pagination_oriented_crud import PaginationOrientedCRUD
+from src.db.models.models import UserModel, RoleModel
 
 
-class UserCRUD(BaseCRUD):
+class UserCRUD(PaginationOrientedCRUD):
     def __init__(self):
         super(UserCRUD, self).__init__(UserModel)
 
@@ -21,33 +21,59 @@ class UserCRUD(BaseCRUD):
             .first()
         return user
 
-    def handle_list(self, db: Session,
-                    filters: str = None,
-                    page: int = None,
-                    limit: int = None):
+    def _filter_query(self, db: Session, filters: str = None, attrs: list = []):
+        query = db.query(self.model).join(RoleModel)
+        if filters:
+            filters_tuple = (
+                getattr(self.model, attr).ilike(f'%{filters}%') for attr in attrs)
+            return query.filter(or_(
+                RoleModel.name.ilike(f'%{filters}%'),
+                *filters_tuple
+            ))
+        return query
+
+    def _sort_query(self, query: Query, sort_params: tuple = None):
+        if sort_params is not None:
+            for column, order in sort_params:
+                column_parts = column.split('.')
+                column_obj = None
+                if len(column_parts) == 1:
+                    column_obj = getattr(self.model, column_parts[0], None)
+                else:
+                    if column_parts[0] == 'role':
+                        column_obj = getattr(RoleModel, column_parts[1], None)
+
+                if column_obj is not None:
+                    if order == 'asc':
+                        query = query.order_by(column_obj.asc())
+                    elif order == 'desc':
+                        query = query.order_by(column_obj.desc())
+        return query
+
+    def handle_list(
+        self,
+        db: Session,
+        filter_attrs: List[str],
+        filters: str = None,
+        limit: int = None,
+        page: int = None,
+        sort: tuple = None
+    ):
         page = page if page else 1
         limit = limit if limit else 20
 
-        if filters:
-            result = db.query(self.model) \
-                .filter(or_(self.model.name.ilike(f'%{filters}%'),
-                            self.model.email.ilike(f'%{filters}%'),
-                            self.model.document.ilike(f'%{filters}%'),
-                            self.model.phone.ilike(f'%{filters}%'))) \
-                .limit(limit).offset((page - 1) * limit).all()
+        query = self._sort_query(
+            self._filter_query(db=db, filters=filters, attrs=filter_attrs),
+            sort_params=sort if sort else (('name', 'asc'),)
+        )
+        query_pagination = self._paginate_query(
+            query=query,
+            page=page,
+            limit=limit
+        )
 
-            count = self.count_registers(db=db, filters=filters)
-        else:
-            result = db.query(self.model).limit(limit).offset((page - 1) * limit).all()
-            count = self.count_registers(db=db)
-
-        return {'total': count, 'page': page, 'user_response': result}
-
-    def count_registers(self, db: Session, filters: str = None):
-        if filters:
-            return db.query(self.model) \
-                .filter(or_(self.model.name.ilike(f'%{filters}%'),
-                            self.model.email.ilike(f'%{filters}%'),
-                            self.model.document.ilike(f'%{filters}%'),
-                            self.model.phone.ilike(f'%{filters}%'))).count()
-        return db.query(self.model).count()
+        return {
+            'total': query.count(),
+            'page': page if page else 1,
+            'results': query_pagination.all()
+        }

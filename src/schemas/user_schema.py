@@ -42,7 +42,7 @@ class UserResponse(User):
 class UserResponsePaginate(BaseModel):
     page: int = 1
     total: int
-    user_response: List[UserResponse]
+    results: List[UserResponse]
 
 
 class UserUpdate(BaseModel):

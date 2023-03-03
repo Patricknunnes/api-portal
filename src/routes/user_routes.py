@@ -21,13 +21,21 @@ def handle_get_all_users(
     filters: str = None,
     page: int = None,
     limit: int = None,
+    sort: str = None,
     db: Session = Depends(get_db),
     _: UserResponse = Depends(current_user)
 ):
     """
     Return all users from database
     """
-    return UserController().handle_list(db=db, filters=filters, page=page, limit=limit)
+    return UserController().handle_list(
+        db=db,
+        filter_attrs=['name', 'email'],
+        filters=filters,
+        limit=limit,
+        page=page,
+        sort=sort
+    )
 
 
 @user_router.get('/divergences', response_model=DivergenceResponsePaginate)
