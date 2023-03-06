@@ -4,7 +4,7 @@ from uuid import UUID
 
 from src.controllers.registration_controller import RegistrationController
 from src.db.settings.config import get_db
-from src.schemas.user_schema import UserResponse
+from src.schemas.user_schema import UserResponse, UserMe
 from src.schemas.registration_schema import (
     Registration,
     RegistrationCreateBody,
@@ -43,7 +43,7 @@ def handle_list_registrations(
 @registration_router.get('/office365/me', response_model=Registration)
 def handle_get_office_registration(
     session: Session = Depends(get_db),
-    profile: UserResponse = Depends(current_user)
+    profile: UserMe = Depends(current_user)
 ):
     """
     Return office registration data
@@ -63,7 +63,7 @@ def handle_get_office_registration(
 def handle_create_office_registration(
     user_data: RegistrationCreateBody,
     session: Session = Depends(get_db),
-    profile: UserResponse = Depends(current_user)
+    profile: UserMe = Depends(current_user)
 ):
     """
     Create office 365 registration

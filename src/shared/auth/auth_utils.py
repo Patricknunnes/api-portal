@@ -8,7 +8,7 @@ from src.db.settings.config import get_db
 from src.shared.utils import GetPathAndMethod
 from src.exceptions.exceptions import UnAuthorizedException
 from src.schemas.auth_schema import PermissionParams
-from src.schemas.user_schema import UserResponse
+from src.schemas.user_schema import UserMe
 from src.shared.auth.token_provider import decode_token
 
 from src.db.cruds.permission_crud import PermissionCRUD
@@ -19,7 +19,7 @@ permission = GetPathAndMethod()
 
 async def current_user(token: str = Depends(oauth2_scheme),
                        permission: str = Depends(permission),
-                       db: Session = Depends(get_db)) -> UserResponse:
+                       db: Session = Depends(get_db)) -> UserMe:
     exception = UnAuthorizedException(detail="Token invalido.")
 
     try:

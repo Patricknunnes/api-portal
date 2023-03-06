@@ -25,7 +25,6 @@ class UserSchemaValidate(BaseModel):
 class User(BaseModel):
     id: UUID
     name: str
-    document: str
     role: RoleResponse
 
     class Config:
@@ -37,6 +36,10 @@ class UserResponse(User):
     phone: Optional[int]
     image: Optional[str]
     is_totvs: bool
+
+
+class UserMe(UserResponse):
+    document: str
 
 
 class UserResponsePaginate(BaseModel):
@@ -56,7 +59,6 @@ class UserDivergence(BaseModel):
     id: UUID
     name: str
     email: Optional[str]
-    document: str
     username: str
     role: RoleResponse
     error: str

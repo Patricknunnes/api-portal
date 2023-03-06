@@ -5,7 +5,7 @@ import json
 from src.db.cruds.user_crud import UserCRUD
 from src.dependencies.totvs.soap_api import TotvsWebServer
 from src.db.models.user_model import UserModel
-from src.schemas.user_schema import UserResponse
+from src.schemas.user_schema import UserResponse, UserMe
 from src.tests.mocks.auth_mocks import (
     valid_login,
     login_incorrect_username,
@@ -32,7 +32,9 @@ class AuthRouteTestClass(ApiBaseTestCase):
         self.assertIsNotNone(response.json()['access_token'])
 
         user_response = response.json()['user']
-        expected_user_dict = json.loads(UserResponse(**user_db_response).json())
+        expected_user = user_db_response
+        expected_user.update(document='547******03')
+        expected_user_dict = json.loads(UserMe(**expected_user).json())
 
         for key, value in user_response.items():
             self.assertEqual(value, expected_user_dict[key])
@@ -54,7 +56,9 @@ class AuthRouteTestClass(ApiBaseTestCase):
         patch_mock.assert_called()
 
         user_response = response.json()['user']
-        expected_user_dict = json.loads(UserResponse(**totvs_user_db_response).json())
+        expected_user = totvs_user_db_response
+        expected_user.update(document='389******76')
+        expected_user_dict = json.loads(UserMe(**expected_user).json())
 
         for key, value in user_response.items():
             self.assertEqual(value, expected_user_dict[key])

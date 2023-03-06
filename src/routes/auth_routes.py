@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 
 from src.controllers.auth_controller import AuthController
 from src.db.settings.config import get_db
-from src.schemas.auth_schema import LoginBase, TokenResponse, ResponseSsoTotvs
+from src.schemas.auth_schema import LoginBase, TokenResponse, ResponseSsoTotvs, UserMe
 from src.schemas.user_schema import UserResponse
 from src.shared.auth.auth_utils import current_user
 
@@ -20,12 +20,12 @@ def handle_create_token(login_data: LoginBase, db: Session = Depends(get_db)):
     return AuthController().handle_login(db=db, data_login=login_data)
 
 
-@auth_router.get('/me', response_model=UserResponse, status_code=status.HTTP_200_OK)
-def handle_me_data(profile: UserResponse = Depends(current_user)):
+@auth_router.get('/me', response_model=UserMe, status_code=status.HTTP_200_OK)
+def handle_me_data(profile: UserMe = Depends(current_user)):
     """
     This route is used to return user data.
     """
-    return profile
+    return AuthController().handle_self_data(profile)
 
 
 @auth_router.get(
