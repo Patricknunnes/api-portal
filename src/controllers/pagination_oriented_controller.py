@@ -32,9 +32,9 @@ class PaginationOrientedController(BaseController):
     ):
         return self.crud_class().handle_list(
             db=db,
-            page=page,
-            limit=limit,
+            filter_attrs=filter_attrs,
             filters=filters,
-            sort=self._format_sort(sort) if sort else None,
-            filter_attrs=filter_attrs
+            limit=limit,
+            page=page,
+            sort=self._format_sort(sort) if sort else None
         )
