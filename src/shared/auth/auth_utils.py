@@ -56,8 +56,6 @@ async def is_accessible(db: Session, datas: PermissionParams) -> bool:
         '/message/me',
         '/message/me/{id}',
         '/message/me/read/{id}',
-        '/registration/office365',
-        '/registration/office365/me',
         '/utils/image'
     ]
 
