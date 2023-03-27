@@ -3,6 +3,7 @@ from typing import Optional, List
 from pydantic import BaseModel, EmailStr
 
 from src.schemas.role_schema import RoleResponse
+from src.schemas.institution_schema import Institution
 
 
 class UserBase(BaseModel):
@@ -26,6 +27,7 @@ class User(BaseModel):
     id: UUID
     name: str
     role: RoleResponse
+    institution: Institution
 
     class Config:
         orm_mode = True
@@ -61,6 +63,7 @@ class UserDivergence(BaseModel):
     email: Optional[str]
     username: str
     role: RoleResponse
+    institution: Institution
     error: str
 
     class Config:
