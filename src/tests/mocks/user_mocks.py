@@ -1,5 +1,7 @@
 from src.db.models.models import UserModel, RoleModel
 
+from src.tests.mocks.institution_mocks import institution_mock
+
 user_create_data = {
     'name': 'new_user',
     'role_id': '34930736-8424-4254-84f5-92dd68e771ef',
@@ -45,6 +47,7 @@ totvs_user_db_response = {
         'id': '34930736-8424-4254-84f5-92dd68e771ef',
         'name': 'role_1'
     },
+    'institution': institution_mock,
     'username': 'totvs_user',
     'session_code': 'session_code'
 }
@@ -61,6 +64,7 @@ user_db_response = {
         'id': '34930736-8424-4254-84f5-92dd68e771ef',
         'name': 'role_1'
     },
+    'institution': institution_mock,
     'image': None
 }
 
