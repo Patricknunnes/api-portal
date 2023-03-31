@@ -1,10 +1,13 @@
-from unittest.mock import patch
+from datetime import datetime, timedelta
 from jose import jwt
+from unittest.mock import patch
+from uuid import uuid4
 import json
 
 from src.db.cruds.user_crud import UserCRUD
+from src.db.cruds.token_crud import TokenCRUD
 from src.dependencies.totvs.soap_api import TotvsWebServer
-from src.db.models.user_model import UserModel
+from src.db.models.models import UserModel, TokenModel
 from src.schemas.user_schema import UserResponse, UserMe
 from src.tests.mocks.auth_mocks import (
     valid_login,
@@ -23,16 +26,27 @@ class AuthRouteTestClass(ApiBaseTestCase):
         'get_user_by_username_or_email',
         return_value=UserModel(**user_db_response)
     )
-    def test_create_token_non_totvs(self, *_):
+    @patch.object(
+        TokenCRUD,
+        'create',
+        return_value=TokenModel(id=uuid4())
+    )
+    def test_create_token_non_totvs(self, create_session_mock, *_):
         '''
         Should return token and status 201 when logging in as non totvs user
         '''
         response = self.client.post('/auth/token', json=valid_login)
+        response_json = response.json()
         self.assertEqual(201, response.status_code)
-        self.assertIsNotNone(response.json()['access_token'])
+        self.assertIsNotNone(response_json['access_token'])
+        self.assertIsNotNone(response_json['refresh_token'])
+        self.assertIsNotNone(response_json['session_id'])
+        self.assertIsNotNone(response_json['token_type'])
 
-        user_response = response.json()['user']
-        expected_user = user_db_response
+        create_session_mock.assert_called()
+
+        user_response = response_json['user']
+        expected_user = dict(**user_db_response)
         expected_user.update(document='547******03')
         expected_user_dict = json.loads(UserMe(**expected_user).json())
 
@@ -45,15 +59,26 @@ class AuthRouteTestClass(ApiBaseTestCase):
         'get_user_by_username_or_email',
         return_value=UserModel(**totvs_user_db_response)
     )
+    @patch.object(
+        TokenCRUD,
+        'create',
+        return_value=TokenModel(id=uuid4())
+    )
     @patch.object(UserCRUD, 'patch')
-    def test_create_token_totvs_user(self, patch_mock, *_):
+    def test_create_token_totvs_user(self, patch_mock, create_session_mock, *_):
         '''
         Should return token and status 201 when logging in as totvs user
         '''
         response = self.client.post('/auth/token', json=valid_login)
+        response_json = response.json()
         self.assertEqual(201, response.status_code)
-        self.assertIsNotNone(response.json()['access_token'])
+        self.assertIsNotNone(response_json['access_token'])
+        self.assertIsNotNone(response_json['refresh_token'])
+        self.assertIsNotNone(response_json['session_id'])
+        self.assertIsNotNone(response_json['token_type'])
+
         patch_mock.assert_called()
+        create_session_mock.assert_called()
 
         user_response = response.json()['user']
         expected_user = totvs_user_db_response
@@ -144,13 +169,13 @@ class AuthRouteTestClass(ApiBaseTestCase):
         )
         self.assertEqual(200, response.status_code)
 
-        body = response.json()
+        user_response = response.json()
+        expected_user = dict(**user_db_response)
+        expected_user.update(document='547******03')
+        expected_user_dict = json.loads(UserMe(**expected_user).json())
 
-        for key, value in user_db_response.items():
-            if key != 'password':
-                self.assertEqual(value, body[key])
-            else:
-                self.assertTrue(key not in body)
+        for key, value in user_response.items():
+            self.assertEqual(value, expected_user_dict[key])
 
     @patch.object(jwt, 'decode', return_value={'sub': valid_user_id})
     @patch.object(UserCRUD, 'get', return_value=UserModel(**user_db_response))
@@ -189,3 +214,67 @@ class AuthRouteTestClass(ApiBaseTestCase):
         body = response.json()
         self.assertEqual(body['user_name'], 'totvs_user')
         self.assertEqual(body['key_totvs'], 'key_totvs')
+
+    @patch(
+        'src.controllers.auth_controller.decode_password',
+        return_value='valid_refresh_token')
+    @patch.object(TokenCRUD, 'get', return_value=TokenModel(
+        expiration_date=datetime.utcnow() + timedelta(days=1)))
+    @patch.object(TokenCRUD, 'patch')
+    def test_refresh_token_successfully(self, patch_session_mock, *_):
+        '''
+        Should return new access_token and refresh_token and status 201
+        '''
+        response = self.client.post('/auth/refresh', json=dict(
+            session_id=str(uuid4()), refresh_token='valid_refresh_token'))
+        response_json = response.json()
+        self.assertEqual(201, response.status_code)
+        self.assertIsNotNone(response_json['access_token'])
+        self.assertIsNotNone(response_json['refresh_token'])
+
+        patch_session_mock.assert_called()
+
+    def test_refresh_token_with_not_found_session(self):
+        '''
+        Should return error message and and status 404
+        '''
+        response = self.client.post('/auth/refresh', json=dict(
+            session_id=str(uuid4()), refresh_token='valid_refresh_token'))
+        self.assertEqual(404, response.status_code)
+        self.assertEqual(response.json(), {'detail': 'Sessão não encontrada.'})
+
+    @patch(
+        'src.controllers.auth_controller.decode_password',
+        return_value='valid_refresh_token'
+    )
+    @patch.object(TokenCRUD, 'get', return_value=TokenModel(
+        expiration_date=datetime.utcnow() + timedelta(days=1)))
+    @patch.object(TokenCRUD, 'delete')
+    def test_refresh_token_with_invalid_refresh_token(self, delete_session_mock, *_):
+        '''
+        Should return error message and and status 401
+        '''
+        response = self.client.post('/auth/refresh', json=dict(
+            session_id=str(uuid4()), refresh_token='invalid_refresh_token'))
+        self.assertEqual(401, response.status_code)
+        self.assertEqual(response.json(), {'detail': 'Token de atualização inválido.'})
+
+        delete_session_mock.assert_called()
+
+    @patch(
+        'src.controllers.auth_controller.decode_password',
+        return_value='valid_refresh_token'
+    )
+    @patch.object(TokenCRUD, 'get', return_value=TokenModel(
+        expiration_date=datetime.utcnow() - timedelta(days=1)))
+    @patch.object(TokenCRUD, 'delete')
+    def test_refresh_token_with_expired_refresh_token(self, delete_session_mock, *_):
+        '''
+        Should return error message and and status 401
+        '''
+        response = self.client.post('/auth/refresh', json=dict(
+            session_id=str(uuid4()), refresh_token='valid_refresh_token'))
+        self.assertEqual(401, response.status_code)
+        self.assertEqual(response.json(), {'detail': 'Token de atualização inválido.'})
+
+        delete_session_mock.assert_called()
