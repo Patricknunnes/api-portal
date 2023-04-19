@@ -72,7 +72,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         '''
         response = self.client.get('/user')
         self.assertEqual(200, response.status_code)
-        self.assertEqual({'page': 1, 'total': 0, 'user_response': []}, response.json())
+        self.assertEqual({'page': 1, 'total': 0, 'results': []}, response.json())
 
     def test_get_user_by_id_when_id_not_found(self):
         '''
@@ -93,7 +93,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         body = response.json()
 
         for key, value in user_db_response.items():
-            if key != 'password':
+            if key not in ['password', 'document']:
                 self.assertEqual(value, body[key])
             else:
                 self.assertTrue(key not in body)
@@ -152,7 +152,7 @@ class UserRouteWithAuthTestClass(ApiWithAuthTestCase):
         body = response.json()
 
         for key, value in user_create_data.items():
-            keys_not_in_body = ['password', 'role_id', 'username']
+            keys_not_in_body = ['password', 'role_id', 'username', 'document']
             if key not in keys_not_in_body:
                 self.assertEqual(value, body[key])
             else:

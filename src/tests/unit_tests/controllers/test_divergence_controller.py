@@ -7,6 +7,6 @@ class DivergenceControllerTestClass(BaseTestCase):
         '''
           Should return list with all divergences
         '''
-        result = DivergenceController().handle_list(db=self.session)
+        result = DivergenceController().handle_list(db=self.session, filter_attrs=[])
 
         self.assertEqual(result, {'page': 1, 'total': 0, 'results': []})

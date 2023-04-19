@@ -12,7 +12,8 @@ message = {
 
 message_with_max_length_title = {
     'title': ''.join([str(i) for i in range(30)]),
-    'text': 'message text'
+    'text': 'message text',
+    'is_important': False
 }
 
 message_with_too_long_title = {
@@ -21,6 +22,8 @@ message_with_too_long_title = {
 }
 
 valid_expiration_date = '2023-12-31'
+
+invalid_message_id = '52a558a6-8fbe-4c54-bfba-6667005f7a1a'
 
 message_with_expiration_date = dict(
     **message,
@@ -34,7 +37,8 @@ message_with_user_permission = dict(**message, user_permission=uuid_test)
 message_with_all_fields = dict(
     **message_with_expiration_date,
     role_permission=uuid_test,
-    user_permission=uuid_test
+    user_permission=uuid_test,
+    is_important=True
 )
 
 message_with_invalid_string_as_date = dict(**message, expiration_date='date')
@@ -50,5 +54,6 @@ message_created_with_all_fields = MessageModel(
     id=uuid_test,
     user_permission=uuid_test,
     created_at=datetime(2000, 1, 1, 0, 0),
-    updated_at=None
+    updated_at=None,
+    is_important=True
 )

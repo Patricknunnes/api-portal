@@ -25,6 +25,7 @@ class UserSchemaValidate(BaseModel):
 class User(BaseModel):
     id: UUID
     name: str
+    role: RoleResponse
 
     class Config:
         orm_mode = True
@@ -32,17 +33,19 @@ class User(BaseModel):
 
 class UserResponse(User):
     email: EmailStr
-    document: str
     phone: Optional[int]
     image: Optional[str]
     is_totvs: bool
-    role: RoleResponse
+
+
+class UserMe(UserResponse):
+    document: str
 
 
 class UserResponsePaginate(BaseModel):
     page: int = 1
     total: int
-    user_response: List[UserResponse]
+    results: List[UserResponse]
 
 
 class UserUpdate(BaseModel):
@@ -53,12 +56,15 @@ class UserUpdate(BaseModel):
 
 
 class UserDivergence(BaseModel):
+    id: UUID
     name: str
     email: Optional[str]
-    document: str
     username: str
     role: RoleResponse
     error: str
+
+    class Config:
+        orm_mode = True
 
 
 class DivergenceResponsePaginate(BaseModel):

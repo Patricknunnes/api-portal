@@ -2,11 +2,11 @@ from pydantic import BaseModel
 from typing import Optional
 
 from src.schemas.role_schema import RoleResponse
-from src.schemas.user_schema import UserResponse
+from src.schemas.user_schema import UserMe
 
 
 class TokenResponse(BaseModel):
-    user: UserResponse
+    user: UserMe
     access_token: str
     token_type: str = 'Bearer'
 

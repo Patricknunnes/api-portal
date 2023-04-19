@@ -18,17 +18,20 @@ depends_on = None
 
 
 def upgrade() -> None:
+    op.alter_column('messages', 'expiration_date', type_=sa.TIMESTAMP(timezone=True))
+    op.add_column('messages', sa.Column(
+        'is_important',
+        sa.Boolean(),
+        nullable=False,
+        server_default='f'
+    ))
     op.add_column('messages', sa.Column(
         'created_at',
-        sa.TIMESTAMP(),
+        sa.TIMESTAMP(timezone=True),
         server_default=sa.text('now()'),
         nullable=True
     ))
-    op.add_column('messages', sa.Column(
-        'updated_at',
-        sa.TIMESTAMP(),
-        nullable=True
-    ))
+    op.add_column('messages', sa.Column('updated_at', sa.TIMESTAMP(timezone=True), nullable=True))
     op.add_column('messages', sa.Column(
         'created_by',
         GUID(),
@@ -44,6 +47,8 @@ def upgrade() -> None:
 
 
 def downgrade() -> None:
+    op.alter_column('messages', 'expiration_date', type_=sa.TIMESTAMP)
+    op.drop_column('messages', 'is_important')
     op.drop_column('messages', 'created_at')
     op.drop_column('messages', 'created_by')
     op.drop_column('messages', 'updated_at')

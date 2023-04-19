@@ -3,7 +3,7 @@ from datetime import datetime
 from src.db.cruds.message_crud import MessageCRUD
 from src.db.models.models import MessageModel
 from src.tests.mocks.message_mocks import message
-from src.tests.mocks.role_mocks import roles
+from src.tests.mocks.role_mocks import role_1
 from src.tests.mocks.user_mocks import user_db_response
 from src.tests.settings import BaseTestCase
 
@@ -28,14 +28,11 @@ class MessageCRUDTestClass(BaseTestCase):
 
         MessageCRUD().delete(db=self.session, object_id=result.id)
 
-    def test_messages_count(self):
-        self.assertEqual(MessageCRUD().count_records(db=self.session), 1)
-
     def test_messages_list(self):
         '''
         Should return page info with list
         '''
-        result = MessageCRUD().handle_list(db=self.session)
+        result = MessageCRUD().handle_list(db=self.session, filter_attrs=[])
         self.assertEqual(result['page'], 1)
         self.assertEqual(result['total'], 1)
         self.assertEqual(len(result['results']), 1)
@@ -53,7 +50,8 @@ class MessageCRUDTestClass(BaseTestCase):
         '''Should update message, set datetime to updated_at and not modify created_at
         value'''
         new_title = 'another title'
-        message_from_db = MessageCRUD().handle_list(db=self.session)['results'][0]
+        message_from_db = MessageCRUD().handle_list(
+            db=self.session, filter_attrs=[])['results'][0]
 
         self.assertNotEqual(message_from_db.title, new_title)
         self.assertIsNone(message_from_db.updated_at)
@@ -81,16 +79,11 @@ class MessageCRUDTestClass(BaseTestCase):
     def test_delete(self):
         '''Should delete message'''
         new_message = MessageCRUD().create(db=self.session, data=message)
-
-        self.assertEqual(MessageCRUD().count_records(db=self.session), 2)
+        self.assertEqual(
+            MessageCRUD().get(db=self.session, id=new_message.id), new_message)
 
         MessageCRUD().delete(db=self.session, object_id=new_message.id)
-
-        self.assertEqual(MessageCRUD().count_records(db=self.session), 1)
-
-        result = MessageCRUD().get(db=self.session, id=new_message.id)
-
-        self.assertIsNone(result)
+        self.assertIsNone(MessageCRUD().get(db=self.session, id=new_message.id))
 
     def test_list_per_permissions_with_expired_message(self):
         '''
@@ -130,19 +123,37 @@ class MessageCRUDTestClass(BaseTestCase):
 
         result = MessageCRUD().list_per_permissions(
             db=self.session,
-            role_permission=roles[0]['id'],
+            role_permission=role_1['id'],
             user_permission=user_db_response['id']
         )
 
-        self.assertEqual(MessageCRUD().count_records(db=self.session), 5)
+        self.assertEqual(
+            MessageCRUD().handle_list(db=self.session, filter_attrs=[])['total'], 5)
 
         self.assertEqual(result['total'], 2)
         self.assertEqual(result['page'], 1)
         self.assertEqual(len(result['results']), 2)
-        self.assertEqual(result['results'][0], self.default_message)
-        self.assertEqual(result['results'][1], message_not_expired)
+        self.assertEqual(
+            result['results'][0]['expiration_date'],
+            self.default_message.expiration_date)
+        self.assertEqual(
+            result['results'][1]['expiration_date'],
+            message_not_expired.expiration_date)
 
         MessageCRUD().delete(db=self.session, object_id=message_expired.id)
         MessageCRUD().delete(db=self.session, object_id=message_not_expired.id)
         MessageCRUD().delete(db=self.session, object_id=message_to_another_role.id)
         MessageCRUD().delete(db=self.session, object_id=message_to_another_user.id)
+
+    def test_message_read_data_from_list_per_permission(self):
+        '''
+        When there are messages unread by the user,
+        message_read should be False
+        '''
+        result = MessageCRUD().list_per_permissions(
+            db=self.session,
+            role_permission=role_1['id'],
+            user_permission=user_db_response['id']
+        )
+
+        self.assertFalse(result['results'][0]['message_read'])

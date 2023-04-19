@@ -1,16 +1,15 @@
-import re
-from uuid import UUID
-from typing import Union
-
 from sqlalchemy.orm import Session
+from typing import List, Union
+from uuid import UUID
+import re
 
-from src.controllers.base import BaseController
+from src.controllers.pagination_oriented_controller import PaginationOrientedController
 from src.controllers.role_controller import RoleController
+from src.db.cruds.user_crud import UserCRUD
 from src.exceptions.exceptions import BadRequestException
 from src.schemas.utils_schema import ValidateDocs
-from src.shared.utils import UtilService
 from src.shared.auth.hash_provider import get_password_hash
-from src.db.cruds.user_crud import UserCRUD
+from src.shared.utils import UtilService
 from src.schemas.user_schema import (
     UserBase,
     UserResponse,
@@ -18,7 +17,7 @@ from src.schemas.user_schema import (
 )
 
 
-class UserController(BaseController):
+class UserController(PaginationOrientedController):
 
     def __init__(self):
         super(UserController, self).__init__(UserCRUD)
@@ -61,16 +60,23 @@ class UserController(BaseController):
 
         return self.crud_class().create(db=db, data=new_data, commit=commit)
 
-    def handle_list(self, db: Session,
-                    filters: str = None,
-                    page: int = None,
-                    limit: int = None):
-
-        search_result = self.crud_class().handle_list(db=db, filters=filters,
-                                                      page=page,
-                                                      limit=limit)
-
-        return search_result
+    def handle_list(
+        self,
+        db: Session,
+        filter_attrs: List[str],
+        filters: str = None,
+        page: int = None,
+        limit: int = None,
+        sort: str = None
+    ):
+        return self.crud_class().handle_list(
+            db=db,
+            page=page,
+            limit=limit,
+            filters=filters,
+            sort=self._format_sort(sort) if sort else (('name', 'asc'),),
+            filter_attrs=filter_attrs
+        )
 
     def handle_patch(self, db: Session,
                      object_id: UUID,

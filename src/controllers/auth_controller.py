@@ -11,7 +11,7 @@ from src.shared.auth.hash_provider import (
     get_password_hash
 )
 from src.db.cruds.user_crud import UserCRUD
-from src.schemas.auth_schema import LoginBase, TokenResponse, ResponseSsoTotvs
+from src.schemas.auth_schema import LoginBase, TokenResponse, ResponseSsoTotvs, UserMe
 from src.shared.auth.token_provider import create_access_token
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -44,6 +44,7 @@ class AuthController:
         response = TokenResponse(access_token=create_access_token(
             data={'sub': str(user.id)}),
             user=user)
+        response.user = self.handle_self_data(response.user)
         return response
 
     def handle_sso_totvs(self, db: Session, profile: UserResponse) -> ResponseSsoTotvs:
@@ -57,3 +58,7 @@ class AuthController:
             datas_sso.key_totvs = key_totvs
 
         return datas_sso
+
+    def handle_self_data(self, profile: UserMe):
+        profile.document = f'{profile.document[0:3]}******{profile.document[-2:]}'
+        return profile

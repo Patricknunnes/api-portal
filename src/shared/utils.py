@@ -1,8 +1,9 @@
+from datetime import date
 from re import search, sub
+from requests import get
 from starlette.requests import Request
 from typing import Union
-from datetime import date
-from requests import get
+from uuid import UUID
 from validate_docbr import CNPJ, CPF, CNH, RENAVAM
 
 from src.exceptions.exceptions import BadRequestException, NotFoundException
@@ -12,7 +13,6 @@ from src.schemas.utils_schema import ValidateDocs
 class UtilService:
     @staticmethod
     def validate_doc(docs_data: ValidateDocs):
-
         validate_doc = {
             'cpf': CPF().validate(docs_data.number),
             'cnpj': CNPJ().validate(docs_data.number),
@@ -73,6 +73,11 @@ class UtilService:
             raise BadRequestException(
                 detail=f'Campos obrigatorios: ({", ".join(not_optional)}) .'
             )
+
+    @staticmethod
+    def validate_str_as_uuid(string: str, key: str):
+        if type(string) != UUID:
+            raise BadRequestException(detail=f'{key} deve ser um UUID.')
 
 
 class GetPathAndMethod:

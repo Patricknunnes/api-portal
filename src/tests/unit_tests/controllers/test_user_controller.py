@@ -244,5 +244,5 @@ class UserControllerTestClass(BaseTestCase):
         '''
         Should return page info with list
         '''
-        result = UserController().handle_list(db=self.session)
-        self.assertEqual(result, {'page': 1, 'total': 0, 'user_response': []})
+        result = UserController().handle_list(db=self.session, filter_attrs=[])
+        self.assertEqual(result, {'page': 1, 'total': 0, 'results': []})

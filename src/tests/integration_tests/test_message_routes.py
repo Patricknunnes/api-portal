@@ -1,6 +1,6 @@
-from unittest.mock import patch, MagicMock
 from datetime import datetime
 from json import JSONDecodeError
+from unittest.mock import patch, MagicMock
 
 from src.tests.mocks.message_mocks import (
     message_created_with_all_fields,
@@ -13,12 +13,16 @@ from src.tests.mocks.message_mocks import (
     message_with_too_long_title,
     message_with_user_permission,
     message,
-    uuid_test
+    uuid_test,
+    invalid_message_id
 )
+from src.tests.mocks.message_user_mocks import message_user
 from src.tests.mocks.role_mocks import roles
 from src.tests.mocks.user_mocks import user_db_response
 from src.tests.settings import ApiWithAuthTestCase, ApiBaseTestCase
+
 from src.db.cruds.message_crud import MessageCRUD
+from src.db.cruds.message_user_crud import MessageUserCRUD
 from src.db.cruds.role_crud import RoleCRUD
 from src.db.cruds.user_crud import UserCRUD
 
@@ -119,6 +123,14 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
             {'detail': 'Mensagem não encontrada'},
             response.json()
         )
+
+    def test_get_message_by_id_when_id_not_found(self):
+        '''
+        Should return error message and status 401 when message id is invalid
+        '''
+        response = self.client.get(f'/message/me/{invalid_message_id}')
+        self.assertEqual(404, response.status_code)
+        self.assertEqual({'detail': 'Mensagem não encontrada.'}, response.json())
 
     @patch.multiple(
         MessageCRUD,
@@ -256,7 +268,8 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
                 'title': 'message title',
                 'user': None,
                 'created_at': '2000-01-01T00:00:00',
-                'updated_at': None
+                'updated_at': None,
+                'is_important': True
             }
         )
 
@@ -328,6 +341,19 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
             {'detail': 'A data de expiração deve ser uma data futura.'}
         )
 
+    def test_patch_with_not_uuid_role(self):
+        '''
+        Should return status 400 when role_permission is not an uuid
+        '''
+        response = self.client.patch(
+            f'/message/{uuid_test}',
+            headers=self.headers,
+            json={'role_permission': 'not uuid'}
+        )
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(response.json(), {'detail': 'role_permission deve ser um UUID.'})
+
     def test_patch_with_not_found_role(self):
         '''
         Should return status 404 when role id not found
@@ -340,6 +366,19 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
 
         self.assertEqual(404, response.status_code)
         self.assertEqual(response.json(), {'detail': 'Cargo não encontrado.'})
+
+    def test_patch_with_not_uuid_user(self):
+        '''
+        Should return status 400 when user_permission is not an uuid
+        '''
+        response = self.client.patch(
+            f'/message/{uuid_test}',
+            headers=self.headers,
+            json={'user_permission': 'not uuid'}
+        )
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(response.json(), {'detail': 'user_permission deve ser um UUID.'})
 
     def test_patch_with_not_found_user(self):
         '''
@@ -398,3 +437,41 @@ class MessageRouteTestClass(ApiWithAuthTestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual({'page': 1, 'results': [], 'total': 0}, response.json())
+
+    @patch.object(MessageCRUD, 'get')
+    def test_handle_message_read_with_invalid_message_id(self, _):
+        '''
+        Should return status 404 and error message
+        '''
+        response = self.client.post(f'/message/me/read/{uuid_test}', headers=self.headers)
+
+        self.assertEqual(404, response.status_code)
+        self.assertEqual({'detail': 'Usuário não encontrado.'}, response.json())
+
+    @patch.object(MessageCRUD, 'get', return_value=message_created_with_all_fields)
+    @patch.object(UserCRUD, 'get', return_value=user_db_response)
+    @patch.object(MessageUserCRUD, 'get', return_value=message_user)
+    def test_handle_message_read_with_relationship_already_registered(self, *_):
+        '''
+        Should return status 400 and error message
+        '''
+        response = self.client.post(f'/message/me/read/{uuid_test}', headers=self.headers)
+
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            {'detail': 'A mensagem já foi marcada como lida.'},
+            response.json())
+
+    @patch.object(MessageCRUD, 'get', return_value=message_created_with_all_fields)
+    @patch.object(UserCRUD, 'get', return_value=user_db_response)
+    @patch.object(MessageUserCRUD, 'get', return_value=None)
+    def test_handle_message_read(self, *_):
+        '''
+        Should return status 201 and message_user relationship
+        '''
+        response = self.client.post(f'/message/me/read/{uuid_test}', headers=self.headers)
+
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(user_db_response['id'], response.json()['user_id'])
+        self.assertEqual(uuid_test, response.json()['message_id'])
+        self.assertTrue(response.json()['message_read'])

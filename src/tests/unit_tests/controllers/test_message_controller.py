@@ -31,7 +31,7 @@ class MessageControllerTestClass(BaseTestCase):
         '''
           Should return list with all messages
         '''
-        result = MessageController().handle_list(db=self.session)
+        result = MessageController().handle_list(db=self.session, filter_attrs=[])
 
         self.assertEqual(result, {'page': 1, 'total': 0, 'results': []})
 
@@ -314,22 +314,54 @@ class MessageControllerTestClass(BaseTestCase):
         patch_mock.assert_called()
 
     @patch.object(MessageCRUD, 'list_per_permissions')
-    def test_handle_list_per_permissions(self, list_mock):
+    def test_handle_list_per_permissions_with_no_is_important_value(self, list_mock):
         '''
         Assert MessageController's handle_list_per_permission method calls
-        MessageCRUD's list_per_permissions with expected parameters
+        MessageCRUD's list_per_permissions with expected parameters when
+        is_important is not passed
         '''
         user = UserResponse(**user_db_response)
         MessageController().handle_list_per_permissions(
             db=self.session,
-            user=user,
+            filter_attrs=[],
             limit=10,
-            page=2
+            page=2,
+            user=user
         )
         list_mock.assert_called_with(
             db=self.session,
-            role_permission=user.role.id,
-            user_permission=user.id,
+            filter_attrs=[],
+            is_important=None,
+            limit=10,
             page=2,
-            limit=10
+            filters=None,
+            role_permission=user.role.id,
+            user_permission=user.id
+        )
+
+    @patch.object(MessageCRUD, 'list_per_permissions')
+    def test_handle_list_per_permissions_with_is_important_as_bool(self, list_mock):
+        '''
+        Assert MessageController's handle_list_per_permission method calls
+        MessageCRUD's list_per_permissions with expected parameters when
+        is_important is a bool
+        '''
+        user = UserResponse(**user_db_response)
+        MessageController().handle_list_per_permissions(
+            db=self.session,
+            filter_attrs=[],
+            is_important=True,
+            limit=10,
+            page=2,
+            user=user,
+        )
+        list_mock.assert_called_with(
+            db=self.session,
+            filter_attrs=[],
+            filters=None,
+            is_important=True,
+            limit=10,
+            page=2,
+            role_permission=user.role.id,
+            user_permission=user.id
         )
