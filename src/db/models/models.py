@@ -8,4 +8,6 @@ from src.db.models.message_user_model import MessageUserModel
 from src.db.models.permission_model import PermissionModel
 from src.db.models.role_model import Base, RoleModel
 from src.db.models.route_model import RouteModel
+from src.db.models.token_model import TokenModel
 from src.db.models.user_model import UserModel
+from src.db.models.institution_model import InstitutionModel

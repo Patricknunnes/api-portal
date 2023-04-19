@@ -7,10 +7,10 @@ from src.db.settings.config import Base, GUID
 
 
 class UserModel(Base):
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
     id = Column(GUID(), primary_key=True, default=uuid4)
-    role_id = Column(GUID(), ForeignKey("roles.id"))
+    role_id = Column(GUID(), ForeignKey('roles.id'))
     name = Column(String(150), nullable=False)
     email = Column(String(150), nullable=False, unique=True)
     document = Column(String(11), nullable=False)
@@ -23,5 +23,11 @@ class UserModel(Base):
     last_sync = Column(TIMESTAMP, nullable=True)
     created_at = Column(TIMESTAMP, server_default=func.now())
     session_code = Column(String(25), nullable=True, unique=True)
+    institution_id = Column(
+        GUID(),
+        ForeignKey('institutions.id'),
+        default='dcef34bf-2cc6-4d67-b6af-803e7e33d0f3'
+    )
 
-    role = relationship("RoleModel")
+    role = relationship('RoleModel')
+    institution = relationship('InstitutionModel')
